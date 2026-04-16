@@ -1,0 +1,33 @@
+log_level: INFO
+api:
+  host: 0.0.0.0
+  port: 8000
+  cors_origins:
+    - http://localhost:5173
+    - http://127.0.0.1:5173
+infrastructure:
+  redis_url: redis://localhost:6379/0
+  avatars_dir: ./examples/avatars
+  models_dir: ./models
+  worker_url: http://127.0.0.1:9001
+flashtalk:
+  mode: off
+  ws_url: ws://localhost:8765
+  ckpt_dir: ./models/SoulX-FlashTalk-14B
+  wav2vec_dir: ./models/chinese-wav2vec2-base
+  port: 8765
+  device: auto
+  gpu_count: 8
+  jpeg_quality: 40
+llm:
+  base_url: ""
+  api_key: ""
+  model: qwen-turbo
+  system_prompt: You are a friendly digital human assistant.
+tts:
+  voice: zh-CN-XiaoxiaoNeural
+  sample_rate: 16000
+  streaming_decode: true
+model:
+  torch_device: cpu
+  default_model: wav2lip

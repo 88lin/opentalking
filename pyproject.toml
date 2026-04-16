@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opentalking"
+version = "0.1.0"
+description = "Real-time digital human framework with FlashTalk 14B inference"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "OpenTalking Contributors" }]
+dependencies = [
+  "fastapi>=0.109",
+  "uvicorn[standard]>=0.27",
+  "pydantic>=2",
+  "pydantic-settings>=2",
+  "redis>=5",
+  "numpy>=1.24",
+  "httpx>=0.26",
+  "edge-tts>=6.1",
+  "aiortc>=1.6",
+  "av>=14",
+  "python-multipart>=0.0.9",
+  "pillow>=10",
+  "websockets>=13",
+  "loguru>=0.7",
+  "PyYAML>=6",
+]
+
+[project.optional-dependencies]
+engine = [
+  "torch>=2.0",
+  "torchaudio>=2.0",
+  "torchvision>=0.15",
+  "diffusers>=0.34",
+  "transformers>=4.46",
+  "accelerate>=1.0",
+  "opencv-python>=4.8",
+  "xfuser>=0.4",
+  "librosa>=0.10",
+  "pyloudnorm>=0.1.1",
+  "easydict>=1.13",
+  "imageio>=2.34",
+  "imageio-ffmpeg>=0.5",
+  "xformers>=0.0.28",
+  "optimum>=1.22",
+  "safetensors>=0.4",
+  "ftfy>=6.2",
+  "regex>=2024.0.0",
+  "sentencepiece>=0.2",
+]
+models = [
+  "torch>=2.0",
+  "torchaudio>=2.0",
+  "torchvision>=0.15",
+  "opencv-python>=4.8",
+  "onnxruntime>=1.16",
+  "diffusers>=0.34",
+  "openai-whisper>=20240930",
+]
+ascend = ["torch-npu>=2.1"]
+demo = ["gradio>=5.0"]
+dev = [
+  "pytest>=7.4",
+  "pytest-asyncio>=0.23",
+  "ruff>=0.4",
+  "mypy>=1.8",
+  "pre-commit>=3",
+]
+
+[project.scripts]
+opentalking-api = "apps.api.main:main"
+opentalking-worker = "opentalking.worker.main:main"
+opentalking-unified = "apps.unified.main:main"
+opentalking-download = "apps.cli.download_models:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+"" = "src"
+"apps" = "apps"
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["opentalking*", "apps*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests", "apps/api/tests", "apps/worker/tests"]

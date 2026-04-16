@@ -1,0 +1,219 @@
+from __future__ import annotations
+
+import os
+from functools import lru_cache
+from pathlib import Path
+from typing import Any
+
+import yaml
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _flatten_config(raw: dict[str, Any] | None) -> dict[str, Any]:
+    if not raw:
+        return {}
+
+    flattened: dict[str, Any] = {}
+    section_map = {
+        "api": {"host": "api_host", "port": "api_port", "cors_origins": "cors_origins"},
+        "infrastructure": {
+            "redis_url": "redis_url",
+            "avatars_dir": "avatars_dir",
+            "models_dir": "models_dir",
+            "worker_url": "worker_url",
+        },
+        "flashtalk": {
+            "mode": "flashtalk_mode",
+            "ws_url": "flashtalk_ws_url",
+            "ckpt_dir": "flashtalk_ckpt_dir",
+            "wav2vec_dir": "flashtalk_wav2vec_dir",
+            "port": "flashtalk_port",
+            "device": "flashtalk_device",
+            "gpu_count": "flashtalk_gpu_count",
+            "jpeg_quality": "flashtalk_jpeg_quality",
+        },
+        "llm": {
+            "base_url": "llm_base_url",
+            "api_key": "llm_api_key",
+            "model": "llm_model",
+            "system_prompt": "llm_system_prompt",
+        },
+        "tts": {
+            "voice": "tts_voice",
+            "sample_rate": "tts_sample_rate",
+            "streaming_decode": "tts_streaming_decode",
+        },
+        "model": {"torch_device": "torch_device", "default_model": "default_model"},
+    }
+
+    for key, value in raw.items():
+        if key in section_map and isinstance(value, dict):
+            for inner_key, inner_value in value.items():
+                mapped_key = section_map[key].get(inner_key)
+                if mapped_key:
+                    flattened[mapped_key] = inner_value
+            continue
+        flattened[key] = value
+    return flattened
+
+
+def _load_yaml_source() -> dict[str, Any]:
+    config_file = (
+        os.environ.get("OPENTALKING_CONFIG_FILE")
+        or os.environ.get("CONFIG_FILE")
+        or "./configs/default.yaml"
+    )
+    path = Path(config_file).expanduser()
+    if not path.is_absolute():
+        path = (Path.cwd() / path).resolve()
+    if not path.is_file():
+        return {}
+    return _flatten_config(yaml.safe_load(path.read_text(encoding="utf-8")) or {})
+
+
+def _load_legacy_env_source() -> dict[str, Any]:
+    mapping = {
+        "FLASHTALK_WS_URL": "flashtalk_ws_url",
+        "FLASHTALK_FRAME_NUM": "flashtalk_frame_num",
+        "FLASHTALK_MOTION_FRAMES_NUM": "flashtalk_motion_frames_num",
+        "FLASHTALK_SAMPLE_STEPS": "flashtalk_sample_steps",
+        "FLASHTALK_SAMPLE_SHIFT": "flashtalk_sample_shift",
+        "FLASHTALK_COLOR_CORRECTION_STRENGTH": "flashtalk_color_correction_strength",
+        "FLASHTALK_HEIGHT": "flashtalk_height",
+        "FLASHTALK_WIDTH": "flashtalk_width",
+        "FLASHTALK_SAMPLE_RATE": "flashtalk_sample_rate",
+        "FLASHTALK_TGT_FPS": "flashtalk_tgt_fps",
+        "FLASHTALK_CACHED_AUDIO_DURATION": "flashtalk_cached_audio_duration",
+        "FLASHTALK_JPEG_QUALITY": "flashtalk_jpeg_quality",
+        "FLASHTALK_JPEG_WORKERS": "flashtalk_jpeg_workers",
+        "FLASHTALK_JPEG_DECODE_WORKERS": "flashtalk_jpeg_decode_workers",
+        "FLASHTALK_AUDIO_LOUDNESS_NORM": "flashtalk_audio_loudness_norm",
+        "FLASHTALK_IDLE_CACHE_CHUNKS": "flashtalk_idle_cache_chunks",
+        "FLASHTALK_IDLE_MOUTH_LOCK": "flashtalk_idle_mouth_lock",
+        "FLASHTALK_IDLE_EYE_LOCK": "flashtalk_idle_eye_lock",
+        "FLASHTALK_PREBUFFER_CHUNKS": "flashtalk_prebuffer_chunks",
+        "FLASHTALK_TTS_BOUNDARY_FADE_MS": "flashtalk_tts_boundary_fade_ms",
+        "FLASHTALK_TTS_COALESCE_MIN_CHARS": "flashtalk_tts_coalesce_min_chars",
+        "FLASHTALK_TTS_COALESCE_MAX_CHARS": "flashtalk_tts_coalesce_max_chars",
+        "FLASHTALK_TTS_TAIL_FADE_MS": "flashtalk_tts_tail_fade_ms",
+        "FLASHTALK_TTS_TRAILING_SILENCE_MS": "flashtalk_tts_trailing_silence_ms",
+        "FLASHTALK_TTS_OPENER_ENABLE": "flashtalk_tts_opener_enable",
+        "FLASHTALK_TTS_OPENER_PRELOAD": "flashtalk_tts_opener_preload",
+        "FLASHTALK_TTS_OPENER_MIN_FILL_RATIO": "flashtalk_tts_opener_min_fill_ratio",
+        "FLASHTALK_TTS_OPENER_PAD_TO_CHUNK": "flashtalk_tts_opener_pad_to_chunk",
+        "FLASHTALK_TTS_OPENER_MAX_HISTORY": "flashtalk_tts_opener_max_history",
+        "DASHSCOPE_API_KEY": "llm_api_key",
+        "DASHSCOPE_MODEL": "llm_model",
+        "LLM_SYSTEM_PROMPT": "llm_system_prompt",
+    }
+    return {target: os.environ[name] for name, target in mapping.items() if name in os.environ}
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="OPENTALKING_",
+        env_file=".env",
+        extra="ignore",
+    )
+
+    log_level: str = "INFO"
+    config_file: str = Field(default="./configs/default.yaml")
+
+    api_host: str = "0.0.0.0"
+    api_port: int = 8000
+    cors_origins: str | list[str] = "*"
+
+    redis_url: str = "redis://localhost:6379/0"
+    avatars_dir: str = "./examples/avatars"
+    models_dir: str = "./models"
+    worker_url: str = "http://127.0.0.1:9001"
+
+    flashtalk_mode: str = "remote"
+    flashtalk_ws_url: str = f"ws://{os.environ.get('SERVER_HOST', 'localhost')}:8765"
+    flashtalk_ckpt_dir: str = "./models/SoulX-FlashTalk-14B"
+    flashtalk_wav2vec_dir: str = "./models/chinese-wav2vec2-base"
+    flashtalk_port: int = 8765
+    flashtalk_device: str = "auto"
+    flashtalk_gpu_count: int = 8
+    flashtalk_frame_num: int = 33
+    flashtalk_motion_frames_num: int = 5
+    flashtalk_sample_steps: int = 2
+    flashtalk_sample_shift: int = 5
+    flashtalk_color_correction_strength: float = 0.0
+    flashtalk_height: int = 704
+    flashtalk_width: int = 416
+    flashtalk_sample_rate: int = 16000
+    flashtalk_tgt_fps: int = 25
+    flashtalk_cached_audio_duration: int = 8
+    flashtalk_jpeg_quality: int = 55
+    flashtalk_jpeg_workers: int = 4
+    flashtalk_jpeg_decode_workers: int = 4
+    flashtalk_audio_loudness_norm: int = 0
+    flashtalk_idle_cache_chunks: int = 4
+    flashtalk_idle_mouth_lock: float = 0.97
+    flashtalk_idle_eye_lock: float = 0.65
+    flashtalk_prebuffer_chunks: int = 1
+    flashtalk_tts_boundary_fade_ms: float = 18.0
+    flashtalk_tts_coalesce_min_chars: int = 6
+    flashtalk_tts_coalesce_max_chars: int = 80
+    flashtalk_tts_tail_fade_ms: float = 80.0
+    flashtalk_tts_trailing_silence_ms: float = 320.0
+    flashtalk_tts_opener_enable: bool = False
+    flashtalk_tts_opener_preload: bool = False
+    flashtalk_tts_opener_min_fill_ratio: float = 0.78
+    flashtalk_tts_opener_pad_to_chunk: bool = True
+    flashtalk_tts_opener_max_history: int = 2
+
+    llm_base_url: str = ""
+    llm_api_key: str = ""
+    llm_model: str = "qwen-turbo"
+    llm_system_prompt: str = "You are a friendly digital human assistant."
+
+    tts_voice: str = "zh-CN-XiaoxiaoNeural"
+    tts_sample_rate: int = 16000
+    tts_streaming_decode: bool = True
+    ffmpeg_bin: str = "ffmpeg"
+
+    torch_device: str = "cpu"
+    default_model: str = "flashtalk"
+    default_fps: int = 25
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+    ):
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            _load_yaml_source,
+            _load_legacy_env_source,
+            file_secret_settings,
+        )
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        if isinstance(self.cors_origins, list):
+            origins = [str(origin).strip() for origin in self.cors_origins if str(origin).strip()]
+            return origins or ["*"]
+        if self.cors_origins.strip() == "*":
+            return ["*"]
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
+    @property
+    def normalized_flashtalk_mode(self) -> str:
+        mode = self.flashtalk_mode.strip().lower()
+        if mode in {"remote", "local", "off"}:
+            return mode
+        return "remote"
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    return Settings()

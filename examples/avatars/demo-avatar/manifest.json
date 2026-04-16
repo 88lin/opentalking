@@ -1,0 +1,13 @@
+{
+  "id": "demo-avatar",
+  "name": "Demo Wav2Lip fallback avatar",
+  "model_type": "wav2lip",
+  "fps": 25,
+  "sample_rate": 16000,
+  "width": 256,
+  "height": 256,
+  "version": "1.0",
+  "metadata": {
+    "description": "Animated demo frames for local dev without real model weights."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "demo-musetalk",
+  "name": "Demo MuseTalk avatar",
+  "model_type": "musetalk",
+  "fps": 25,
+  "sample_rate": 16000,
+  "width": 256,
+  "height": 256,
+  "version": "1.0",
+  "metadata": {
+    "description": "Visible full_frames for MuseTalk adapter dev and fallback preview."
+  }
+}

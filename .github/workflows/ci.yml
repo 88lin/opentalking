@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install System Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install -U pip setuptools wheel
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: >
+          ruff check
+          src/opentalking/core
+          src/opentalking/server
+          src/opentalking/worker
+          src/opentalking/llm
+          src/opentalking/tts
+          src/opentalking/avatars
+          src/opentalking/events
+          src/opentalking/rtc
+          apps/api
+          apps/unified
+          apps/cli
+          tests
+
+      - name: Type Check
+        run: >
+          mypy
+          src/opentalking/core
+          src/opentalking/server
+          src/opentalking/worker
+          src/opentalking/llm
+          src/opentalking/tts
+          src/opentalking/avatars
+          src/opentalking/events
+          src/opentalking/rtc
+          apps/api
+          apps/unified
+          apps/cli
+          --ignore-missing-imports
+
+      - name: Test
+        run: pytest apps/api/tests apps/worker/tests tests
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build

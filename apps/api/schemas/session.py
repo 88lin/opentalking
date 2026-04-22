@@ -6,6 +6,8 @@ from pydantic import BaseModel, Field
 class CreateSessionRequest(BaseModel):
     avatar_id: str = Field(..., examples=["demo-avatar"])
     model: str = Field(..., examples=["wav2lip"])
+    tts_provider: str | None = None
+    tts_voice: str | None = None
 
 
 class CreateSessionResponse(BaseModel):

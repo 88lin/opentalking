@@ -43,31 +43,7 @@ OpenTalking 是一个统一的实时数字人框架，将 **FlashTalk 14B 说话
 
 ## Architecture
 
-```
-浏览器 (React + Vite + Tailwind)
-  │  REST + SSE + WebRTC
-  ▼
-apps/api (FastAPI) ─── Redis 任务队列 ───  opentalking.worker (会话编排)
-  │                                              │
-  │                                  ┌───────────┼───────────┐
-  │                                  ▼           ▼           ▼
-  │                           opentalking.llm  opentalking.tts  opentalking.models
-  │                           (OpenAI 兼容)    (Edge TTS)      (模型适配器)
-  │                                                                │
-  │                                                    ┌───────────┴───────────┐
-  │                                                    ▼                       ▼
-  │                                              远程模式                   本地模式
-  │                                         (FlashTalkWSClient)      (FlashTalkLocalAdapter)
-  │                                                    │                       │
-  │                                                    ▼                       ▼
-  │                                         opentalking.server          opentalking.engine
-  │                                         (WS 服务, torchrun)         (直接调用推理)
-  │                                                    │
-  │                                                    ▼
-  │                                         opentalking.engine
-  ▼                                         (14B 推理流水线, 8×GPU/NPU)
-apps/unified = API + Worker 单进程模式（无需 Redis）
-```
+![OpenTalking 架构图（中文）](images/structure_cn.png)
 
 ## 项目结构
 

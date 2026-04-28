@@ -1,13 +1,15 @@
 from __future__ import annotations
 
+import base64
 import json
+import time
 import uuid
 from typing import Any
 
 import redis.asyncio as redis
 
 from opentalking.core.session_store import get_session_record, session_key, set_session_state
-from opentalking.core.redis_keys import TASK_QUEUE
+from opentalking.core.redis_keys import TASK_QUEUE, uploaded_pcm_key
 
 
 async def _push_task(r: redis.Redis, task: dict[str, Any]) -> None:
@@ -20,6 +22,8 @@ async def create_session(
     model: str,
     tts_provider: str | None = None,
     tts_voice: str | None = None,
+    llm_system_prompt: str | None = None,
+    custom_ref_image_path: str | None = None,
 ) -> str:
     sid = f"sess_{uuid.uuid4().hex[:12]}"
     data = {
@@ -32,6 +36,10 @@ async def create_session(
         data["tts_provider"] = tts_provider
     if tts_voice:
         data["tts_voice"] = tts_voice
+    if llm_system_prompt:
+        data["llm_system_prompt"] = llm_system_prompt
+    if custom_ref_image_path:
+        data["custom_ref_image_path"] = custom_ref_image_path
     await r.hset(session_key(sid), mapping=data)
     init_task: dict[str, Any] = {
         "cmd": "init",
@@ -43,6 +51,10 @@ async def create_session(
         init_task["tts_provider"] = tts_provider
     if tts_voice:
         init_task["tts_voice"] = tts_voice
+    if llm_system_prompt:
+        init_task["llm_system_prompt"] = llm_system_prompt
+    if custom_ref_image_path:
+        init_task["custom_ref_image_path"] = custom_ref_image_path
     await _push_task(
         r,
         init_task,
@@ -58,8 +70,55 @@ async def update_session_state(r: redis.Redis, sid: str, state: str) -> None:
     await set_session_state(r, sid, state)
 
 
-async def speak(r: redis.Redis, sid: str, text: str) -> None:
-    await _push_task(r, {"cmd": "speak", "session_id": sid, "text": text})
+async def speak_flashtalk_uploaded_pcm(
+    r: redis.Redis,
+    sid: str,
+    pcm_bytes: bytes,
+) -> None:
+    """将上传音频解码后的 PCM 送入 Worker，仅走 FlashTalk（不经 LLM/TTS）。
+
+    PCM 存在共享 Redis 临时键中，任务里只传 key，避免 API/Worker 分离部署时依赖共享文件系统。
+    """
+    await interrupt(r, sid)
+    upload_id = uuid.uuid4().hex
+    key = uploaded_pcm_key(sid, upload_id)
+    await r.set(key, base64.b64encode(bytes(pcm_bytes)).decode("ascii"), ex=10 * 60)
+    await _push_task(
+        r,
+        {
+            "cmd": "speak_flashtalk_audio",
+            "session_id": sid,
+            "pcm_key": key,
+            "enqueue_unix": time.time(),
+        },
+    )
+
+
+async def speak(
+    r: redis.Redis,
+    sid: str,
+    text: str,
+    *,
+    voice: str | None = None,
+    tts_provider: str | None = None,
+    tts_model: str | None = None,
+) -> None:
+    # 新用户输入前先打断，避免上一条仍在推理/播报时排队等到结束才生效
+    await interrupt(r, sid)
+    task: dict[str, Any] = {
+        "cmd": "speak",
+        "session_id": sid,
+        "text": text,
+        # Worker 用于测量「API 入队 speak → 首帧进 WebRTC」墙钟（与 Worker 同机时钟）
+        "enqueue_unix": time.time(),
+    }
+    if voice:
+        task["voice"] = voice
+    if tts_provider:
+        task["tts_provider"] = tts_provider.strip().lower()
+    if tts_model:
+        task["tts_model"] = tts_model.strip()
+    await _push_task(r, task)
 
 
 async def interrupt(r: redis.Redis, sid: str) -> None:

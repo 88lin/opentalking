@@ -22,6 +22,7 @@ class InMemoryRedis:
 
     def __init__(self) -> None:
         self._hash: dict[str, dict[str, str]] = {}
+        self._kv: dict[str, bytes] = {}
         self._task_queue: asyncio.Queue[str] = asyncio.Queue()
         self._listeners: dict[str, list[asyncio.Queue[dict[str, Any]]]] = defaultdict(list)
         self._expiry: dict[str, float] = {}
@@ -34,6 +35,7 @@ class InMemoryRedis:
             return
         self._expiry.pop(name, None)
         self._hash.pop(name, None)
+        self._kv.pop(name, None)
 
     def _register_listener(self, channel: str, q: asyncio.Queue[dict[str, Any]]) -> None:
         if q not in self._listeners[channel]:
@@ -74,19 +76,25 @@ class InMemoryRedis:
         n = 0
         for name in names:
             self._purge_if_expired(name)
+            removed = False
             if name in self._hash:
                 del self._hash[name]
+                removed = True
+            if name in self._kv:
+                del self._kv[name]
+                removed = True
+            if removed:
                 self._expiry.pop(name, None)
                 n += 1
         return n
 
     async def exists(self, name: str) -> int:
         self._purge_if_expired(name)
-        return 1 if name in self._hash else 0
+        return 1 if name in self._hash or name in self._kv else 0
 
     async def expire(self, name: str, seconds: int) -> int:
         self._purge_if_expired(name)
-        if name not in self._hash:
+        if name not in self._hash and name not in self._kv:
             return 0
         self._expiry[name] = monotonic() + max(0, seconds)
         return 1
@@ -94,6 +102,19 @@ class InMemoryRedis:
     async def persist(self, name: str) -> int:
         self._purge_if_expired(name)
         return 1 if self._expiry.pop(name, None) is not None else 0
+
+    async def set(self, name: str, value: bytes | str, ex: int | None = None) -> bool:
+        self._purge_if_expired(name)
+        self._kv[name] = value.encode("utf-8") if isinstance(value, str) else bytes(value)
+        if ex is not None:
+            self._expiry[name] = monotonic() + max(0, int(ex))
+        else:
+            self._expiry.pop(name, None)
+        return True
+
+    async def get(self, name: str) -> bytes | None:
+        self._purge_if_expired(name)
+        return self._kv.get(name)
 
     async def rpush(self, name: str, *values: str) -> int:
         _ = name  # only TASK_QUEUE used

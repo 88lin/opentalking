@@ -8,8 +8,14 @@ from pathlib import Path
 import opentalking.models  # noqa: F401
 import redis.asyncio as redis
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+from opentalking.core.session_store import (
+    apply_flashtalk_recording_start,
+    apply_flashtalk_recording_stop,
+)
+from opentalking.worker.flashtalk_recording import export_flashtalk_recording
 from opentalking.worker.session_runner import SessionRunner
 from opentalking.worker.task_consumer import consume_task_queue
 
@@ -56,5 +62,34 @@ def create_app() -> FastAPI:
     @app.get("/healthz")
     async def healthz() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.post("/sessions/{session_id}/flashtalk-recording/start")
+    async def flashtalk_recording_start(session_id: str, request: Request) -> dict[str, str]:
+        r = request.app.state.redis
+        await apply_flashtalk_recording_start(r, session_id)
+        return {"session_id": session_id, "status": "recording"}
+
+    @app.post("/sessions/{session_id}/flashtalk-recording/stop")
+    async def flashtalk_recording_stop(session_id: str, request: Request) -> dict[str, str]:
+        r = request.app.state.redis
+        await apply_flashtalk_recording_stop(r, session_id)
+        return {"session_id": session_id, "status": "stopped"}
+
+    @app.get("/sessions/{session_id}/flashtalk-recording")
+    async def download_flashtalk_recording(session_id: str) -> FileResponse:
+        try:
+            path = export_flashtalk_recording(session_id)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail="recording not ready") from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500,
+                detail=f"recording export failed: {exc}",
+            ) from exc
+        return FileResponse(
+            path,
+            media_type="video/mp4",
+            filename=f"{session_id}_flashtalk_capture.mp4",
+        )
 
     return app

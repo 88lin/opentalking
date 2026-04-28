@@ -25,11 +25,24 @@ from opentalking.core.types.frames import AudioChunk, VideoFrameData
 from opentalking.models.registry import get_adapter
 from opentalking.rtc.aiortc_adapter import WebRTCSession
 from opentalking.tts import build_tts_adapter
-from opentalking.models.wav2lip.official_runtime import (
-    load_video_frames,
-    official_runtime_available,
-    run_official_inference,
-)
+from opentalking.tts.factory import create_tts_adapter
+try:
+    from opentalking.models.wav2lip.official_runtime import (
+        load_video_frames,
+        official_runtime_available,
+        run_official_inference,
+    )
+except Exception:
+    # official wav2lip runtime is optional; keep unified startup resilient
+    # when the module is absent in lightweight or customized deployments.
+    def official_runtime_available() -> bool:
+        return False
+
+    def run_official_inference(*args, **kwargs):
+        raise RuntimeError("wav2lip official runtime is unavailable")
+
+    def load_video_frames(*args, **kwargs):
+        raise RuntimeError("wav2lip official runtime is unavailable")
 from opentalking.worker.bus import publish_event
 from opentalking.worker.pipeline.render_pipeline import (
     render_audio_chunk_sync,
@@ -331,16 +344,45 @@ class SessionRunner:
         ans = await self.webrtc.handle_offer(sdp, type_)
         return {"sdp": ans.sdp, "type": ans.type}
 
-    def create_speak_task(self, text: str) -> asyncio.Task[None]:
-        task = asyncio.create_task(self._run_speak_task(text))
+    def create_speak_task(
+        self,
+        text: str,
+        tts_voice: str | None = None,
+        *,
+        tts_provider: str | None = None,
+        tts_model: str | None = None,
+        enqueue_unix: float | None = None,
+    ) -> asyncio.Task[None]:
+        task = asyncio.create_task(
+            self._run_speak_task(
+                text,
+                tts_voice=tts_voice,
+                tts_provider=tts_provider,
+                tts_model=tts_model,
+                enqueue_unix=enqueue_unix,
+            )
+        )
         self.speech_tasks.add(task)
         task.add_done_callback(self.speech_tasks.discard)
         return task
 
-    async def _run_speak_task(self, text: str) -> None:
+    async def _run_speak_task(
+        self,
+        text: str,
+        tts_voice: str | None = None,
+        tts_provider: str | None = None,
+        tts_model: str | None = None,
+        enqueue_unix: float | None = None,
+    ) -> None:
         log.info("speak start: %s (session=%s)", text[:30], self.session_id)
         try:
-            await self.speak(text)
+            await self.speak(
+                text,
+                tts_voice=tts_voice,
+                tts_provider=tts_provider,
+                tts_model=tts_model,
+                enqueue_unix=enqueue_unix,
+            )
             log.info("speak done: session=%s", self.session_id)
         except asyncio.CancelledError:
             log.info("speak cancelled: session=%s", self.session_id)
@@ -546,6 +588,10 @@ class SessionRunner:
         self,
         speech_text: str,
         debug_capture: _SpeechDebugCapture,
+        *,
+        tts_voice: str | None = None,
+        tts_provider: str | None = None,
+        tts_model: str | None = None,
     ) -> bool:
         if self.model_type != "wav2lip":
             return False
@@ -562,6 +608,9 @@ class SessionRunner:
             sample_rate=int(self.avatar_state.manifest.sample_rate),
             chunk_ms=self._speech_chunk_ms(),
             settings=self._tts_settings,
+            default_voice=tts_voice,
+            tts_provider=tts_provider,
+            tts_model=tts_model,
         )
         pcm_parts: list[np.ndarray] = []
         tts_started_at = _time.perf_counter()
@@ -639,7 +688,15 @@ class SessionRunner:
         self._speech_frame_idx = len(frames)
         return True
 
-    async def speak(self, text: str) -> None:
+    async def speak(
+        self,
+        text: str,
+        tts_voice: str | None = None,
+        *,
+        tts_provider: str | None = None,
+        tts_model: str | None = None,
+        enqueue_unix: float | None = None,
+    ) -> None:
         async with self._speak_lock:
             speech_text = strip_emoji(text).strip()
             if not speech_text or self._closed:
@@ -690,7 +747,13 @@ class SessionRunner:
                 debug_capture = self._build_debug_capture(speech_text)
                 official_done = False
                 try:
-                    official_done = await self._speak_wav2lip_official(speech_text, debug_capture)
+                    official_done = await self._speak_wav2lip_official(
+                        speech_text,
+                        debug_capture,
+                        tts_voice=tts_voice,
+                        tts_provider=tts_provider,
+                        tts_model=tts_model,
+                    )
                 except asyncio.CancelledError:
                     raise
                 except Exception:  # noqa: BLE001
@@ -712,6 +775,9 @@ class SessionRunner:
                     sample_rate=int(self.avatar_state.manifest.sample_rate),
                     chunk_ms=self._speech_chunk_ms(),
                     settings=self._tts_settings,
+                    default_voice=tts_voice,
+                    tts_provider=tts_provider,
+                    tts_model=tts_model,
                 )
                 render_queue: asyncio.Queue[_SpeechChunkEnvelope | None] = asyncio.Queue(maxsize=4)
                 audio_queue: asyncio.Queue[_SpeechChunkEnvelope | None] = asyncio.Queue(maxsize=4)

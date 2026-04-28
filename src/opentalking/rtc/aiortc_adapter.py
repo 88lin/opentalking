@@ -253,6 +253,10 @@ class WebRTCSession:
         sample_rate: int = 16000,
         mode: str = "buffered",
     ) -> None:
+        try:
+            asyncio.get_event_loop()
+        except RuntimeError:
+            asyncio.set_event_loop(asyncio.new_event_loop())
         self.pc = RTCPeerConnection()
         normalized_mode = mode.strip().lower()
         if normalized_mode == "legacy":
@@ -269,11 +273,8 @@ class WebRTCSession:
     def reset_clocks(self) -> None:
         """Reset pacing wall-clock so next frame/audio is sent immediately.
         Does NOT reset PTS counters — keeps the RTP stream continuous."""
-        now = time.monotonic()
-        self.video._next_send = now
-        self.video._pacing = True
-        self.audio._next_send = now
-        self.audio._pacing = True
+        self.video.reset_clock()
+        self.audio.reset_clock()
         self.draining = False
 
     def clear_media_queues(self) -> None:

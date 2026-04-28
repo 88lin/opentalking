@@ -94,11 +94,6 @@ def _create_runner(
         flashtalk_mode = settings.normalized_flashtalk_mode
         flashtalk_client = None
         flashtalk_ws_url: str | None = None
-        default_tts_voice = (
-            settings.tts_elevenlabs_voice_id
-            if settings.normalized_tts_provider == "elevenlabs"
-            else settings.tts_voice
-        )
 
         if flashtalk_mode == "remote":
             flashtalk_ws_url = settings.flashtalk_ws_url
@@ -334,7 +329,11 @@ async def handle_worker_task(
             t = asyncio.create_task(
                 _init_flashtalk_with_queue(task, r, avatars_root, device, runners, sid)
             )
-            t.add_done_callback(lambda _t, _sid=sid: _log_task_exception(_t, _sid))
+
+            def _done(_t: asyncio.Task[None], _sid: str = str(sid)) -> None:
+                _log_task_exception(_t, _sid)
+
+            t.add_done_callback(_done)
         else:
             runner = _create_runner(task, r, avatars_root, device)
             runners[sid] = runner

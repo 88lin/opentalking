@@ -25,7 +25,6 @@ from opentalking.core.types.frames import AudioChunk, VideoFrameData
 from opentalking.models.registry import get_adapter
 from opentalking.rtc.aiortc_adapter import WebRTCSession
 from opentalking.tts import build_tts_adapter
-from opentalking.tts.factory import create_tts_adapter
 try:
     from opentalking.models.wav2lip.official_runtime import (
         load_video_frames,
@@ -162,9 +161,10 @@ class _SpeechDebugCapture:
 
         if self._frames:
             h, w = self._frames[0].shape[:2]
+            video_writer_fourcc = getattr(cv2, "VideoWriter_fourcc")
             writer = cv2.VideoWriter(
                 str(silent_path),
-                cv2.VideoWriter_fourcc(*"mp4v"),
+                video_writer_fourcc(*"mp4v"),
                 float(self.fps),
                 (w, h),
             )

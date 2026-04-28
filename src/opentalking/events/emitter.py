@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Callable
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from opentalking.events.schemas import event_sse_payload
 

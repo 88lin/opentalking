@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import base64
+import inspect
 import json
 import time
 import uuid
+from collections.abc import Awaitable
 from typing import Any
 
 import redis.asyncio as redis
@@ -12,8 +14,14 @@ from opentalking.core.session_store import get_session_record, session_key, set_
 from opentalking.core.redis_keys import TASK_QUEUE, uploaded_pcm_key
 
 
+async def _await_result(value: Awaitable[Any] | Any) -> Any:
+    if inspect.isawaitable(value):
+        return await value
+    return value
+
+
 async def _push_task(r: redis.Redis, task: dict[str, Any]) -> None:
-    await r.rpush(TASK_QUEUE, json.dumps(task, ensure_ascii=False))
+    await _await_result(r.rpush(TASK_QUEUE, json.dumps(task, ensure_ascii=False)))
 
 async def create_session(
     r: redis.Redis,
@@ -40,7 +48,7 @@ async def create_session(
         data["llm_system_prompt"] = llm_system_prompt
     if custom_ref_image_path:
         data["custom_ref_image_path"] = custom_ref_image_path
-    await r.hset(session_key(sid), mapping=data)
+    await _await_result(r.hset(session_key(sid), mapping=data))
     init_task: dict[str, Any] = {
         "cmd": "init",
         "session_id": sid,

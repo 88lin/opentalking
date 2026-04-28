@@ -58,6 +58,8 @@ def _flatten_config(raw: dict[str, Any] | None) -> dict[str, Any]:
             for inner_key, inner_value in value.items():
                 mapped_key = section_map[key].get(inner_key)
                 if mapped_key:
+                    if mapped_key == "flashtalk_mode" and isinstance(inner_value, bool):
+                        inner_value = "remote" if inner_value else "off"
                     flattened[mapped_key] = inner_value
             continue
         flattened[key] = value

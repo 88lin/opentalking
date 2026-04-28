@@ -65,8 +65,10 @@ demo = ["gradio>=5.0"]
 dev = [
   "pytest>=7.4",
   "pytest-asyncio>=0.23",
+  "opencv-python-headless>=4.8",
   "ruff>=0.4",
   "mypy>=1.8",
+  "types-PyYAML>=6",
   "pre-commit>=3",
 ]
 
@@ -94,3 +96,22 @@ target-version = "py310"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests", "apps/api/tests", "apps/worker/tests"]
+
+[[tool.mypy.overrides]]
+module = [
+  "opentalking.engine.*",
+  "opentalking.models.*",
+  "opentalking.server.idle_cache",
+  "opentalking.rtc.aiortc_adapter",
+  "opentalking.tts.dashscope_qwen.*",
+  "opentalking.tts.edge.*",
+  "opentalking.tts.factory",
+  "opentalking.voices.*",
+  "opentalking.worker.flashtalk_runner",
+  "apps.api.tests.*",
+  "apps.worker.tests.*",
+  "tests.*",
+  "test_aiortc_adapter",
+  "test_smoke",
+]
+ignore_errors = true

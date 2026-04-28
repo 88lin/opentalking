@@ -122,10 +122,11 @@ def export_flashtalk_recording(session_id: str) -> Path:
     height, width = first.shape[:2]
     output = flashtalk_recording_path(session_id)
     output.parent.mkdir(parents=True, exist_ok=True)
+    video_writer_fourcc = getattr(cv2, "VideoWriter_fourcc")
 
     writer = cv2.VideoWriter(
         str(output),
-        cv2.VideoWriter_fourcc(*"mp4v"),
+        video_writer_fourcc(*"mp4v"),
         fps,
         (width, height),
     )

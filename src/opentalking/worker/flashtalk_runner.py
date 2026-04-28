@@ -25,7 +25,7 @@ from opentalking.models.flashtalk.ws_client import FlashTalkWSClient
 from opentalking.rtc.aiortc_adapter import WebRTCSession
 from opentalking.tts.factory import create_tts_adapter, tts_log_profile
 from opentalking.worker.bus import publish_event
-from opentalking.worker.text_sanitize import sanitize_tts_text, strip_emoji, strip_markdown
+from opentalking.worker.text_sanitize import sanitize_tts_text, strip_emoji
 
 log = logging.getLogger(__name__)
 

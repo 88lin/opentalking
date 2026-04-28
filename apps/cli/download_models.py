@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import subprocess
 from pathlib import Path
+from collections.abc import Sequence
 
 
 DOWNLOADS = {
@@ -40,7 +41,7 @@ DOWNLOADS = {
 }
 
 
-def _run(cmd: list[str]) -> None:
+def _run(cmd: Sequence[str]) -> None:
     subprocess.run(cmd, check=True)
 
 

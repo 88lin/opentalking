@@ -2,17 +2,20 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import inspect
 import json
 import logging
 import queue as sync_queue
 import tempfile
 import time
+import uuid
+from collections.abc import Awaitable
 from pathlib import Path
-from typing import AsyncIterator
+from typing import Any, AsyncIterator
 
 import httpx
 import redis.asyncio as redis
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response, StreamingResponse
 
 from opentalking.avatars.loader import load_avatar_bundle
@@ -26,6 +29,7 @@ from apps.api.services import session_service
 from apps.api.services.worker_service import forward_webrtc_offer, forward_worker_post_empty
 from apps.api.core.config import get_settings
 from opentalking.core.queue_status import get_flashtalk_queue_status
+from opentalking.core.redis_keys import offline_bundle_job_key
 from opentalking.core.session_store import (
     apply_flashtalk_recording_start,
     apply_flashtalk_recording_stop,
@@ -38,7 +42,10 @@ from opentalking.stt.dashscope_asr import (
 from opentalking.tts.edge_zh_voices import normalize_optional_edge_voice
 from opentalking.tts.providers import BAILIAN_TTS_PROVIDERS, normalize_tts_provider
 from opentalking.tts.qwen_tts_voices import normalize_optional_qwen_voice, sanitize_qwen_model
-from opentalking.worker.flashtalk_recording import export_flashtalk_recording
+from opentalking.worker.flashtalk_recording import (
+    export_flashtalk_recording,
+    flashtalk_recording_session_dir,
+)
 
 
 def _effective_tts_provider(requested: str | None) -> str:
@@ -54,13 +61,19 @@ def _effective_tts_provider(requested: str | None) -> str:
 _BAILIAN_TTS = BAILIAN_TTS_PROVIDERS
 
 
+async def _await_result(value: Awaitable[Any] | Any) -> Any:
+    if inspect.isawaitable(value):
+        return await value
+    return value
+
+
 def _normalize_voice_for_speak(
     *,
     voice: str | None,
     tts_provider: str | None,
     tts_model: str | None,
 ) -> tuple[str | None, str, str | None]:
-    """返回 (voice, 生效的 tts_provider, tts_model)。"""
+    """返回 (voice, 生效的 tts_provider, tts_model)。tts_model 仅百炼分支有值。"""
     eff = _effective_tts_provider(tts_provider)
     try:
         if eff in _BAILIAN_TTS:
@@ -75,10 +88,7 @@ def _normalize_voice_for_speak(
         if tts_model and str(tts_model).strip():
             raise HTTPException(
                 status_code=400,
-                detail=(
-                    "tts_model is only valid when using 百炼语音线路"
-                    "（tts_provider=dashscope、cosyvoice、sambert 等）或 ElevenLabs"
-                ),
+                detail="tts_model is only valid when using 百炼语音线路（tts_provider=dashscope、cosyvoice、sambert 等）",
             )
         return vn, eff, None
     except ValueError as e:
@@ -575,7 +585,10 @@ async def speak_flashtalk_audio(
     request: Request,
     file: UploadFile = File(...),
 ) -> dict[str, str]:
-    """上传音频 → 解码为 16kHz mono PCM → 直接驱动 FlashTalk（不经语音识别、LLM、TTS）。"""
+    """上传音频 → 解码为 16kHz mono PCM → 直接驱动 FlashTalk（不经语音识别、LLM、TTS）。
+
+    要求会话 ``model`` 为 ``flashtalk``；``pcm_path`` 写入本机临时目录，需与 Worker 共享文件系统。
+    """
     r: redis.Redis = request.app.state.redis
     s = await session_service.get_session(r, session_id)
     if not s:
@@ -800,6 +813,168 @@ async def download_flashtalk_recording(session_id: str, request: Request) -> Res
         media_type="video/mp4",
         filename=f"{session_id}_flashtalk_capture.mp4",
     )
+
+
+def _offline_bundle_job_dir(session_id: str, job_id: str) -> Path:
+    return (flashtalk_recording_session_dir(session_id) / "offline" / job_id).resolve()
+
+
+def _offline_bundle_artifact_path(session_id: str, job_id: str, artifact: str) -> tuple[Path, str, str]:
+    """返回 (绝对路径, media_type, download_filename)。"""
+    base = _offline_bundle_job_dir(session_id, job_id)
+    table: dict[str, tuple[str, str, str]] = {
+        "bundle": ("bundle.mp4", "video/mp4", f"{session_id}_offline_{job_id}_bundle.mp4"),
+        "zip": ("offline_bundle.zip", "application/zip", f"{session_id}_offline_{job_id}.zip"),
+        "audio": ("aligned_audio.wav", "audio/wav", f"{session_id}_offline_{job_id}_audio.wav"),
+        "video": ("video_only.mp4", "video/mp4", f"{session_id}_offline_{job_id}_video_only.mp4"),
+    }
+    if artifact not in table:
+        raise HTTPException(status_code=400, detail="artifact must be bundle|zip|audio|video")
+    name, mime, fname = table[artifact]
+    path = (base / name).resolve()
+    try:
+        path.relative_to(base)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="invalid artifact path") from e
+    return path, mime, fname
+
+
+@router.post("/{session_id}/flashtalk-offline-bundle")
+async def flashtalk_offline_bundle_enqueue(
+    session_id: str,
+    request: Request,
+    file: UploadFile = File(...),
+) -> dict[str, str]:
+    """上传音频 → 入队离线推理；完成后音视频对齐保存在服务端目录，并可下载。
+
+    需 **flashtalk** 会话且 Worker 已加载该 session；PCM 临时文件须与 Worker 共享文件系统。
+    进度与结果见 ``GET .../flashtalk-offline-bundle/{job_id}``。
+    """
+    r: redis.Redis = request.app.state.redis
+    s = await session_service.get_session(r, session_id)
+    if not s:
+        raise HTTPException(status_code=404, detail="session not found")
+    if (s.get("model") or "").strip().lower() != "flashtalk":
+        raise HTTPException(
+            status_code=400,
+            detail="仅 flashtalk 会话可使用离线导出",
+        )
+
+    body = await file.read()
+    if len(body) > _MAX_AUDIO_BYTES:
+        raise HTTPException(status_code=413, detail="audio too large (max 15MB)")
+    if not body:
+        raise HTTPException(status_code=400, detail="empty audio")
+
+    suffix = Path(file.filename or "speech.webm").suffix or ".webm"
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+        tmp.write(body)
+        upload_path = Path(tmp.name)
+
+    try:
+        pcm = await decode_audio_file_to_pcm_i16(upload_path)
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception as e:  # noqa: BLE001
+        log.exception("flashtalk offline bundle decode failed")
+        raise HTTPException(status_code=502, detail=f"audio decode error: {e}") from e
+    finally:
+        try:
+            upload_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+    if pcm.size == 0:
+        raise HTTPException(status_code=400, detail="解码后音频为空")
+
+    job_id = uuid.uuid4().hex[:16]
+    base = Path(tempfile.gettempdir()) / "opentalking_upload_pcm"
+    base.mkdir(parents=True, exist_ok=True)
+    pcm_path = base / f"{session_id}_offline_{job_id}.pcm"
+    try:
+        pcm_path.write_bytes(pcm.tobytes())
+    except OSError as e:
+        raise HTTPException(status_code=500, detail=f"failed to write pcm: {e}") from e
+
+    k = offline_bundle_job_key(job_id)
+    await _await_result(r.hset(
+        k,
+        mapping={
+            "session_id": session_id,
+            "job_id": job_id,
+            "status": "queued",
+        },
+    ))
+    await session_service.enqueue_flashtalk_offline_bundle(
+        r,
+        session_id,
+        pcm_path=str(pcm_path.resolve()),
+        job_id=job_id,
+    )
+    return {"session_id": session_id, "job_id": job_id, "status": "queued"}
+
+
+@router.get("/{session_id}/flashtalk-offline-bundle/{job_id}")
+async def flashtalk_offline_bundle_status(
+    session_id: str,
+    job_id: str,
+    request: Request,
+) -> dict[str, str]:
+    r: redis.Redis = request.app.state.redis
+    k = offline_bundle_job_key(job_id)
+    raw = await _await_result(r.hgetall(k))
+    if not raw:
+        raise HTTPException(status_code=404, detail="job not found")
+
+    def _txt(key: str) -> str:
+        v = raw.get(key) or raw.get(key.encode("utf-8"))
+        if v is None:
+            return ""
+        return v.decode("utf-8", errors="replace") if isinstance(v, (bytes, bytearray)) else str(v)
+
+    if _txt("session_id") != session_id:
+        raise HTTPException(status_code=404, detail="job not found")
+
+    out: dict[str, str] = {
+        "session_id": session_id,
+        "job_id": job_id,
+        "status": _txt("status"),
+    }
+    for field in ("message", "bundle_mp4", "aligned_audio_wav", "video_only_mp4", "zip", "work_dir"):
+        v = _txt(field)
+        if v:
+            out[field] = v
+    return out
+
+
+@router.get("/{session_id}/flashtalk-offline-bundle/{job_id}/download")
+async def flashtalk_offline_bundle_download(
+    session_id: str,
+    job_id: str,
+    request: Request,
+    artifact: str = Query("bundle", description="bundle | zip | audio | video"),
+) -> FileResponse:
+    r: redis.Redis = request.app.state.redis
+    k = offline_bundle_job_key(job_id)
+    raw = await _await_result(r.hgetall(k))
+    if not raw:
+        raise HTTPException(status_code=404, detail="job not found")
+
+    def _txt(key: str) -> str:
+        v = raw.get(key) or raw.get(key.encode("utf-8"))
+        if v is None:
+            return ""
+        return v.decode("utf-8", errors="replace") if isinstance(v, (bytes, bytearray)) else str(v)
+
+    if _txt("session_id") != session_id:
+        raise HTTPException(status_code=404, detail="job not found")
+    if _txt("status") != "done":
+        raise HTTPException(status_code=409, detail="job not finished or failed")
+
+    path, media_type, filename = _offline_bundle_artifact_path(session_id, job_id, artifact.strip().lower())
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="artifact file missing")
+    return FileResponse(path, media_type=media_type, filename=filename)
 
 
 @router.delete("/{session_id}")

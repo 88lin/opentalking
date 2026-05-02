@@ -190,9 +190,9 @@ def create_tts_adapter(
             model=tts_model,
         )
     if p == "elevenlabs":
-        from opentalking.core.config import get_settings
-
         try:
+            from opentalking.core.config import get_settings
+
             settings = get_settings()
         except Exception:
             settings = SimpleNamespace()

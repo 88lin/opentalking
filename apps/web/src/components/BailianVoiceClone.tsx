@@ -1,11 +1,12 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { apiPostForm } from "../lib/api";
 import { COSYVOICE_MODEL_OPTIONS } from "../constants/ttsBailian";
 import { QWEN_VOICE_CLONE_TARGET_OPTIONS } from "../constants/ttsQwen";
+import { resolveVoiceCloneApplication, type VoiceCloneApplication } from "../lib/voiceCloneApply";
 
 /** 固定朗读文案：用于复刻时与百炼侧要求一致 */
 export const BAILIAN_CLONE_SAMPLE_TEXT =
-  "大家好，这是一段用于音色复刻的固定文本。我会用自然、清晰、平稳的语速读完它。";
+  "你好，今天阳光很好，我正在用自然清晰的声音，记录这一段音色。";
 
 function pickRecorderMime(): string | undefined {
   const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"];
@@ -18,9 +19,17 @@ function pickRecorderMime(): string | undefined {
 }
 
 type CloneProvider = "dashscope" | "cosyvoice";
+type RecorderPhase = "idle" | "recording" | "paused" | "recorded";
+
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+  const s = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
 
 interface BailianVoiceCloneProps {
-  onSuccess: () => void;
+  onSuccess: (application: VoiceCloneApplication) => void | Promise<void>;
   onClose: () => void;
 }
 
@@ -35,14 +44,41 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
   const [displayLabel, setDisplayLabel] = useState("我的复刻音色");
   const [prefix, setPrefix] = useState("");
   const [preferredName, setPreferredName] = useState("");
-  const [recording, setRecording] = useState(false);
+  const [recorderPhase, setRecorderPhase] = useState<RecorderPhase>("idle");
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [blob, setBlob] = useState<Blob | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [playbackTime, setPlaybackTime] = useState(0);
+  const [playbackEnded, setPlaybackEnded] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const mrRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const timerRef = useRef<ReturnType<typeof window.setInterval> | null>(null);
+  const recordStartedAtRef = useRef(0);
+  const elapsedBeforePauseRef = useRef(0);
+
+  const waveBars = useMemo(() => Array.from({ length: 32 }, (_, i) => 18 + ((i * 17) % 38)), []);
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const stopTracks = useCallback(() => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
+  const revokeAudioUrl = useCallback(() => {
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+  }, [audioUrl]);
 
   const onProviderChange = (p: CloneProvider) => {
     setProvider(p);
@@ -53,15 +89,24 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
     }
   };
 
+  useEffect(() => {
+    return () => {
+      clearTimer();
+      stopTracks();
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioUrl, clearTimer, stopTracks]);
+
   const stopRecording = useCallback(async () => {
     const mr = mrRef.current;
     if (!mr || mr.state === "inactive") {
       mrRef.current = null;
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-      setRecording(false);
+      stopTracks();
+      clearTimer();
+      setRecorderPhase("idle");
       return;
     }
+    const wasPaused = mr.state === "paused";
     await new Promise<void>((resolve) => {
       mr.onstop = () => resolve();
       try {
@@ -71,18 +116,52 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
       }
     });
     mrRef.current = null;
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
+    stopTracks();
+    clearTimer();
+    const duration =
+      elapsedBeforePauseRef.current + (wasPaused ? 0 : Math.max(0, Date.now() - recordStartedAtRef.current));
+    elapsedBeforePauseRef.current = duration;
+    setElapsedMs(duration);
     const mime = mr.mimeType || "audio/webm";
     const b = new Blob(chunksRef.current, { type: mime });
     chunksRef.current = [];
     setBlob(b);
-    setRecording(false);
-  }, []);
+    revokeAudioUrl();
+    setAudioUrl(URL.createObjectURL(b));
+    setPlaybackTime(0);
+    setPlaybackEnded(false);
+    setPlaying(false);
+    setRecorderPhase("recorded");
+  }, [clearTimer, revokeAudioUrl, stopTracks]);
+
+  const deleteRecording = useCallback(() => {
+    const mr = mrRef.current;
+    if (mr && mr.state !== "inactive") {
+      try {
+        mr.stop();
+      } catch {
+        /* ignore */
+      }
+    }
+    mrRef.current = null;
+    chunksRef.current = [];
+    stopTracks();
+    clearTimer();
+    revokeAudioUrl();
+    setBlob(null);
+    setAudioUrl(null);
+    setElapsedMs(0);
+    elapsedBeforePauseRef.current = 0;
+    recordStartedAtRef.current = 0;
+    setPlaybackTime(0);
+    setPlaybackEnded(false);
+    setPlaying(false);
+    setRecorderPhase("idle");
+  }, [clearTimer, revokeAudioUrl, stopTracks]);
 
   const startRecording = useCallback(async () => {
     setMessage(null);
-    setBlob(null);
+    deleteRecording();
     chunksRef.current = [];
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     streamRef.current = stream;
@@ -93,7 +172,50 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
       if (ev.data.size > 0) chunksRef.current.push(ev.data);
     };
     mr.start(200);
-    setRecording(true);
+    elapsedBeforePauseRef.current = 0;
+    recordStartedAtRef.current = Date.now();
+    setElapsedMs(0);
+    setRecorderPhase("recording");
+    timerRef.current = window.setInterval(() => {
+      setElapsedMs(elapsedBeforePauseRef.current + Math.max(0, Date.now() - recordStartedAtRef.current));
+    }, 250);
+  }, [deleteRecording]);
+
+  const pauseRecording = useCallback(() => {
+    const mr = mrRef.current;
+    if (!mr || mr.state !== "recording") return;
+    mr.pause();
+    elapsedBeforePauseRef.current += Math.max(0, Date.now() - recordStartedAtRef.current);
+    recordStartedAtRef.current = 0;
+    setElapsedMs(elapsedBeforePauseRef.current);
+    clearTimer();
+    setRecorderPhase("paused");
+  }, [clearTimer]);
+
+  const resumeRecording = useCallback(() => {
+    const mr = mrRef.current;
+    if (!mr || mr.state !== "paused") return;
+    mr.resume();
+    recordStartedAtRef.current = Date.now();
+    setRecorderPhase("recording");
+    timerRef.current = window.setInterval(() => {
+      setElapsedMs(elapsedBeforePauseRef.current + Math.max(0, Date.now() - recordStartedAtRef.current));
+    }, 250);
+  }, []);
+
+  const togglePlayback = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      if (audio.ended) {
+        audio.currentTime = 0;
+        setPlaybackTime(0);
+        setPlaybackEnded(false);
+      }
+      await audio.play();
+    } else {
+      audio.pause();
+    }
   }, []);
 
   const submit = useCallback(async () => {
@@ -120,9 +242,21 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
         ok?: boolean;
         message?: string;
         voice_id?: string;
+        display_label?: string;
       }>("/voices/clone", fd);
-      setMessage(res.message ?? `已生成 voice_id：${res.voice_id ?? "?"}`);
-      onSuccess();
+      const voiceId = res.voice_id?.trim();
+      if (!voiceId) {
+        throw new Error(res.message ?? "音色复刻成功，但服务端未返回 voice_id");
+      }
+      const resolvedDisplayLabel = res.display_label?.trim() || displayLabel.trim() || "我的复刻音色";
+      await onSuccess(
+        resolveVoiceCloneApplication({
+          provider,
+          targetModel: targetModel.trim(),
+          displayLabel: resolvedDisplayLabel,
+          voiceId,
+        }),
+      );
     } catch (e) {
       setMessage(e instanceof Error ? e.message : String(e));
     } finally {
@@ -152,9 +286,15 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
             请朗读下方固定文案并录音。千问复刻走 base64，内网可用；CosyVoice 需本服务对公网可访问或配置{" "}
             <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">OPENTALKING_PUBLIC_BASE_URL</code>。
           </p>
-          <blockquote className="mt-3 rounded-lg border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-relaxed text-cyan-900">
-            {BAILIAN_CLONE_SAMPLE_TEXT}
-          </blockquote>
+          <div className="mt-3 rounded-lg border border-cyan-300 bg-cyan-50 shadow-sm shadow-cyan-100/70">
+            <div className="flex items-center justify-between border-b border-cyan-200 px-3 py-2">
+              <span className="text-xs font-bold text-cyan-900">朗读文本</span>
+              <span className="text-[11px] font-medium text-cyan-700">请完整读出</span>
+            </div>
+            <blockquote className="px-3 py-2 text-sm font-semibold leading-relaxed text-cyan-950">
+              {BAILIAN_CLONE_SAMPLE_TEXT}
+            </blockquote>
+          </div>
         </div>
 
         <div className="grid gap-3 text-xs sm:grid-cols-2">
@@ -224,9 +364,35 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
           )}
         </div>
 
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {!recording ? (
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span
+                className={`h-2.5 w-2.5 rounded-full ${
+                  recorderPhase === "recording"
+                    ? "animate-pulse bg-rose-500"
+                    : recorderPhase === "recorded"
+                      ? "bg-emerald-500"
+                      : "bg-slate-300"
+                }`}
+              />
+              <span className="text-xs font-semibold text-slate-700">
+                {recorderPhase === "recording"
+                  ? "录制中"
+                  : recorderPhase === "paused"
+                    ? "已暂停"
+                    : recorderPhase === "recorded"
+                      ? "已录制"
+                      : "未录制"}
+              </span>
+            </div>
+            <span className="font-mono text-xs text-slate-500">
+              {formatDuration(recorderPhase === "recorded" ? playbackTime * 1000 : elapsedMs)}
+              {recorderPhase === "recorded" ? ` / ${formatDuration(elapsedMs)}` : ""}
+            </span>
+          </div>
+
+          {recorderPhase === "idle" ? (
             <button
               type="button"
               className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
@@ -235,28 +401,126 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
             >
               开始录音
             </button>
-          ) : (
-            <button
-              type="button"
-              className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-rose-500"
-              onClick={() => void stopRecording()}
-            >
-              停止
-            </button>
-          )}
-          <button
-            type="button"
-            className="rounded-lg border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={busy || !blob}
-            onClick={() => void submit()}
-          >
-            {busy ? "提交中…" : "上传并复刻"}
-          </button>
-          {blob ? (
-            <span className="text-xs text-slate-500">已录 {Math.round(blob.size / 1024)} KB</span>
+          ) : null}
+
+          {recorderPhase === "recording" || recorderPhase === "paused" ? (
+            <div className="space-y-3">
+              <div className="flex h-12 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3">
+                {waveBars.map((h, i) => (
+                  <span
+                    key={i}
+                    className={`w-1 rounded-full bg-cyan-500 ${recorderPhase === "recording" ? "animate-pulse" : "opacity-40"}`}
+                    style={{
+                      height: `${h}%`,
+                      animationDelay: `${(i % 8) * 80}ms`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recorderPhase === "recording" ? (
+                  <button
+                    type="button"
+                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                    onClick={pauseRecording}
+                  >
+                    暂停
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500"
+                    onClick={resumeRecording}
+                  >
+                    继续
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-rose-500"
+                  onClick={() => void stopRecording()}
+                >
+                  停止
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                  onClick={deleteRecording}
+                >
+                  删除
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {recorderPhase === "recorded" && audioUrl ? (
+            <div className="space-y-3">
+              <audio
+                ref={audioRef}
+                src={audioUrl}
+                preload="metadata"
+                onTimeUpdate={(e) => {
+                  setPlaybackTime(e.currentTarget.currentTime);
+                  if (!e.currentTarget.ended) setPlaybackEnded(false);
+                }}
+                onPlay={() => {
+                  setPlaying(true);
+                  setPlaybackEnded(false);
+                }}
+                onPause={() => setPlaying(false)}
+                onEnded={() => {
+                  setPlaying(false);
+                  setPlaybackEnded(true);
+                  setPlaybackTime(elapsedMs / 1000);
+                }}
+              />
+              <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                <button
+                  type="button"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white"
+                  onClick={() => void togglePlayback()}
+                >
+                  {playing ? "Ⅱ" : "▶"}
+                </button>
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className="h-full rounded-full bg-cyan-500"
+                    style={{
+                      width: `${playbackEnded ? 100 : Math.min(100, Math.max(0, (playbackTime / Math.max(0.1, elapsedMs / 1000)) * 100))}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-xs text-slate-500">{Math.round((blob?.size ?? 0) / 1024)} KB</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                  onClick={() => void startRecording()}
+                  disabled={busy}
+                >
+                  重录
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                  onClick={deleteRecording}
+                  disabled={busy}
+                >
+                  删除
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={busy || !blob}
+                  onClick={() => void submit()}
+                >
+                  {busy ? "提交中…" : "上传并复刻"}
+                </button>
+              </div>
+            </div>
           ) : null}
         </div>
-      </div>
       {message ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800">
           {message}

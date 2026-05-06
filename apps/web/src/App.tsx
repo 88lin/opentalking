@@ -533,6 +533,26 @@ export default function App() {
           setMessages((prev) => prev.filter((m) => !removeIds.has(m.id)));
         }
       }
+      if (ev === "error") {
+        setIsSpeaking(false);
+        clearSubtitleFallbackTimer();
+        const d = data && typeof data === "object" ? (data as { message?: string; code?: string }) : {};
+        const detail = d.message || d.code || "语音合成失败，请切换可用音色后重试。";
+        const msgId = streamingAssistantMsgIdRef.current ?? pendingAssistantMsgIdRef.current;
+        streamingAssistantMsgIdRef.current = null;
+        pendingAssistantMsgIdRef.current = null;
+        subtitleAccRef.current = "";
+        if (msgId) {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === msgId ? { ...m, text: `出错了：${detail}` } : m)),
+          );
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            { id: makeId(), role: "assistant", text: `出错了：${detail}`, timestamp: Date.now() },
+          ]);
+        }
+      }
       if (ev === "speech.started") {
         setIsSpeaking(true);
         subtitleAccRef.current = "";
@@ -640,6 +660,8 @@ export default function App() {
         avatar_id: avatarId,
         model,
         llm_system_prompt: llmSystemPrompt.trim() || undefined,
+        tts_provider: ttsProvider,
+        tts_voice: isEdgeTts(ttsProvider) ? edgeVoice : ttsProvider === "sambert" ? undefined : qwenVoice,
       });
       createdSessionId = created.session_id;
       setSessionId(created.session_id);
@@ -688,7 +710,19 @@ export default function App() {
       setConnection("error");
       notify("启动会话失败，请稍后重试或查看后端日志。", "error");
     }
-  }, [avatarId, closePeerConnection, llmSystemPrompt, model, notify, releaseSession, resetLiveState, waitForSessionReady]);
+  }, [
+    avatarId,
+    closePeerConnection,
+    edgeVoice,
+    llmSystemPrompt,
+    model,
+    notify,
+    qwenVoice,
+    releaseSession,
+    resetLiveState,
+    ttsProvider,
+    waitForSessionReady,
+  ]);
 
   const handleSavePrompt = useCallback(async () => {
     setPromptSaving(true);

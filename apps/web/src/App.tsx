@@ -5,6 +5,7 @@ import { ChatMessages } from "./components/ChatMessages";
 import { SETTINGS_DOCK_EXPANDED_KEY, SettingsPanel } from "./components/SettingsPanel";
 import { StartOverlay } from "./components/StartOverlay";
 import { TopBar } from "./components/TopBar";
+import { ToastStack, type ToastMessage, type ToastTone } from "./components/ToastStack";
 import { VideoBackground } from "./components/VideoBackground";
 import {
   apiDelete,
@@ -75,6 +76,13 @@ function catalogProviderKey(p: TtsProviderExtended): string | null {
 }
 
 type VoiceOpt = { id: string; label: string; targetModel?: string | null };
+type PanelTab = "chat" | "status" | "exports";
+
+const PANEL_TABS: { id: PanelTab; label: string }[] = [
+  { id: "chat", label: "对话" },
+  { id: "status", label: "状态" },
+  { id: "exports", label: "导出" },
+];
 
 function mergeVoiceCatalogIntoOptions(
   staticList: { id: string; label: string }[],
@@ -104,6 +112,7 @@ const MESSAGE_STORAGE_KEY = "opentalking-chat-history";
 const LLM_SYSTEM_PROMPT_STORAGE_KEY = "opentalking-llm-system-prompt";
 
 type SpeakAudioResponse = { session_id: string; status: string; text: string };
+type SessionRecord = { session_id: string; state?: string };
 
 /** From Vite env: max bubbles to show (most recent). 0 = show full history. */
 function readChatMaxVisible(): number {
@@ -115,8 +124,13 @@ function readChatMaxVisible(): number {
 }
 
 let msgCounter = 0;
+let toastCounter = 0;
 function makeId() {
   return `msg-${++msgCounter}-${Date.now()}`;
+}
+
+function makeToastId() {
+  return `toast-${++toastCounter}-${Date.now()}`;
 }
 
 function pickInitialAvatar(
@@ -125,13 +139,36 @@ function pickInitialAvatar(
 ): AvatarSummary | null {
   if (!avatars.length) return null;
   const available = new Set(registeredModels);
-  // Prefer flashtalk, then musetalk, then any available
+  // Prefer Qingyu V3 for the OpenTalking V3 demo, then fall back to the other demos.
   return (
+    avatars.find((a) => a.id === "qingyu-v3-daytime" && available.has("qingyu_v3")) ??
+    avatars.find((a) => a.model_type === "qingyu_v3" && available.has("qingyu_v3")) ??
+    avatars.find((a) => a.model_type === "flashhead" && available.has("flashhead")) ??
     avatars.find((a) => a.model_type === "flashtalk" && available.has("flashtalk")) ??
     avatars.find((a) => a.model_type === "musetalk" && available.has("musetalk")) ??
     avatars.find((a) => available.has(a.model_type)) ??
     avatars[0]
   );
+}
+
+function isFlashRenderer(model: string): boolean {
+  return model === "flashtalk" || model === "flashhead";
+}
+
+function usesCompactSquareStage(model: string): boolean {
+  return model === "flashhead";
+}
+
+const MODEL_LABELS_FOR_STAGE: Record<string, string> = {
+  flashhead: "FlashHead",
+  flashtalk: "FlashTalk",
+  musetalk: "MuseTalk",
+  qingyu_v3: "Qingyu V3",
+  wav2lip: "Wav2Lip",
+};
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export default function App() {
@@ -143,6 +180,8 @@ export default function App() {
   const subtitleAccRef = useRef("");
   /** `messages` id of the in-progress assistant bubble for this turn; cleared on speech.ended. */
   const streamingAssistantMsgIdRef = useRef<string | null>(null);
+  /** Local placeholder shown immediately after the user sends text, before worker SSE arrives. */
+  const pendingAssistantMsgIdRef = useRef<string | null>(null);
   /** 首帧已进入 WebRTC 后再叠字幕（与口型对齐）；旧版 Worker 无 speech.media_started 时用定时回退 */
   const subtitleMediaReadyRef = useRef(false);
   const subtitleFallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -162,7 +201,7 @@ export default function App() {
   // Chat
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [, setCurrentSubtitle] = useState("");
+  const [currentSubtitle, setCurrentSubtitle] = useState("");
 
   const clearSubtitleFallbackTimer = useCallback(() => {
     if (subtitleFallbackTimerRef.current !== null) {
@@ -191,6 +230,8 @@ export default function App() {
   const [promptSaving, setPromptSaving] = useState(false);
   const [referenceSaving, setReferenceSaving] = useState(false);
   const [referenceImageFile, setReferenceImageFile] = useState<File | null>(null);
+  const [panelTab, setPanelTab] = useState<PanelTab>("chat");
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [recordingSaving, setRecordingSaving] = useState(false);
   const [ftRecordPhase, setFtRecordPhase] = useState<"idle" | "recording" | "stopped">("idle");
   const [ftRecordBusy, setFtRecordBusy] = useState(false);
@@ -214,7 +255,7 @@ export default function App() {
     } catch {
       /* ignore */
     }
-    return "dashscope";
+    return "edge";
   });
 
   const [qwenModel, setQwenModel] = useState<string>(() => {
@@ -236,6 +277,20 @@ export default function App() {
     }
     return DEFAULT_QWEN_VOICE_ID;
   });
+
+  const compactSquareStage = usesCompactSquareStage(model);
+
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
+
+  const notify = useCallback((message: string, tone: ToastTone = "info") => {
+    const id = makeToastId();
+    setToasts((prev) => [...prev.slice(-2), { id, tone, message }]);
+    window.setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, tone === "error" ? 5200 : 3600);
+  }, []);
 
   const [llmSystemPrompt, setLlmSystemPrompt] = useState<string>(() => {
     try {
@@ -384,6 +439,7 @@ export default function App() {
       subtitleMediaReadyRef.current = false;
       clearSubtitleFallbackTimer();
       streamingAssistantMsgIdRef.current = null;
+      pendingAssistantMsgIdRef.current = null;
       if (clearMessages) {
         setMessages([]);
       }
@@ -469,9 +525,12 @@ export default function App() {
         setIsSpeaking(false);
         subtitleAccRef.current = "";
         const orphanId = streamingAssistantMsgIdRef.current;
+        const pendingId = pendingAssistantMsgIdRef.current;
         streamingAssistantMsgIdRef.current = null;
-        if (orphanId) {
-          setMessages((prev) => prev.filter((m) => m.id !== orphanId));
+        pendingAssistantMsgIdRef.current = null;
+        if (orphanId || pendingId) {
+          const removeIds = new Set([orphanId, pendingId].filter(Boolean));
+          setMessages((prev) => prev.filter((m) => !removeIds.has(m.id)));
         }
       }
       if (ev === "speech.started") {
@@ -485,12 +544,18 @@ export default function App() {
           setMessages((prev) => prev.filter((m) => m.id !== staleId));
           streamingAssistantMsgIdRef.current = null;
         }
-        const id = makeId();
+        const id = pendingAssistantMsgIdRef.current ?? makeId();
+        pendingAssistantMsgIdRef.current = null;
         streamingAssistantMsgIdRef.current = id;
-        setMessages((prev) => [
-          ...prev,
-          { id, role: "assistant", text: "", timestamp: Date.now() },
-        ]);
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === id)) {
+            return prev.map((m) => (m.id === id ? { ...m, text: "" } : m));
+          }
+          return [
+            ...prev,
+            { id, role: "assistant", text: "", timestamp: Date.now() },
+          ];
+        });
       }
       if (ev === "speech.media_started") {
         subtitleMediaReadyRef.current = true;
@@ -542,6 +607,21 @@ export default function App() {
   // Resolves when FlashTalk slot is acquired (session.queued position=0)
   const slotAcquiredRef = useRef<(() => void) | null>(null);
 
+  const waitForSessionReady = useCallback(async (sid: string, timeoutMs = 180_000) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const rec = await apiGet<SessionRecord>(`/sessions/${sid}`);
+      if (rec.state === "worker_ready" || rec.state === "ready" || rec.state === "speaking") {
+        return;
+      }
+      if (rec.state === "error" || rec.state === "closed") {
+        throw new Error(`Session ${rec.state}`);
+      }
+      await wait(750);
+    }
+    throw new Error("Session init wait timeout");
+  }, []);
+
   // ---------- Actions ----------
   const handleStart = useCallback(async () => {
     if (!videoRef.current) return;
@@ -564,29 +644,32 @@ export default function App() {
       createdSessionId = created.session_id;
       setSessionId(created.session_id);
 
-      // FlashTalk: session is queued, wait for slot_acquired via SSE before WebRTC
-      if (created.status === "queued") {
-        // Fetch current queue position immediately (the queued event may have
-        // fired before SSE was established and got lost in pub/sub)
+      // Some backends return before the heavy model/avatar prepare is complete.
+      if (created.status === "queued" || created.status === "initializing") {
+        setConnection(created.status === "queued" ? "queued" : "connecting");
         try {
           const qs = await apiGet<{ slot_occupied: boolean; queue_size: number }>("/queue/status");
-          if (qs.slot_occupied) {
+          if (created.status === "queued" && qs.slot_occupied) {
             setConnection("queued");
             setQueueInfo({ position: qs.queue_size, message: "waiting" });
           }
-        } catch { /* ignore, SSE will update */ }
+        } catch { /* ignore, SSE/polling will update */ }
 
-        await new Promise<void>((resolve, reject) => {
-          slotAcquiredRef.current = resolve;
-          // Timeout guard matching server-side slot timeout
-          const timer = setTimeout(() => {
-            slotAcquiredRef.current = null;
-            reject(new Error("FlashTalk slot wait timeout"));
-          }, 360_000);
-          // Clean up timer when resolved
-          const origResolve = resolve;
-          slotAcquiredRef.current = () => { clearTimeout(timer); origResolve(); };
-        });
+        await Promise.race([
+          waitForSessionReady(created.session_id),
+          new Promise<void>((resolve, reject) => {
+            slotAcquiredRef.current = resolve;
+            const timer = setTimeout(() => {
+              slotAcquiredRef.current = null;
+              reject(new Error("Session init wait timeout"));
+            }, 360_000);
+            const origResolve = resolve;
+            slotAcquiredRef.current = () => { clearTimeout(timer); origResolve(); };
+          }),
+        ]);
+        slotAcquiredRef.current = null;
+        setConnection("connecting");
+        setQueueInfo(null);
       }
 
       closePeerConnection();
@@ -595,6 +678,7 @@ export default function App() {
       videoRef.current!.muted = false;
       setConnection("live");
       await apiPost(`/sessions/${created.session_id}/start`, {});
+      notify("会话已连接，可以开始文本、语音或音频驱动。", "success");
     } catch (error) {
       if (createdSessionId) {
         await releaseSession(createdSessionId);
@@ -602,8 +686,9 @@ export default function App() {
       resetLiveState();
       console.warn("Failed to start session", error);
       setConnection("error");
+      notify("启动会话失败，请稍后重试或查看后端日志。", "error");
     }
-  }, [avatarId, closePeerConnection, llmSystemPrompt, model, releaseSession, resetLiveState]);
+  }, [avatarId, closePeerConnection, llmSystemPrompt, model, notify, releaseSession, resetLiveState, waitForSessionReady]);
 
   const handleSavePrompt = useCallback(async () => {
     setPromptSaving(true);
@@ -616,19 +701,19 @@ export default function App() {
       if (sid) await releaseSession(sid);
       resetLiveState(true);
       setConnection("idle");
-      window.alert("System Prompt 已保存。页面将刷新并在新会话生效。");
-      window.location.reload();
+      notify("System Prompt 已保存，页面即将刷新并在新会话生效。", "success");
+      window.setTimeout(() => window.location.reload(), 900);
     } catch (e) {
       console.warn("save prompt failed", e);
-      window.alert("保存 Prompt 失败，请查看后端日志。");
+      notify("保存 Prompt 失败，请查看后端日志。", "error");
     } finally {
       setPromptSaving(false);
     }
-  }, [avatarId, llmSystemPrompt, releaseSession, resetLiveState]);
+  }, [avatarId, llmSystemPrompt, notify, releaseSession, resetLiveState]);
 
   const handleSaveReferenceImage = useCallback(async () => {
     if (!referenceImageFile) {
-      window.alert("请先选择一张参考图再上传。");
+      notify("请先选择一张参考图再上传。", "info");
       return;
     }
     setReferenceSaving(true);
@@ -642,34 +727,68 @@ export default function App() {
       if (sid) await releaseSession(sid);
       resetLiveState(true);
       setConnection("idle");
-      window.alert("参考图已保存。页面将刷新并在新会话生效。");
-      window.location.reload();
+      notify("参考图已保存，页面即将刷新并在新会话生效。", "success");
+      window.setTimeout(() => window.location.reload(), 900);
     } catch (e) {
       console.warn("save reference image failed", e);
-      window.alert("上传参考图失败，请查看后端日志。");
+      notify("上传参考图失败，请查看后端日志。", "error");
     } finally {
       setReferenceSaving(false);
     }
-  }, [avatarId, referenceImageFile, releaseSession, resetLiveState]);
+  }, [avatarId, notify, referenceImageFile, releaseSession, resetLiveState]);
 
   const handleSend = useCallback(
     (text: string) => {
       if (!sessionId || !text) return;
+      const pendingId = makeId();
+      const activeAssistantId = streamingAssistantMsgIdRef.current;
+      const previousPendingId = pendingAssistantMsgIdRef.current;
+      pendingAssistantMsgIdRef.current = pendingId;
+      setIsSpeaking(true);
       setMessages((prev) => [
-        ...prev,
+        ...prev.filter((m) => m.id !== previousPendingId && m.id !== activeAssistantId),
         { id: makeId(), role: "user", text, timestamp: Date.now() },
+        { id: pendingId, role: "assistant", text: "正在合成语音和口型...", timestamp: Date.now() },
       ]);
-      void apiPost(`/sessions/${sessionId}/speak`, {
-        text,
-        voice:
-          isEdgeTts(ttsProvider) ? edgeVoice : ttsProvider === "sambert" ? undefined : qwenVoice,
-        tts_provider: ttsProvider,
-        tts_model: !isEdgeTts(ttsProvider) ? qwenModel : undefined,
-      }).catch((err) => {
-        console.warn("speak failed", err);
+      if (isSpeaking) {
+        void apiPost(`/sessions/${sessionId}/interrupt`, {}).catch(() => {});
+      }
+      const useChat = model === "qingyu_v3";
+      const endpoint = useChat ? "chat" : "speak";
+      const payload = useChat
+        ? {
+            prompt: text,
+            voice:
+              isEdgeTts(ttsProvider)
+                ? edgeVoice
+                : ttsProvider === "sambert"
+                  ? undefined
+                  : qwenVoice,
+            tts_provider: ttsProvider,
+            tts_model: !isEdgeTts(ttsProvider) ? qwenModel : undefined,
+          }
+        : {
+            text,
+            voice:
+              isEdgeTts(ttsProvider)
+                ? edgeVoice
+                : ttsProvider === "sambert"
+                  ? undefined
+                  : qwenVoice,
+            tts_provider: ttsProvider,
+            tts_model: !isEdgeTts(ttsProvider) ? qwenModel : undefined,
+          };
+      void apiPost(`/sessions/${sessionId}/${endpoint}`, payload).catch((err) => {
+        console.warn(`${endpoint} failed`, err);
+        if (pendingAssistantMsgIdRef.current === pendingId) {
+          pendingAssistantMsgIdRef.current = null;
+        }
+        setMessages((prev) => prev.filter((m) => m.id !== pendingId));
+        setIsSpeaking(false);
+        notify("发送失败，请确认会话仍处于已连接状态。", "error");
       });
     },
-    [edgeVoice, qwenModel, qwenVoice, sessionId, ttsProvider],
+    [edgeVoice, isSpeaking, model, notify, qwenModel, qwenVoice, sessionId, ttsProvider],
   );
 
   /** 流式 ASR（WebSocket PCM）成功后仅追加本地消息（speak 已由后端入队） */
@@ -727,7 +846,7 @@ export default function App() {
 
   const handleSpeakFlashtalkAudioFile = useCallback(
     async (file: File) => {
-      if (!sessionId || model !== "flashtalk") return;
+      if (!sessionId || !isFlashRenderer(model)) return;
       const fd = new FormData();
       fd.append("file", file);
       try {
@@ -746,10 +865,10 @@ export default function App() {
         ]);
       } catch (error) {
         console.warn("speak_flashtalk_audio failed", error);
-        window.alert("上传音频驱动口型失败，请确认文件为常见音频格式且当前为 FlashTalk 会话。");
+        notify("上传音频驱动口型失败，请确认文件格式和当前会话状态。", "error");
       }
     },
-    [model, sessionId],
+    [model, notify, sessionId],
   );
 
   useEffect(() => {
@@ -763,35 +882,35 @@ export default function App() {
   }, [connection]);
 
   const handleFtRecordStart = useCallback(async () => {
-    if (!sessionId || model !== "flashtalk") return;
+    if (!sessionId || !isFlashRenderer(model)) return;
     setFtRecordBusy(true);
     try {
       await apiPost(`/sessions/${sessionId}/flashtalk-recording/start`, {});
       setFtRecordPhase("recording");
     } catch (error) {
       console.warn("flashtalk recording start failed", error);
-      window.alert("开始录制失败：请确认当前会话为 FlashTalk 且已连接。");
+      notify("开始录制失败：请确认当前会话为 FlashTalk / FlashHead 且已连接。", "error");
     } finally {
       setFtRecordBusy(false);
     }
-  }, [sessionId, model]);
+  }, [model, notify, sessionId]);
 
   const handleFtRecordStop = useCallback(async () => {
-    if (!sessionId || model !== "flashtalk") return;
+    if (!sessionId || !isFlashRenderer(model)) return;
     setFtRecordBusy(true);
     try {
       await apiPost(`/sessions/${sessionId}/flashtalk-recording/stop`, {});
       setFtRecordPhase("stopped");
     } catch (error) {
       console.warn("flashtalk recording stop failed", error);
-      window.alert("结束录制失败，请稍后重试或查看网络请求详情。");
+      notify("结束录制失败，请稍后重试或查看网络请求详情。", "error");
     } finally {
       setFtRecordBusy(false);
     }
-  }, [sessionId, model]);
+  }, [model, notify, sessionId]);
 
   const handleFtRecordSave = useCallback(async () => {
-    if (!sessionId || model !== "flashtalk") return;
+    if (!sessionId || !isFlashRenderer(model)) return;
     setRecordingSaving(true);
     try {
       const url = buildApiUrl(`/sessions/${sessionId}/flashtalk-recording`);
@@ -812,19 +931,17 @@ export default function App() {
       setFtRecordPhase("idle");
     } catch (error) {
       console.warn("save FlashTalk recording failed", error);
-      window.alert(
-        "暂无可保存的视频或导出失败。请确认流程：先点「开始录制」→ 对话中数字人有说话画面 →「结束录制」→ 再点「保存视频」。若仍失败，请在开发者工具 Network 中查看 /flashtalk-recording 的响应内容。",
-      );
+      notify("暂无可保存的视频或导出失败。请先开始录制、结束录制，再保存视频。", "error");
     } finally {
       setRecordingSaving(false);
     }
-  }, [sessionId, model]);
+  }, [model, notify, sessionId]);
 
   const handleOfflineBundleFile = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       e.target.value = "";
-      if (!file || !sessionId || model !== "flashtalk") return;
+      if (!file || !sessionId || !isFlashRenderer(model)) return;
       setOfflineBundleBusy(true);
       try {
         const fd = new FormData();
@@ -882,12 +999,12 @@ export default function App() {
       } catch (error) {
         console.warn("flashtalk offline bundle failed", error);
         const msg = error instanceof Error ? error.message : String(error);
-        window.alert(`离线整段导出失败：${msg}`);
+        notify(`离线整段导出失败：${msg}`, "error");
       } finally {
         setOfflineBundleBusy(false);
       }
     },
-    [model, sessionId],
+    [model, notify, sessionId],
   );
 
   const handleAvatarChange = useCallback(
@@ -920,7 +1037,7 @@ export default function App() {
   useEffect(() => {
     const handlePageHide = () => {
       const sid = sessionIdRef.current;
-      if (sid && model === "flashtalk") {
+      if (sid && isFlashRenderer(model)) {
         void apiPost(`/sessions/${sid}/flashtalk-recording/stop`, {}).catch(() => {});
       }
       if (sid) {
@@ -948,43 +1065,18 @@ export default function App() {
   const chatMaxVisible = readChatMaxVisible();
 
   return (
-    <>
-      {/* Layer 0: Full-screen video background */}
-      <VideoBackground ref={videoRef} />
-
-      <input
-        ref={offlineBundleInputRef}
-        type="file"
-        accept="audio/*,.webm,.mp3,.wav,.m4a,.aac,.flac,.ogg"
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden
-        onChange={(ev) => void handleOfflineBundleFile(ev)}
-      />
-
-      {/* Layer 1: Bottom gradient overlay */}
-      <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-10"
-        style={{
-          height: "45vh",
-          background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
-        }}
-      />
-
-      {/* Layer 2: Chat messages */}
-      <ChatMessages messages={messages} maxVisible={chatMaxVisible} />
-
-      {/* Layer 3: Top bar */}
+    <div className="min-h-screen bg-slate-100 text-slate-900 lg:h-screen lg:overflow-hidden">
       <TopBar
         connection={connection}
         flashtalkRecording={
-          model === "flashtalk" &&
+          isFlashRenderer(model) &&
           !!sessionId &&
           (connection === "live" || connection === "expiring")
         }
         flashtalkRecordPhase={ftRecordPhase}
         flashtalkRecordBusy={ftRecordBusy}
         recordingSaving={recordingSaving}
+        onInactiveModuleClick={(label) => notify(`${label}模块规划中。当前可用的是实时对话、数字人配置、语音驱动和导出能力。`, "info")}
         onFlashtalkRecordStart={() => void handleFtRecordStart()}
         onFlashtalkRecordStop={() => void handleFtRecordStop()}
         onFlashtalkRecordSave={() => void handleFtRecordSave()}
@@ -992,16 +1084,26 @@ export default function App() {
         onFlashtalkOfflineBundleClick={() => offlineBundleInputRef.current?.click()}
       />
 
+      <input
+        ref={offlineBundleInputRef}
+        type="file"
+        accept="audio/*,.webm,.mp3,.wav,.m4a,.aac,.flac,.ogg"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+        onChange={(ev) => void handleOfflineBundleFile(ev)}
+      />
+
       {voiceCloneOpen ? (
         <>
           <button
             type="button"
-            className="fixed inset-0 z-[55] cursor-default bg-black/55 backdrop-blur-[2px]"
+            className="fixed inset-0 z-[55] cursor-default bg-slate-900/20 backdrop-blur-[2px]"
             aria-label="关闭音色复刻"
             onClick={() => setVoiceCloneOpen(false)}
           />
-          <aside className="pointer-events-none fixed inset-y-0 right-0 z-[56] flex w-[min(100vw,26rem)] shadow-2xl">
-            <div className="pointer-events-auto flex h-full max-h-[100dvh] flex-col overflow-hidden border-l border-white/15 bg-black/85 backdrop-blur-xl">
+          <aside className="pointer-events-none fixed inset-y-0 right-0 z-[56] flex w-[min(100vw,28rem)] shadow-2xl shadow-slate-300/70">
+            <div className="pointer-events-auto flex h-full max-h-[100dvh] flex-col overflow-hidden border-l border-slate-200 bg-slate-50">
               <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-5">
                 <BailianVoiceClone
                   onSuccess={() => void loadVoices()}
@@ -1013,28 +1115,8 @@ export default function App() {
         </>
       ) : null}
 
-      {/* Layer 3: Input bar */}
-      <ChatInput
-        onSend={handleSend}
-        onSpeakAudio={handleSpeakAudio}
-        onSpeakFlashtalkAudioFile={
-          model === "flashtalk" ? handleSpeakFlashtalkAudioFile : undefined
-        }
-        streamingAsrSessionId={sessionId}
-        onSpeakAudioStreamResult={handleSpeakAudioStreamResult}
-        onInterrupt={handleInterrupt}
-        isSpeaking={isSpeaking}
-        disabled={connection !== "live" && connection !== "expiring"}
-        onOpenSettings={() => setSettingsExpanded(true)}
-        ttsProvider={ttsProvider}
-        edgeVoice={edgeVoice}
-        qwenModel={qwenModel}
-        qwenVoice={qwenVoice}
-      />
-
-      {/* Layer 3: Session expiring countdown toast */}
       {expiringCountdown !== null && (
-        <div className="fixed right-4 top-14 z-30 flex items-center gap-2 rounded-xl bg-amber-500/90 px-4 py-2.5 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
+        <div className="fixed right-4 top-16 z-30 flex items-center gap-2 rounded-lg bg-amber-500/95 px-4 py-2.5 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
           <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 1 1-20 0 10 10 0 0 1 20 0z" />
           </svg>
@@ -1042,46 +1124,178 @@ export default function App() {
         </div>
       )}
 
-      {/* Layer 4: Start overlay */}
-      <StartOverlay
-        avatar={currentAvatar}
-        loading={connection === "connecting"}
-        queued={connection === "queued"}
-        queueInfo={queueInfo}
-        onStart={() => void handleStart()}
-        visible={showStart}
-      />
+      <div className="flex min-h-0 flex-col lg:h-[calc(100vh-3.5rem)] lg:flex-row">
+        <div className="order-2 min-h-0 lg:order-none lg:h-full lg:shrink-0">
+          <SettingsPanel
+            expanded={settingsExpanded}
+            onExpandedChange={setSettingsExpanded}
+            avatars={avatars}
+            models={models.length ? models : ["flashtalk", "musetalk", "wav2lip"]}
+            avatarId={avatarId}
+            model={model}
+            onAvatarChange={handleAvatarChange}
+            onModelChange={handleModelChange}
+            edgeVoice={edgeVoice}
+            onEdgeVoiceChange={setEdgeVoice}
+            edgeVoiceOptions={EDGE_ZH_VOICES}
+            ttsProvider={ttsProvider}
+            onTtsProviderChange={setTtsProvider}
+            qwenModel={qwenModel}
+            onQwenModelChange={setQwenModel}
+            qwenModelOptions={bailianModels}
+            qwenVoice={qwenVoice}
+            onQwenVoiceChange={setQwenVoice}
+            qwenVoiceOptions={bailianVoices}
+            llmSystemPrompt={llmSystemPrompt}
+            onLlmSystemPromptChange={setLlmSystemPrompt}
+            onReferenceImageChange={setReferenceImageFile}
+            onSavePrompt={() => void handleSavePrompt()}
+            onSaveReferenceImage={() => void handleSaveReferenceImage()}
+            promptSaving={promptSaving}
+            referenceSaving={referenceSaving}
+            onOpenVoiceClone={() => setVoiceCloneOpen(true)}
+          />
+        </div>
 
-      {/* Layer 5: Settings panel */}
-      <SettingsPanel
-        expanded={settingsExpanded}
-        onExpandedChange={setSettingsExpanded}
-        avatars={avatars}
-        models={models.length ? models : ["flashtalk", "musetalk", "wav2lip"]}
-        avatarId={avatarId}
-        model={model}
-        onAvatarChange={handleAvatarChange}
-        onModelChange={handleModelChange}
-        edgeVoice={edgeVoice}
-        onEdgeVoiceChange={setEdgeVoice}
-        edgeVoiceOptions={EDGE_ZH_VOICES}
-        ttsProvider={ttsProvider}
-        onTtsProviderChange={setTtsProvider}
-        qwenModel={qwenModel}
-        onQwenModelChange={setQwenModel}
-        qwenModelOptions={bailianModels}
-        qwenVoice={qwenVoice}
-        onQwenVoiceChange={setQwenVoice}
-        qwenVoiceOptions={bailianVoices}
-        llmSystemPrompt={llmSystemPrompt}
-        onLlmSystemPromptChange={setLlmSystemPrompt}
-        onReferenceImageChange={setReferenceImageFile}
-        onSavePrompt={() => void handleSavePrompt()}
-        onSaveReferenceImage={() => void handleSaveReferenceImage()}
-        promptSaving={promptSaving}
-        referenceSaving={referenceSaving}
-        onOpenVoiceClone={() => setVoiceCloneOpen(true)}
-      />
-    </>
+        <main className="order-1 flex min-h-0 flex-1 flex-col bg-slate-100 lg:order-none">
+          <div className="flex min-h-0 flex-1 flex-col p-4">
+            <div className="relative min-h-[360px] flex-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm shadow-slate-200/70 lg:min-h-[420px]">
+              <div className="absolute inset-0 bg-slate-50" />
+              <div className="absolute inset-3 rounded-lg border border-slate-200 bg-white shadow-inner shadow-slate-200/60" />
+              <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div
+                  className={
+                    compactSquareStage
+                      ? "relative aspect-square w-full max-w-[42rem] max-h-full"
+                      : "relative h-full w-full"
+                  }
+                >
+                  <VideoBackground ref={videoRef} className="absolute inset-0 h-full w-full object-contain" />
+                </div>
+              </div>
+
+              <div className="absolute left-4 right-4 top-4 z-30 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex min-w-0 flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm">
+                    <span className={`h-1.5 w-1.5 rounded-full ${
+                      connection === "live" || connection === "expiring" ? "bg-emerald-500" : "bg-slate-400"
+                    }`} />
+                    {connection === "live" || connection === "expiring" ? "已连接" : "待启动"}
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-xs font-medium text-cyan-700 shadow-sm">
+                    WebRTC 舞台
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
+                    {MODEL_LABELS_FOR_STAGE[model] ?? model}
+                  </span>
+                </div>
+              </div>
+
+              {currentSubtitle && !showStart ? (
+                <div className="absolute inset-x-4 bottom-4 z-10 mx-auto max-w-xl rounded-lg border border-slate-200 bg-white/95 px-4 py-3 text-center text-sm font-medium leading-relaxed text-slate-900 shadow-lg shadow-slate-200/80 backdrop-blur">
+                  {currentSubtitle}
+                </div>
+              ) : null}
+
+              <StartOverlay
+                avatar={currentAvatar}
+                loading={connection === "connecting"}
+                queued={connection === "queued"}
+                queueInfo={queueInfo}
+                onStart={() => void handleStart()}
+                visible={showStart}
+              />
+            </div>
+
+            <div className="mt-4">
+              <ChatInput
+                onSend={handleSend}
+                onSpeakAudio={handleSpeakAudio}
+                onSpeakFlashtalkAudioFile={
+                  isFlashRenderer(model) ? handleSpeakFlashtalkAudioFile : undefined
+                }
+                streamingAsrSessionId={sessionId}
+                onSpeakAudioStreamResult={handleSpeakAudioStreamResult}
+                onInterrupt={handleInterrupt}
+                isSpeaking={isSpeaking}
+                disabled={connection !== "live" && connection !== "expiring"}
+                onNotify={notify}
+                onOpenSettings={() => setSettingsExpanded(true)}
+                ttsProvider={ttsProvider}
+                edgeVoice={edgeVoice}
+                qwenModel={qwenModel}
+                qwenVoice={qwenVoice}
+              />
+            </div>
+          </div>
+        </main>
+
+        <aside className="order-3 min-h-0 overflow-hidden border-l border-slate-200 bg-white lg:w-[360px] lg:shrink-0">
+          <div className="border-b border-slate-200 px-4 pt-4">
+            <p className="text-xs font-medium text-slate-500">会话面板</p>
+            <div className="mt-3 grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1">
+              {PANEL_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setPanelTab(tab.id)}
+                  className={`rounded-md px-2 py-1.5 text-xs font-medium ${
+                    panelTab === tab.id ? "bg-white text-cyan-700 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="h-[22rem] overflow-y-auto p-4 lg:h-[calc(100%-5.75rem)]">
+            {panelTab === "chat" ? (
+              <ChatMessages messages={messages} maxVisible={chatMaxVisible} />
+            ) : null}
+            {panelTab === "status" ? (
+              <div className="space-y-3">
+                {[
+                  ["连接状态", connection === "live" ? "已连接" : connection === "expiring" ? "即将到期" : connection === "queued" ? "排队中" : connection === "connecting" ? "连接中" : connection === "error" ? "连接错误" : "未连接"],
+                  ["当前会话", sessionId ?? "未创建"],
+                  ["数字人", currentAvatar?.name ?? currentAvatar?.id ?? "等待加载"],
+                  ["驱动模型", MODEL_LABELS_FOR_STAGE[model] ?? model],
+                  ["语音线路", ttsProvider],
+                  ["排队信息", queueInfo ? `${queueInfo.position} · ${queueInfo.message}` : "无排队"],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-medium text-slate-500">{label}</p>
+                    <p className="mt-1 break-words text-sm font-semibold text-slate-900">{value}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {panelTab === "exports" ? (
+              <div className="space-y-3">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-sm font-semibold text-slate-900">实时录制</p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                    当前状态：{ftRecordPhase === "idle" ? "未录制" : ftRecordPhase === "recording" ? "录制中" : "待保存"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3 text-xs leading-relaxed text-cyan-800">
+                  FlashTalk / FlashHead 会话连接后，可在顶部使用录制和离线整段导出。
+                </div>
+                {isFlashRenderer(model) && sessionId ? (
+                  <button
+                    type="button"
+                    disabled={offlineBundleBusy}
+                    onClick={() => offlineBundleInputRef.current?.click()}
+                    className="w-full rounded-lg bg-cyan-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:opacity-60"
+                  >
+                    {offlineBundleBusy ? "离线导出中..." : "上传音频并离线导出"}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </aside>
+      </div>
+      <ToastStack toasts={toasts} onDismiss={dismissToast} />
+    </div>
   );
 }

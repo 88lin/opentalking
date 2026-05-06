@@ -131,124 +131,138 @@ export function BailianVoiceClone({ onSuccess, onClose }: BailianVoiceCloneProps
   }, [blob, displayLabel, onSuccess, preferredName, prefix, provider, targetModel]);
 
   return (
-    <div className="glass mx-auto max-w-xl rounded-2xl border border-white/10 p-4 text-sm text-slate-200 shadow-xl">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <h2 className="text-base font-semibold text-white">百炼音色复刻</h2>
+    <div className="mx-auto max-w-xl rounded-lg border border-slate-200 bg-white text-sm text-slate-800 shadow-sm shadow-slate-200/70">
+      <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3">
+        <div>
+          <p className="text-xs font-medium text-slate-500">声音与角色</p>
+          <h2 className="mt-0.5 text-base font-semibold text-slate-950">百炼音色复刻</h2>
+        </div>
         <button
           type="button"
-          className="rounded-lg px-2 py-1 text-xs text-slate-400 hover:bg-white/10 hover:text-white"
+          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
           onClick={onClose}
         >
           关闭
         </button>
       </div>
-      <p className="mb-2 text-xs leading-relaxed text-slate-400">
-        请朗读下方固定文案并录音。千问复刻走 base64，内网可用；CosyVoice 需本服务对公网可访问或配置{" "}
-        <code className="text-slate-300">OPENTALKING_PUBLIC_BASE_URL</code>。
-      </p>
-      <blockquote className="mb-3 rounded-lg bg-black/30 px-3 py-2 text-xs leading-relaxed text-slate-300">
-        {BAILIAN_CLONE_SAMPLE_TEXT}
-      </blockquote>
 
-      <div className="mb-3 flex flex-wrap gap-3 text-xs">
-        <label className="flex items-center gap-2">
-          <span className="text-slate-400">线路</span>
-          <select
-            className="rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-slate-100 outline-none"
-            value={provider}
-            onChange={(e) => onProviderChange(e.target.value as CloneProvider)}
-            disabled={busy}
-          >
-            <option value="dashscope">千问（DashScope 复刻）</option>
-            <option value="cosyvoice">CosyVoice</option>
-          </select>
-        </label>
-        <label className="flex min-w-[12rem] flex-1 items-center gap-2">
-          <span className="text-slate-400">目标模型</span>
-          <select
-            className="min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-slate-100 outline-none"
-            value={targetModel}
-            onChange={(e) => setTargetModel(e.target.value)}
-            disabled={busy}
-          >
-            {(provider === "dashscope" ? QWEN_VOICE_CLONE_TARGET_OPTIONS : COSYVOICE_MODEL_OPTIONS).map(
-              (o) => (
-                <option key={o.id} value={o.id}>
-                  {o.label}
-                </option>
-              ),
-            )}
-          </select>
-        </label>
-      </div>
+      <div className="space-y-4 p-4">
+        <div>
+          <p className="text-xs leading-relaxed text-slate-500">
+            请朗读下方固定文案并录音。千问复刻走 base64，内网可用；CosyVoice 需本服务对公网可访问或配置{" "}
+            <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">OPENTALKING_PUBLIC_BASE_URL</code>。
+          </p>
+          <blockquote className="mt-3 rounded-lg border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs leading-relaxed text-cyan-900">
+            {BAILIAN_CLONE_SAMPLE_TEXT}
+          </blockquote>
+        </div>
 
-      <div className="mb-3 flex flex-wrap gap-3 text-xs">
-        <label className="flex flex-1 flex-col gap-1">
-          <span className="text-slate-400">显示名称</span>
-          <input
-            className="rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-slate-100 outline-none"
-            value={displayLabel}
-            onChange={(e) => setDisplayLabel(e.target.value)}
-            disabled={busy}
-          />
-        </label>
-        {provider === "cosyvoice" ? (
-          <label className="flex flex-1 flex-col gap-1">
-            <span className="text-slate-400">前缀 prefix（可选，小写字母数字）</span>
+        <div className="grid gap-3 text-xs sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-1.5 block text-slate-500">线路</span>
+            <select
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition focus:border-cyan-300 focus:bg-white"
+              value={provider}
+              onChange={(e) => onProviderChange(e.target.value as CloneProvider)}
+              disabled={busy}
+            >
+              <option value="dashscope">千问（DashScope 复刻）</option>
+              <option value="cosyvoice">CosyVoice</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-slate-500">目标模型</span>
+            <select
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition focus:border-cyan-300 focus:bg-white"
+              value={targetModel}
+              onChange={(e) => setTargetModel(e.target.value)}
+              disabled={busy}
+            >
+              {(provider === "dashscope" ? QWEN_VOICE_CLONE_TARGET_OPTIONS : COSYVOICE_MODEL_OPTIONS).map(
+                (o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.label}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+        </div>
+
+        <div className="grid gap-3 text-xs sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-1.5 block text-slate-500">显示名称</span>
             <input
-              className="rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-slate-100 outline-none"
-              value={prefix}
-              onChange={(e) => setPrefix(e.target.value)}
-              placeholder="留空则自动生成"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-cyan-300 focus:bg-white"
+              value={displayLabel}
+              onChange={(e) => setDisplayLabel(e.target.value)}
               disabled={busy}
             />
           </label>
-        ) : (
-          <label className="flex flex-1 flex-col gap-1">
-            <span className="text-slate-400">preferred_name（可选，小写）</span>
-            <input
-              className="rounded-lg border border-white/10 bg-black/40 px-2 py-1 text-slate-100 outline-none"
-              value={preferredName}
-              onChange={(e) => setPreferredName(e.target.value)}
-              placeholder="留空则自动生成"
-              disabled={busy}
-            />
-          </label>
-        )}
-      </div>
+          {provider === "cosyvoice" ? (
+            <label className="block">
+              <span className="mb-1.5 block text-slate-500">前缀 prefix（可选，小写字母数字）</span>
+              <input
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-cyan-300 focus:bg-white"
+                value={prefix}
+                onChange={(e) => setPrefix(e.target.value)}
+                placeholder="留空则自动生成"
+                disabled={busy}
+              />
+            </label>
+          ) : (
+            <label className="block">
+              <span className="mb-1.5 block text-slate-500">preferred_name（可选，小写）</span>
+              <input
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-cyan-300 focus:bg-white"
+                value={preferredName}
+                onChange={(e) => setPreferredName(e.target.value)}
+                placeholder="留空则自动生成"
+                disabled={busy}
+              />
+            </label>
+          )}
+        </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        {!recording ? (
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {!recording ? (
+            <button
+              type="button"
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={busy}
+              onClick={() => void startRecording()}
+            >
+              开始录音
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-rose-500"
+              onClick={() => void stopRecording()}
+            >
+              停止
+            </button>
+          )}
           <button
             type="button"
-            className="rounded-xl bg-emerald-600/90 px-4 py-2 text-xs font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
-            disabled={busy}
-            onClick={() => void startRecording()}
+            className="rounded-lg border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={busy || !blob}
+            onClick={() => void submit()}
           >
-            开始录音
+            {busy ? "提交中…" : "上传并复刻"}
           </button>
-        ) : (
-          <button
-            type="button"
-            className="rounded-xl bg-rose-600/90 px-4 py-2 text-xs font-medium text-white hover:bg-rose-500"
-            onClick={() => void stopRecording()}
-          >
-            停止
-          </button>
-        )}
-        <button
-          type="button"
-          className="rounded-xl bg-white/15 px-4 py-2 text-xs font-medium text-white hover:bg-white/25 disabled:opacity-50"
-          disabled={busy || !blob}
-          onClick={() => void submit()}
-        >
-          {busy ? "提交中…" : "上传并复刻"}
-        </button>
-        {blob ? (
-          <span className="text-xs text-slate-500">已录 {Math.round(blob.size / 1024)} KB</span>
-        ) : null}
+          {blob ? (
+            <span className="text-xs text-slate-500">已录 {Math.round(blob.size / 1024)} KB</span>
+          ) : null}
+        </div>
       </div>
-      {message ? <p className="mt-3 text-xs text-amber-200/90">{message}</p> : null}
+      {message ? (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800">
+          {message}
+        </p>
+      ) : null}
+      </div>
     </div>
   );
 }

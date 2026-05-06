@@ -9,6 +9,15 @@ const DOT_COLORS: Record<ConnectionStatus, string> = {
   error: "bg-red-500",
 };
 
+const PILL_COLORS: Record<ConnectionStatus, string> = {
+  idle: "border-slate-200 bg-slate-50 text-slate-600",
+  connecting: "border-yellow-200 bg-yellow-50 text-yellow-700",
+  queued: "border-amber-200 bg-amber-50 text-amber-700",
+  live: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  expiring: "border-amber-200 bg-amber-50 text-amber-700",
+  error: "border-red-200 bg-red-50 text-red-700",
+};
+
 const DOT_LABELS: Record<ConnectionStatus, string> = {
   idle: "未连接",
   connecting: "连接中",
@@ -26,6 +35,7 @@ interface TopBarProps {
   flashtalkRecordPhase?: FlashtalkRecordPhase;
   flashtalkRecordBusy?: boolean;
   recordingSaving?: boolean;
+  onInactiveModuleClick?: (label: string) => void;
   onFlashtalkRecordStart?: () => void;
   onFlashtalkRecordStop?: () => void;
   onFlashtalkRecordSave?: () => void;
@@ -40,6 +50,7 @@ export function TopBar({
   flashtalkRecordPhase = "idle",
   flashtalkRecordBusy = false,
   recordingSaving = false,
+  onInactiveModuleClick,
   onFlashtalkRecordStart,
   onFlashtalkRecordStop,
   onFlashtalkRecordSave,
@@ -49,10 +60,40 @@ export function TopBar({
   const busy = flashtalkRecordBusy || recordingSaving || flashtalkOfflineBundleBusy;
 
   return (
-    <div className="glass fixed inset-x-0 top-0 z-30 flex items-center justify-between pr-[3.25rem] pl-5 py-3 sm:pr-16">
-      <span className="text-lg font-semibold tracking-tight text-white">OpenTalking</span>
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 shadow-sm">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-cyan-300">
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+            <path d="M12 2l1.7 5.3L19 9l-5.3 1.7L12 16l-1.7-5.3L5 9l5.3-1.7L12 2Zm6 12 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z" />
+          </svg>
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-slate-950">
+            <span className="sm:hidden">OpenTalking</span>
+            <span className="hidden sm:inline">OpenTalking Studio</span>
+          </p>
+          <p className="hidden truncate text-xs text-slate-500 sm:block">实时数字人工作台</p>
+        </div>
+      </div>
 
-      <div className="flex min-w-0 max-w-[min(100vw-6rem,28rem)] flex-wrap items-center justify-end gap-1.5 sm:gap-2">
+      <nav className="hidden items-center gap-1 rounded-lg bg-slate-100 p-1 md:flex" aria-label="工作台模块">
+        <span className="rounded-md bg-white px-3 py-1.5 text-xs font-medium text-cyan-700 shadow-sm">
+          实时对话
+        </span>
+        {["视频创作", "资产库", "运行监控"].map((item) => (
+          <button
+            key={item}
+            type="button"
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:bg-white/70 hover:text-slate-700"
+            title={`${item}规划中`}
+            onClick={() => onInactiveModuleClick?.(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </nav>
+
+      <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5 sm:gap-2">
         {flashtalkRecording ? (
           <div className="flex flex-wrap items-center justify-end gap-1.5">
             {onFlashtalkOfflineBundleClick ? (
@@ -60,7 +101,7 @@ export function TopBar({
                 type="button"
                 disabled={busy}
                 onClick={onFlashtalkOfflineBundleClick}
-                className="rounded-full border border-sky-400/35 bg-sky-500/15 px-2.5 py-1 text-[11px] font-medium text-sky-100 shadow-lg shadow-black/20 transition hover:bg-sky-500/25 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
+                className="rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-[11px] font-semibold text-sky-700 transition hover:bg-sky-100 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
                 title="上传整段音频：服务端跑完全部推理后再保存，下载已对齐的音视频 MP4（可不录屏）"
               >
                 {flashtalkOfflineBundleBusy ? "离线导出中…" : "离线整段导出"}
@@ -71,7 +112,7 @@ export function TopBar({
                 type="button"
                 disabled={busy}
                 onClick={onFlashtalkRecordStart}
-                className="rounded-full border border-emerald-400/40 bg-emerald-500/20 px-2.5 py-1 text-[11px] font-medium text-emerald-100 shadow-lg shadow-black/20 transition hover:bg-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
+                className="rounded-lg bg-cyan-600 px-2.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
                 title="从此时起把 FlashTalk 输出帧写入服务端，可随时结束并导出 MP4"
               >
                 {busy ? "请稍候..." : "开始录制"}
@@ -79,14 +120,14 @@ export function TopBar({
             ) : null}
             {flashtalkRecordPhase === "recording" ? (
               <>
-                <span className="hidden rounded-full bg-red-500/25 px-2 py-0.5 text-[10px] font-medium text-red-100 sm:inline">
+                <span className="hidden rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-[10px] font-medium text-red-700 sm:inline">
                   录制中
                 </span>
                 <button
                   type="button"
                   disabled={busy}
                   onClick={onFlashtalkRecordStop}
-                  className="rounded-full border border-red-400/40 bg-red-500/20 px-2.5 py-1 text-[11px] font-medium text-red-50 shadow-lg shadow-black/20 transition hover:bg-red-500/30 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
+                  className="rounded-lg bg-red-600 px-2.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
                   title="停止写入帧；之后可保存本次片段"
                 >
                   {busy ? "请稍候..." : "结束录制"}
@@ -99,7 +140,7 @@ export function TopBar({
                   type="button"
                   disabled={busy}
                   onClick={onFlashtalkRecordSave}
-                  className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white shadow-lg shadow-black/20 transition hover:border-white/30 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
+                  className="rounded-lg bg-slate-950 px-2.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
                   title="从服务端生成并下载本次结束录制前的 MP4"
                 >
                   {recordingSaving ? "导出中..." : "保存视频"}
@@ -108,7 +149,7 @@ export function TopBar({
                   type="button"
                   disabled={busy}
                   onClick={onFlashtalkRecordStart}
-                  className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-medium text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
+                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-45 sm:px-3 sm:text-xs"
                   title="丢弃当前未保存片段并开始新一轮录制"
                 >
                   重新录制
@@ -117,12 +158,14 @@ export function TopBar({
             ) : null}
           </div>
         ) : null}
-        <p className="hidden text-[10px] text-slate-500 sm:block">设置见右侧色条</p>
-        <div className="flex items-center gap-1.5" title={DOT_LABELS[connection]}>
+        <div
+          className={`flex items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-medium sm:px-2.5 ${PILL_COLORS[connection]}`}
+          title={DOT_LABELS[connection]}
+        >
           <span className={`inline-block h-2 w-2 shrink-0 rounded-full ${DOT_COLORS[connection]}`} />
-          <span className="text-xs text-slate-400">{DOT_LABELS[connection]}</span>
+          <span>{DOT_LABELS[connection]}</span>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

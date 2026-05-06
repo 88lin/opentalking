@@ -32,6 +32,6 @@ export const QWEN_VOICE_CLONE_TARGET_OPTIONS: { id: string; label: string }[] = 
   },
 ];
 
-export const TTS_PROVIDER_STORAGE_KEY = "opentalking-tts-provider"; // edge | dashscope | cosyvoice | sambert
+export const TTS_PROVIDER_STORAGE_KEY = "opentalking-tts-provider-v2"; // edge | dashscope | cosyvoice | sambert
 export const QWEN_MODEL_STORAGE_KEY = "opentalking-qwen-tts-model";
 export const QWEN_VOICE_STORAGE_KEY = "opentalking-qwen-tts-voice";

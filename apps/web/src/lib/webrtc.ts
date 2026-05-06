@@ -1,11 +1,26 @@
 import { apiPost } from "./api";
 
+function requestVideoPlayback(videoEl: HTMLVideoElement) {
+  videoEl.autoplay = true;
+  videoEl.playsInline = true;
+  const attempt = () => {
+    void videoEl.play().catch(() => {
+      // If the browser blocks autoplay with audio, retry muted so video still paints.
+      videoEl.muted = true;
+      void videoEl.play().catch(() => {});
+    });
+  };
+  attempt();
+  return attempt;
+}
+
 export async function startPlayback(sessionId: string, videoEl: HTMLVideoElement) {
   const pc = new RTCPeerConnection({
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   });
   const mediaStream = new MediaStream();
   videoEl.srcObject = mediaStream;
+  const ensurePlayback = requestVideoPlayback(videoEl);
 
   pc.ontrack = (ev) => {
     const track = ev.track;
@@ -14,7 +29,7 @@ export async function startPlayback(sessionId: string, videoEl: HTMLVideoElement
     if (!hasTrack) {
       mediaStream.addTrack(track);
     }
-    videoEl.play().catch(() => {});
+    ensurePlayback();
   };
 
   const cleanup = () => {
@@ -52,5 +67,6 @@ export async function startPlayback(sessionId: string, videoEl: HTMLVideoElement
   );
 
   await pc.setRemoteDescription(new RTCSessionDescription(answer));
+  ensurePlayback();
   return pc;
 }

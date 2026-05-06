@@ -101,6 +101,7 @@ interface ChatInputProps {
   disabled: boolean;
   /** 底部「打开设置」快捷入口（TTS 已迁入设置侧栏） */
   onOpenSettings?: () => void;
+  onNotify?: (message: string, tone?: "info" | "success" | "error") => void;
   /** 当前 TTS 选项（用于识别上传 / WS meta；控件在设置侧栏） */
   ttsProvider?: TtsProviderExtended;
   edgeVoice?: string;
@@ -157,6 +158,7 @@ export function ChatInput({
   isSpeaking,
   disabled,
   onOpenSettings,
+  onNotify,
   ttsProvider = "edge",
   edgeVoice = "",
   qwenModel = "",
@@ -613,12 +615,14 @@ export function ChatInput({
       rafRef.current = requestAnimationFrame(vadTick);
     } catch (e) {
       console.warn("Voice mode failed", e);
-      window.alert(
+      onNotify?.(
         "无法使用麦克风。请用 localhost 或 HTTPS 打开页面，并允许麦克风权限（纯 IP 的 HTTP 多半会被浏览器拦截）。",
+        "error",
       );
     }
   }, [
     disabled,
+    onNotify,
     onSpeakAudioStreamResult,
     streamingAsrSessionId,
     vadTick,
@@ -644,9 +648,13 @@ export function ChatInput({
   const handleSend = useCallback(() => {
     const trimmed = text.trim();
     if (!trimmed) return;
+    if (disabled) {
+      onNotify?.("请先点击画面中的「开始对话」，等顶部状态变为「已连接」后再发送。", "info");
+      return;
+    }
     onSend(trimmed);
     setText("");
-  }, [text, onSend]);
+  }, [disabled, onNotify, onSend, text]);
 
   /** 丢弃当前收音 / 取消识别中的请求；若数字人在播报则一并打断 */
   const handleVoiceBreak = useCallback(async () => {
@@ -682,28 +690,31 @@ export function ChatInput({
     }
   }, []);
 
+  const hasText = !!text.trim();
+  const showInterruptButton = (isSpeaking && !hasText) || (voiceMode && (segmentHot || voiceBusy));
+
   return (
-    <div className="glass fixed inset-x-0 bottom-0 z-30 px-4 pb-[env(safe-area-inset-bottom,8px)] pt-3">
-      <div className="mx-auto flex max-w-2xl flex-col gap-2">
+    <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+      <div className="flex flex-col gap-2">
         {voiceMode ? (
-          <p className="text-center text-[11px] leading-relaxed text-slate-400">
-            连续对话：静音自动断句并识别。播报时可大声抢话或点红钮打断。朗读与音色在右侧「设置」侧栏。
+          <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-center text-[11px] leading-relaxed text-emerald-700">
+            连续对话：静音自动断句并识别。播报时可大声抢话或点红钮打断。
           </p>
         ) : onOpenSettings ? (
-          <p className="text-center text-[10px] text-slate-500">
-            TTS · 数字人选项在右侧「设置」竖条，
+          <p className="text-center text-[10px] text-slate-500 lg:hidden">
+            TTS · 数字人选项在下方配置区，
             <button
               type="button"
-              className="underline decoration-white/30 underline-offset-2 hover:text-slate-300"
+              className="underline decoration-slate-300 underline-offset-2 hover:text-slate-800"
               onClick={() => onOpenSettings()}
             >
-              点击展开
+              点击定位
             </button>
           </p>
         ) : null}
-        <div className="flex items-end gap-2">
+        <div className="flex flex-col gap-2 md:flex-row md:items-end">
           <textarea
-            className="flex-1 resize-none rounded-3xl bg-white/10 px-5 py-3 text-sm text-slate-100 placeholder-slate-500 outline-none transition-colors focus:bg-white/15"
+            className="min-h-11 flex-1 resize-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:border-cyan-300 focus:bg-white disabled:cursor-not-allowed disabled:opacity-60"
             placeholder={
               voiceCaptureEnabled ? "输入文字，或点麦克风进入连续语音…" : "输入消息..."
             }
@@ -711,58 +722,57 @@ export function ChatInput({
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKey}
-            disabled={disabled || voiceBusy || ftAudioBusy}
+            disabled={voiceBusy || ftAudioBusy}
           />
 
-          {onSpeakFlashtalkAudioFile ? (
-            <>
-              <input
-                ref={ftAudioInputRef}
-                type="file"
-                accept="audio/*,.mp3,.wav,.webm,.ogg,.m4a,audio/mpeg"
-                className="sr-only"
-                aria-hidden
-                tabIndex={-1}
-                onChange={(ev) => void handleFtAudioFileChange(ev)}
-              />
-              <button
-                type="button"
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-600 text-white transition-colors hover:bg-amber-500 ${
-                  disabled || ftAudioBusy ? "opacity-40" : ""
-                }`}
-                title="上传音频：直接对口型（不经语音识别与 TTS）"
-                aria-label="上传音频对口型"
-                disabled={disabled || ftAudioBusy}
-                onClick={() => {
-                  if (disabled) {
-                    window.alert(
-                      "请先点击画面上方的「开始 Demo」，等到顶部状态变为「已连接」后再上传音频。",
-                    );
-                    return;
-                  }
-                  ftAudioInputRef.current?.click();
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
-                </svg>
-              </button>
-            </>
-          ) : null}
+          <div className="flex flex-wrap justify-end gap-2">
+            {onSpeakFlashtalkAudioFile ? (
+              <>
+                <input
+                  ref={ftAudioInputRef}
+                  type="file"
+                  accept="audio/*,.mp3,.wav,.webm,.ogg,.m4a,audio/mpeg"
+                  className="hidden"
+                  aria-hidden
+                  tabIndex={-1}
+                  onChange={(ev) => void handleFtAudioFileChange(ev)}
+                />
+                <button
+                  type="button"
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 ${
+                    disabled || ftAudioBusy ? "opacity-40" : ""
+                  }`}
+                  title="上传音频：直接对口型（不经语音识别与 TTS）"
+                  aria-label="上传音频对口型"
+                  disabled={ftAudioBusy}
+                  onClick={() => {
+                    if (disabled) {
+                      onNotify?.("请先点击画面中的「开始对话」，等顶部状态变为「已连接」后再上传音频。", "info");
+                      return;
+                    }
+                    ftAudioInputRef.current?.click();
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+                  </svg>
+                </button>
+              </>
+            ) : null}
 
           {voiceCaptureEnabled ? (
             <button
               type="button"
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg transition-colors ${
                 voiceMode
                   ? segmentHot
                     ? "bg-rose-500 text-white ring-2 ring-rose-300"
                     : "bg-emerald-600 text-white ring-2 ring-emerald-300/80"
-                  : `bg-violet-600 text-white hover:bg-violet-500 ${disabled ? "opacity-40" : ""}`
+                  : `bg-emerald-600 text-white hover:bg-emerald-500 ${disabled ? "opacity-40" : ""}`
               }`}
               title={
                 disabled
-                  ? "请先连接：点击「开始 Demo」直到顶部显示「已连接」"
+                  ? "请先连接：点击「开始对话」直到顶部显示「已连接」"
                   : voiceBusy
                     ? "正在识别/上传上一段语音…"
                     : voiceMode
@@ -774,9 +784,7 @@ export function ChatInput({
               onClick={(e) => {
                 e.preventDefault();
                 if (disabled) {
-                  window.alert(
-                    "请先点击画面上方的「开始 Demo」，等到顶部状态变为「已连接」后，再点麦克风进行连续语音。",
-                  );
+                  onNotify?.("请先点击画面中的「开始对话」，等顶部状态变为「已连接」后再使用连续语音。", "info");
                   return;
                 }
                 void toggleVoiceMode();
@@ -788,11 +796,11 @@ export function ChatInput({
             </button>
           ) : null}
 
-          {isSpeaking || (voiceMode && (segmentHot || voiceBusy)) ? (
+          {showInterruptButton ? (
             <button
               type="button"
               onClick={() => void handleVoiceBreak()}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-500 text-white transition-colors hover:bg-red-600"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-red-600 text-white transition-colors hover:bg-red-500"
               title={
                 voiceMode && (segmentHot || voiceBusy)
                   ? "打断：丢弃当前收音或取消识别"
@@ -807,15 +815,19 @@ export function ChatInput({
             <button
               type="button"
               onClick={handleSend}
-              disabled={disabled || voiceBusy || ftAudioBusy || !text.trim()}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cyan-500 text-white transition-colors hover:bg-cyan-600 disabled:opacity-40"
-              title="发送"
+              disabled={voiceBusy || ftAudioBusy || !hasText}
+              className={`flex h-11 min-w-24 shrink-0 items-center justify-center gap-2 rounded-lg bg-cyan-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-cyan-500 disabled:opacity-40 ${
+                disabled ? "cursor-not-allowed opacity-45 hover:bg-cyan-600" : ""
+              }`}
+              title={disabled ? "请先连接会话" : isSpeaking ? "发送并打断当前播报" : "发送"}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
               </svg>
+              <span>发送</span>
             </button>
           )}
+          </div>
         </div>
       </div>
     </div>

@@ -16,22 +16,23 @@ export function StartOverlay({ avatar, loading, queued, queueInfo, onStart, visi
   const isRejected = queueInfo && queueInfo.position === -1;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60">
-      <div className="glass animate-fade-in flex w-80 flex-col items-center gap-5 rounded-2xl p-8">
+    <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-100/80 px-4 pt-16 backdrop-blur-[2px]">
+      <div className="animate-fade-in flex w-full max-w-sm flex-col items-center gap-4 rounded-lg border border-slate-200 bg-white/95 p-5 text-slate-900 shadow-xl shadow-slate-300/50">
         {/* Avatar preview circle */}
-        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white/10">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+        <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
           </svg>
         </div>
 
         {/* Avatar info */}
         <div className="text-center">
-          <h2 className="text-lg font-medium text-white">
+          <p className="mb-1 text-xs font-medium text-slate-500">会话未连接</p>
+          <h2 className="text-lg font-semibold text-slate-950">
             {avatar?.name ?? "Digital Avatar"}
           </h2>
           {avatar && (
-            <span className="mt-1 inline-block rounded-full bg-white/10 px-3 py-0.5 text-xs text-slate-400">
+            <span className="mt-1 inline-block rounded-full border border-slate-200 bg-slate-50 px-3 py-0.5 text-xs text-slate-500">
               {avatar.model_type}
             </span>
           )}
@@ -39,21 +40,21 @@ export function StartOverlay({ avatar, loading, queued, queueInfo, onStart, visi
 
         {/* Queue status */}
         {queued && queueInfo && queueInfo.position > 0 && (
-          <div className="w-full rounded-xl bg-amber-500/15 px-4 py-3 text-center">
-            <p className="text-sm font-medium text-amber-300">排队等候中</p>
-            <p className="mt-1 text-xs text-amber-200/70">
-              前面还有 <span className="font-semibold text-amber-200">{queueInfo.position}</span> 人，请稍候…
+          <div className="w-full rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center">
+            <p className="text-sm font-medium text-amber-700">排队等候中</p>
+            <p className="mt-1 text-xs text-amber-700/70">
+              前面还有 <span className="font-semibold text-amber-800">{queueInfo.position}</span> 人，请稍候…
             </p>
           </div>
         )}
 
         {/* Rejected notice */}
         {isRejected && (
-          <div className="w-full rounded-xl bg-red-500/15 px-4 py-3 text-center">
-            <p className="text-sm font-medium text-red-300">
+          <div className="w-full rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-center">
+            <p className="text-sm font-medium text-red-700">
               {queueInfo?.message === "queue_full" ? "当前排队已满" : "等待超时"}
             </p>
-            <p className="mt-1 text-xs text-red-200/70">请稍后重试</p>
+            <p className="mt-1 text-xs text-red-600/70">请稍后重试</p>
           </div>
         )}
 
@@ -62,7 +63,7 @@ export function StartOverlay({ avatar, loading, queued, queueInfo, onStart, visi
           type="button"
           onClick={onStart}
           disabled={loading || queued}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-cyan-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-cyan-600 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-cyan-500 disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -84,6 +85,9 @@ export function StartOverlay({ avatar, loading, queued, queueInfo, onStart, visi
             "开始对话"
           )}
         </button>
+        <p className="text-center text-xs leading-relaxed text-slate-500">
+          启动后将建立 WebRTC 预览，并启用文本、语音和音频驱动能力。
+        </p>
       </div>
     </div>
   );

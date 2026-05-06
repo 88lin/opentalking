@@ -40,6 +40,16 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
   return r.json() as Promise<T>;
 }
 
+export async function apiPostBlob(path: string, body?: unknown): Promise<Blob> {
+  const r = await fetch(buildApiUrl(path), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.blob();
+}
+
 /** multipart/form-data（语音识别 speak_audio / transcribe） */
 export async function apiPostForm<T>(path: string, form: FormData, init?: RequestInit): Promise<T> {
   const r = await fetch(buildApiUrl(path), { method: "POST", body: form, ...init });

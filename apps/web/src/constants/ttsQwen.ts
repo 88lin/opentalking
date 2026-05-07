@@ -28,7 +28,7 @@ export const DEFAULT_QWEN_VOICE_ID = "Cherry";
 export const QWEN_VOICE_CLONE_TARGET_OPTIONS: { id: string; label: string }[] = [
   {
     id: "qwen3-tts-vc-realtime-2026-01-15",
-    label: "qwen3-tts-vc-realtime-2026-01-15（VC 复刻）",
+    label: "qwen3-tts-vc-realtime-2026-01-15（音色复刻）",
   },
 ];
 

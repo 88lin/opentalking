@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { AvatarSelectionStage } from "./components/AvatarSelectionStage";
 import { BailianVoiceClone } from "./components/BailianVoiceClone";
 import { ChatInput } from "./components/ChatInput";
 import { ChatMessages } from "./components/ChatMessages";
 import { SETTINGS_DOCK_EXPANDED_KEY, SettingsPanel } from "./components/SettingsPanel";
-import { StartOverlay } from "./components/StartOverlay";
 import { TopBar } from "./components/TopBar";
 import { ToastStack, type ToastMessage, type ToastTone } from "./components/ToastStack";
 import { VideoBackground } from "./components/VideoBackground";
@@ -18,6 +18,12 @@ import {
   type VoiceCatalogItem,
 } from "./lib/api";
 import { connectSse } from "./lib/sse";
+import {
+  DEFAULT_TTS_PREVIEW_TEXT,
+  buildTTSPreviewPayload,
+  requestTTSPreview,
+} from "./lib/ttsPreview";
+import type { VoiceCloneApplication } from "./lib/voiceCloneApply";
 import { startPlayback } from "./lib/webrtc";
 import {
   DEFAULT_EDGE_VOICE_ID,
@@ -88,28 +94,36 @@ function mergeVoiceCatalogIntoOptions(
   staticList: { id: string; label: string }[],
   catalog: VoiceCatalogItem[],
   ttsProvider: TtsProviderExtended,
+  activeModel?: string,
 ): VoiceOpt[] {
   const cp = catalogProviderKey(ttsProvider);
   if (!cp) {
     return staticList.map((s) => ({ id: s.id, label: s.label }));
   }
-  const staticIds = new Set(staticList.map((s) => s.id));
+  const cloneModelIds = new Set(QWEN_VOICE_CLONE_TARGET_OPTIONS.map((o) => o.id));
+  const cloneOnly = ttsProvider === "dashscope" && cloneModelIds.has(activeModel ?? "");
+  const baseList = cloneOnly ? [] : staticList;
+  const staticIds = new Set(baseList.map((s) => s.id));
   const extras: VoiceOpt[] = [];
   for (const r of catalog) {
     if (r.provider !== cp) continue;
+    if (activeModel && r.target_model && r.target_model !== activeModel) continue;
+    if (cloneOnly && r.source !== "clone") continue;
     if (staticIds.has(r.voice_id)) continue;
     extras.push({
       id: r.voice_id,
-      label: r.source === "clone" ? `✦ ${r.display_label}` : r.display_label,
+      label: r.source === "clone" ? `复刻 · ${r.display_label}` : r.display_label,
       targetModel: r.target_model,
     });
     staticIds.add(r.voice_id);
   }
-  return [...staticList.map((s) => ({ id: s.id, label: s.label })), ...extras];
+  return [...baseList.map((s) => ({ id: s.id, label: s.label })), ...extras];
 }
 
 const MESSAGE_STORAGE_KEY = "opentalking-chat-history";
 const LLM_SYSTEM_PROMPT_STORAGE_KEY = "opentalking-llm-system-prompt";
+const SESSION_PANEL_COLLAPSED_KEY = "opentalking-session-panel-collapsed";
+const CUSTOM_REFERENCE_NAME_KEY = "opentalking-custom-reference-name";
 
 type SpeakAudioResponse = { session_id: string; status: string; text: string };
 type SessionRecord = { session_id: string; state?: string };
@@ -176,6 +190,8 @@ export default function App() {
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const speakAudioAbortRef = useRef<AbortController | null>(null);
+  const ttsPreviewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const ttsPreviewUrlRef = useRef<string | null>(null);
   /** Cumulative assistant text for the current speech turn (subtitle.chunk segments). */
   const subtitleAccRef = useRef("");
   /** `messages` id of the in-progress assistant bubble for this turn; cleared on speech.ended. */
@@ -231,6 +247,13 @@ export default function App() {
   const [referenceSaving, setReferenceSaving] = useState(false);
   const [referenceImageFile, setReferenceImageFile] = useState<File | null>(null);
   const [panelTab, setPanelTab] = useState<PanelTab>("chat");
+  const [sessionPanelCollapsed, setSessionPanelCollapsed] = useState(() => {
+    try {
+      return window.localStorage.getItem(SESSION_PANEL_COLLAPSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [recordingSaving, setRecordingSaving] = useState(false);
   const [ftRecordPhase, setFtRecordPhase] = useState<"idle" | "recording" | "stopped">("idle");
@@ -238,6 +261,9 @@ export default function App() {
   const [offlineBundleBusy, setOfflineBundleBusy] = useState(false);
   const offlineBundleInputRef = useRef<HTMLInputElement>(null);
   const [voiceCatalog, setVoiceCatalog] = useState<VoiceCatalogItem[]>([]);
+  const [voiceApplyNotice, setVoiceApplyNotice] = useState<string | null>(null);
+  const [ttsPreviewText, setTtsPreviewText] = useState(DEFAULT_TTS_PREVIEW_TEXT);
+  const [ttsPreviewing, setTtsPreviewing] = useState(false);
   const [edgeVoice, setEdgeVoice] = useState<string>(() => {
     try {
       const s = window.localStorage.getItem(EDGE_VOICE_STORAGE_KEY);
@@ -292,6 +318,14 @@ export default function App() {
     }, tone === "error" ? 5200 : 3600);
   }, []);
 
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(SESSION_PANEL_COLLAPSED_KEY, sessionPanelCollapsed ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, [sessionPanelCollapsed]);
+
   const [llmSystemPrompt, setLlmSystemPrompt] = useState<string>(() => {
     try {
       return window.localStorage.getItem(LLM_SYSTEM_PROMPT_STORAGE_KEY) ?? "";
@@ -300,14 +334,44 @@ export default function App() {
     }
   });
 
-  const loadVoices = useCallback(async () => {
+  const loadVoices = useCallback(async (): Promise<VoiceCatalogItem[]> => {
     try {
       const res = await apiGet<{ items: VoiceCatalogItem[] }>("/voices");
-      setVoiceCatalog(res.items ?? []);
+      const items = res.items ?? [];
+      setVoiceCatalog(items);
+      return items;
     } catch (e) {
       console.warn("Failed to load /voices", e);
+      return [];
     }
   }, []);
+
+  const applyClonedVoice = useCallback(async (application: VoiceCloneApplication) => {
+    await loadVoices();
+    setVoiceCatalog((prev) => {
+      if (prev.some((item) => item.provider === application.provider && item.voice_id === application.voice)) {
+        return prev;
+      }
+      return [
+        ...prev,
+        {
+          id: Date.now(),
+          user_id: 1,
+          provider: application.provider,
+          voice_id: application.voice,
+          display_label: application.displayLabel,
+          target_model: application.model,
+          source: "clone",
+        },
+      ];
+    });
+    setTtsProvider(application.provider);
+    setQwenModel(application.model);
+    setQwenVoice(application.voice);
+    setVoiceApplyNotice(application.message);
+    setVoiceCloneOpen(false);
+    notify(application.message, "success");
+  }, [loadVoices, notify]);
 
   const bailianModels = useMemo(() => {
     const base = bailianModelOptions(ttsProvider);
@@ -320,15 +384,18 @@ export default function App() {
   }, [ttsProvider]);
 
   const bailianVoices = useMemo(
-    () => mergeVoiceCatalogIntoOptions(bailianVoiceOptions(ttsProvider), voiceCatalog, ttsProvider),
-    [ttsProvider, voiceCatalog],
+    () => mergeVoiceCatalogIntoOptions(bailianVoiceOptions(ttsProvider), voiceCatalog, ttsProvider, qwenModel),
+    [qwenModel, ttsProvider, voiceCatalog],
   );
 
   useEffect(() => {
     const mids = bailianModels.map((o) => o.id);
     const vids = bailianVoices.map((o) => o.id);
     setQwenModel((prev) => (mids.includes(prev) ? prev : mids[0] ?? ""));
-    if (vids.length === 0) return;
+    if (vids.length === 0) {
+      setQwenVoice("");
+      return;
+    }
     setQwenVoice((prev) => (vids.includes(prev) ? prev : vids[0] ?? ""));
   }, [ttsProvider, bailianModels, bailianVoices]);
 
@@ -342,6 +409,15 @@ export default function App() {
   useEffect(() => {
     sessionIdRef.current = sessionId;
   }, [sessionId]);
+
+  useEffect(() => {
+    return () => {
+      if (ttsPreviewUrlRef.current) {
+        URL.revokeObjectURL(ttsPreviewUrlRef.current);
+        ttsPreviewUrlRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -461,21 +537,13 @@ export default function App() {
         const initialAvatar = pickInitialAvatar(av, mo.models);
         if (initialAvatar) {
           setAvatarId(initialAvatar.id);
-          setModel(initialAvatar.model_type);
+          setModel((prev) => (mo.models.includes(prev) ? prev : initialAvatar.model_type));
         }
       } catch {
         setConnection("error");
       }
     })();
   }, [loadVoices]);
-
-  // Keep model aligned with selected avatar
-  useEffect(() => {
-    const a = avatars.find((x) => x.id === avatarId);
-    if (a) {
-      setModel(a.model_type);
-    }
-  }, [avatarId, avatars]);
 
   // ---------- SSE ----------
   useEffect(() => {
@@ -745,23 +813,31 @@ export default function App() {
     }
   }, [avatarId, llmSystemPrompt, notify, releaseSession, resetLiveState]);
 
-  const handleSaveReferenceImage = useCallback(async () => {
-    if (!referenceImageFile) {
+  const saveReferenceImageFile = useCallback(async (file: File | null, customName?: string) => {
+    if (!file) {
       notify("请先选择一张参考图再上传。", "info");
       return;
+    }
+    const trimmedName = customName?.trim();
+    if (trimmedName) {
+      try {
+        window.localStorage.setItem(CUSTOM_REFERENCE_NAME_KEY, trimmedName);
+      } catch {
+        /* ignore */
+      }
     }
     setReferenceSaving(true);
     try {
       const fd = new FormData();
       fd.set("avatar_id", avatarId);
-      fd.set("reference_image", referenceImageFile);
+      fd.set("reference_image", file);
       await apiPostForm("/sessions/customize/reference", fd);
       setReferenceImageFile(null);
       const sid = sessionIdRef.current;
       if (sid) await releaseSession(sid);
       resetLiveState(true);
       setConnection("idle");
-      notify("参考图已保存，页面即将刷新并在新会话生效。", "success");
+      notify(trimmedName ? `自定义形象「${trimmedName}」已保存，页面即将刷新并在新会话生效。` : "参考图已保存，页面即将刷新并在新会话生效。", "success");
       window.setTimeout(() => window.location.reload(), 900);
     } catch (e) {
       console.warn("save reference image failed", e);
@@ -769,7 +845,98 @@ export default function App() {
     } finally {
       setReferenceSaving(false);
     }
-  }, [avatarId, notify, referenceImageFile, releaseSession, resetLiveState]);
+  }, [avatarId, notify, releaseSession, resetLiveState]);
+
+  const handleSaveReferenceImage = useCallback(async () => {
+    await saveReferenceImageFile(referenceImageFile);
+  }, [referenceImageFile, saveReferenceImageFile]);
+
+  const handleCreateCustomAvatar = useCallback(async (file: File, name: string) => {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      notify("请先给形象起个名字。", "info");
+      return;
+    }
+    try {
+      window.localStorage.setItem(CUSTOM_REFERENCE_NAME_KEY, trimmedName);
+    } catch {
+      /* ignore */
+    }
+    setReferenceSaving(true);
+    try {
+      const fd = new FormData();
+      fd.set("base_avatar_id", avatarId);
+      fd.set("name", trimmedName);
+      fd.set("image", file);
+      const created = await apiPostForm<AvatarSummary>("/avatars/custom", fd);
+      setAvatars((prev) => {
+        const filtered = prev.filter((avatar) => avatar.id !== created.id);
+        return [...filtered, created];
+      });
+      setAvatarId(created.id);
+      const sid = sessionIdRef.current;
+      if (sid) await releaseSession(sid);
+      resetLiveState(true);
+      setConnection("idle");
+      notify(`自定义形象「${created.name ?? trimmedName}」已加入形象库。`, "success");
+    } catch (e) {
+      console.warn("create custom avatar failed", e);
+      notify("创建自定义形象失败，请查看后端日志。", "error");
+    } finally {
+      setReferenceSaving(false);
+    }
+  }, [avatarId, notify, releaseSession, resetLiveState]);
+
+  const handleReturnToAvatarSelection = useCallback(() => {
+    if (!window.confirm("更换数字人会结束当前会话，是否继续？")) return;
+    void (async () => {
+      const sid = sessionIdRef.current;
+      if (sid) {
+        await releaseSession(sid);
+      }
+      resetLiveState(true);
+      setConnection("idle");
+    })();
+  }, [releaseSession, resetLiveState]);
+
+  const handlePreviewTts = useCallback(async () => {
+    const text = ttsPreviewText.trim();
+    if (!text) {
+      notify("先输入一句试听文本。", "info");
+      return;
+    }
+    setTtsPreviewing(true);
+    try {
+      const voice = isEdgeTts(ttsProvider) ? edgeVoice : ttsProvider === "sambert" ? "" : qwenVoice;
+      if (!isEdgeTts(ttsProvider) && ttsProvider !== "sambert" && !voice.trim()) {
+        notify("当前模型没有可用音色，请先复刻音色或切换模型。", "info");
+        return;
+      }
+      const blob = await requestTTSPreview(
+        buildTTSPreviewPayload({
+          text,
+          voice,
+          provider: ttsProvider,
+          model: qwenModel,
+        }),
+      );
+      if (ttsPreviewUrlRef.current) {
+        URL.revokeObjectURL(ttsPreviewUrlRef.current);
+      }
+      const url = URL.createObjectURL(blob);
+      ttsPreviewUrlRef.current = url;
+      const audio = ttsPreviewAudioRef.current ?? new Audio();
+      ttsPreviewAudioRef.current = audio;
+      audio.src = url;
+      await audio.play();
+      notify("正在播放试听音频。", "success");
+    } catch (e) {
+      console.warn("tts preview failed", e);
+      notify("试听失败，请确认音色、模型和后端密钥配置。", "error");
+    } finally {
+      setTtsPreviewing(false);
+    }
+  }, [edgeVoice, notify, qwenModel, qwenVoice, ttsPreviewText, ttsProvider]);
 
   const handleSend = useCallback(
     (text: string) => {
@@ -1097,6 +1264,10 @@ export default function App() {
   const currentAvatar = avatars.find((a) => a.id === avatarId) ?? null;
   const showStart = connection === "idle" || connection === "error" || connection === "connecting" || connection === "queued";
   const chatMaxVisible = readChatMaxVisible();
+  const selectedModelLabel = MODEL_LABELS_FOR_STAGE[model] ?? model;
+  const selectedVoiceLabel = isEdgeTts(ttsProvider)
+    ? EDGE_ZH_VOICES.find((voice) => voice.id === edgeVoice)?.label ?? edgeVoice
+    : bailianVoices.find((voice) => voice.id === qwenVoice)?.label ?? (qwenVoice || "暂无音色");
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 lg:h-screen lg:overflow-hidden">
@@ -1140,7 +1311,7 @@ export default function App() {
             <div className="pointer-events-auto flex h-full max-h-[100dvh] flex-col overflow-hidden border-l border-slate-200 bg-slate-50">
               <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-5">
                 <BailianVoiceClone
-                  onSuccess={() => void loadVoices()}
+                  onSuccess={applyClonedVoice}
                   onClose={() => setVoiceCloneOpen(false)}
                 />
               </div>
@@ -1180,6 +1351,11 @@ export default function App() {
             qwenVoice={qwenVoice}
             onQwenVoiceChange={setQwenVoice}
             qwenVoiceOptions={bailianVoices}
+            voiceApplyNotice={voiceApplyNotice}
+            ttsPreviewText={ttsPreviewText}
+            onTtsPreviewTextChange={setTtsPreviewText}
+            onPreviewTts={() => void handlePreviewTts()}
+            ttsPreviewing={ttsPreviewing}
             llmSystemPrompt={llmSystemPrompt}
             onLlmSystemPromptChange={setLlmSystemPrompt}
             onReferenceImageChange={setReferenceImageFile}
@@ -1223,6 +1399,13 @@ export default function App() {
                     {MODEL_LABELS_FOR_STAGE[model] ?? model}
                   </span>
                 </div>
+                <button
+                  type="button"
+                  onClick={handleReturnToAvatarSelection}
+                  className="shrink-0 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-cyan-200 hover:text-cyan-700"
+                >
+                  更换形象
+                </button>
               </div>
 
               {currentSubtitle && !showStart ? (
@@ -1231,16 +1414,26 @@ export default function App() {
                 </div>
               ) : null}
 
-              <StartOverlay
-                avatar={currentAvatar}
-                loading={connection === "connecting"}
-                queued={connection === "queued"}
-                queueInfo={queueInfo}
-                onStart={() => void handleStart()}
-                visible={showStart}
-              />
+              {showStart ? (
+                <div className="absolute inset-0 z-40 bg-white">
+                  <AvatarSelectionStage
+                    avatars={avatars}
+                    selectedAvatar={currentAvatar}
+                    selectedModelLabel={selectedModelLabel}
+                    selectedVoiceLabel={selectedVoiceLabel}
+                    loading={connection === "connecting"}
+                    queued={connection === "queued"}
+                    queueInfo={queueInfo}
+                    onAvatarChange={handleAvatarChange}
+                    onStart={() => void handleStart()}
+                    onCustomAvatarCreate={(file, name) => void handleCreateCustomAvatar(file, name)}
+                    referenceSaving={referenceSaving}
+                  />
+                </div>
+              ) : null}
             </div>
 
+            {connection === "live" || connection === "expiring" ? (
             <div className="mt-4">
               <ChatInput
                 onSend={handleSend}
@@ -1261,71 +1454,100 @@ export default function App() {
                 qwenVoice={qwenVoice}
               />
             </div>
+            ) : null}
           </div>
         </main>
 
-        <aside className="order-3 min-h-0 overflow-hidden border-l border-slate-200 bg-white lg:w-[360px] lg:shrink-0">
-          <div className="border-b border-slate-200 px-4 pt-4">
-            <p className="text-xs font-medium text-slate-500">会话面板</p>
-            <div className="mt-3 grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1">
-              {PANEL_TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setPanelTab(tab.id)}
-                  className={`rounded-md px-2 py-1.5 text-xs font-medium ${
-                    panelTab === tab.id ? "bg-white text-cyan-700 shadow-sm" : "text-slate-500 hover:text-slate-800"
-                  }`}
+        <aside
+          className={`order-3 min-h-0 overflow-hidden border-l border-slate-200 bg-white transition-[width] duration-200 lg:shrink-0 ${
+            sessionPanelCollapsed ? "lg:w-12" : "lg:w-[360px]"
+          }`}
+        >
+          <div className="flex h-full min-h-0">
+            <div className="flex w-12 shrink-0 flex-col items-center justify-center gap-4 border-r border-slate-100 bg-slate-50 py-3">
+              <button
+                type="button"
+                onClick={() => setSessionPanelCollapsed((prev) => !prev)}
+                aria-label={sessionPanelCollapsed ? "展开会话面板" : "折叠会话面板"}
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-cyan-200 hover:text-cyan-700"
+              >
+                <svg
+                  className={`h-4 w-4 transition-transform ${sessionPanelCollapsed ? "rotate-180" : ""}`}
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden
                 >
-                  {tab.label}
-                </button>
-              ))}
+                  <path d="M12.7 4.3a1 1 0 0 1 0 1.4L8.41 10l4.3 4.3a1 1 0 0 1-1.42 1.4l-5-5a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.42 0z" />
+                </svg>
+              </button>
+              <span className="[writing-mode:vertical-rl] text-xs font-semibold tracking-normal text-slate-500">
+                会话面板
+              </span>
             </div>
-          </div>
-          <div className="h-[22rem] overflow-y-auto p-4 lg:h-[calc(100%-5.75rem)]">
-            {panelTab === "chat" ? (
-              <ChatMessages messages={messages} maxVisible={chatMaxVisible} />
-            ) : null}
-            {panelTab === "status" ? (
-              <div className="space-y-3">
-                {[
-                  ["连接状态", connection === "live" ? "已连接" : connection === "expiring" ? "即将到期" : connection === "queued" ? "排队中" : connection === "connecting" ? "连接中" : connection === "error" ? "连接错误" : "未连接"],
-                  ["当前会话", sessionId ?? "未创建"],
-                  ["数字人", currentAvatar?.name ?? currentAvatar?.id ?? "等待加载"],
-                  ["驱动模型", MODEL_LABELS_FOR_STAGE[model] ?? model],
-                  ["语音线路", ttsProvider],
-                  ["排队信息", queueInfo ? `${queueInfo.position} · ${queueInfo.message}` : "无排队"],
-                ].map(([label, value]) => (
-                  <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                    <p className="text-xs font-medium text-slate-500">{label}</p>
-                    <p className="mt-1 break-words text-sm font-semibold text-slate-900">{value}</p>
-                  </div>
-                ))}
+            <div className={`${sessionPanelCollapsed ? "hidden" : "flex"} min-w-0 flex-1 flex-col`}>
+              <div className="border-b border-slate-200 px-4 pt-4">
+                <p className="text-xs font-medium text-slate-500">会话面板</p>
+                <div className="mt-3 grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1">
+                  {PANEL_TABS.map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setPanelTab(tab.id)}
+                      className={`rounded-md px-2 py-1.5 text-xs font-medium ${
+                        panelTab === tab.id ? "bg-white text-cyan-700 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : null}
-            {panelTab === "exports" ? (
-              <div className="space-y-3">
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                  <p className="text-sm font-semibold text-slate-900">实时录制</p>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                    当前状态：{ftRecordPhase === "idle" ? "未录制" : ftRecordPhase === "recording" ? "录制中" : "待保存"}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3 text-xs leading-relaxed text-cyan-800">
-                  FlashTalk / FlashHead 会话连接后，可在顶部使用录制和离线整段导出。
-                </div>
-                {isFlashRenderer(model) && sessionId ? (
-                  <button
-                    type="button"
-                    disabled={offlineBundleBusy}
-                    onClick={() => offlineBundleInputRef.current?.click()}
-                    className="w-full rounded-lg bg-cyan-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:opacity-60"
-                  >
-                    {offlineBundleBusy ? "离线导出中..." : "上传音频并离线导出"}
-                  </button>
+              <div className="h-[22rem] overflow-y-auto p-4 lg:h-[calc(100%-5.75rem)]">
+                {panelTab === "chat" ? (
+                  <ChatMessages messages={messages} maxVisible={chatMaxVisible} />
+                ) : null}
+                {panelTab === "status" ? (
+                  <div className="space-y-3">
+                    {[
+                      ["连接状态", connection === "live" ? "已连接" : connection === "expiring" ? "即将到期" : connection === "queued" ? "排队中" : connection === "connecting" ? "连接中" : connection === "error" ? "连接错误" : "未连接"],
+                      ["当前会话", sessionId ?? "未创建"],
+                      ["数字人", currentAvatar?.name ?? currentAvatar?.id ?? "等待加载"],
+                      ["驱动模型", MODEL_LABELS_FOR_STAGE[model] ?? model],
+                      ["语音线路", ttsProvider],
+                      ["排队信息", queueInfo ? `${queueInfo.position} · ${queueInfo.message}` : "无排队"],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                        <p className="text-xs font-medium text-slate-500">{label}</p>
+                        <p className="mt-1 break-words text-sm font-semibold text-slate-900">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {panelTab === "exports" ? (
+                  <div className="space-y-3">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                      <p className="text-sm font-semibold text-slate-900">实时录制</p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                        当前状态：{ftRecordPhase === "idle" ? "未录制" : ftRecordPhase === "recording" ? "录制中" : "待保存"}
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3 text-xs leading-relaxed text-cyan-800">
+                      FlashTalk / FlashHead 会话连接后，可在顶部使用录制和离线整段导出。
+                    </div>
+                    {isFlashRenderer(model) && sessionId ? (
+                      <button
+                        type="button"
+                        disabled={offlineBundleBusy}
+                        onClick={() => offlineBundleInputRef.current?.click()}
+                        className="w-full rounded-lg bg-cyan-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:opacity-60"
+                      >
+                        {offlineBundleBusy ? "离线导出中..." : "上传音频并离线导出"}
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
-            ) : null}
+            </div>
           </div>
         </aside>
       </div>

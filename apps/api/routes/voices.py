@@ -6,6 +6,7 @@ import asyncio
 import logging
 import re
 import uuid
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Request, UploadFile
@@ -37,6 +38,19 @@ def _public_base(request: Request) -> str:
     if raw:
         return raw.rstrip("/")
     return str(request.base_url).rstrip("/")
+
+
+def _dedupe_display_label(label: str, *, provider: str, target_model: str | None) -> str:
+    normalized = label.strip() or "我的复刻音色"
+    existing = {
+        r.display_label
+        for r in list_voices(provider=provider)
+        if r.source == "clone" and (r.target_model or "") == (target_model or "")
+    }
+    if normalized not in existing:
+        return normalized
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")[:-3]
+    return f"{normalized}-{stamp}"
 
 
 @router.get("/voices", response_model=None)
@@ -104,8 +118,12 @@ async def post_voice_clone(
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
-    label = (display_label or "").strip() or "我的复刻音色"
     tm = (target_model or "").strip()
+    label = _dedupe_display_label(
+        (display_label or "").strip() or "我的复刻音色",
+        provider=prov,
+        target_model=tm,
+    )
 
     try:
         if prov == "cosyvoice":
@@ -145,6 +163,7 @@ async def post_voice_clone(
                     "ok": True,
                     "entry_id": eid,
                     "voice_id": vid,
+                    "display_label": label,
                     "provider": "cosyvoice",
                     "target_model": tm,
                     "message": "CosyVoice 复刻成功，请在合成时选择相同 CosyVoice 模型。",
@@ -173,6 +192,7 @@ async def post_voice_clone(
                 "ok": True,
                 "entry_id": eid,
                 "voice_id": vid,
+                "display_label": label,
                 "provider": "dashscope",
                 "target_model": tm,
                 "message": "千问复刻成功：合成时请选用与复刻相同的 target_model。",

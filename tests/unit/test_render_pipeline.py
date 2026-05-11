@@ -8,8 +8,8 @@ import numpy as np
 import pytest
 
 from opentalking.core.types.frames import AudioChunk, VideoFrameData
-from opentalking.worker.session_runner import SessionRunner, _IdleFrameCacheEntry, _SpeechChunkEnvelope
-from opentalking.worker.pipeline.render_pipeline import iter_rendered_frames_sync
+from opentalking.pipeline.session.runner import SessionRunner, _IdleFrameCacheEntry, _SpeechChunkEnvelope
+from opentalking.pipeline.speak.render_pipeline import iter_rendered_frames_sync
 
 
 @dataclass

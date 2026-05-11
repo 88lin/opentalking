@@ -3,11 +3,16 @@ import { AvatarSelectionStage } from "./components/AvatarSelectionStage";
 import { BailianVoiceClone } from "./components/BailianVoiceClone";
 import { ChatInput } from "./components/ChatInput";
 import { ChatMessages } from "./components/ChatMessages";
-import { SETTINGS_DOCK_EXPANDED_KEY, SettingsPanel } from "./components/SettingsPanel";
+import {
+  SETTINGS_DOCK_EXPANDED_KEY,
+  SettingsPanel,
+  type Wav2LipPostprocessMode,
+} from "./components/SettingsPanel";
 import { TopBar } from "./components/TopBar";
 import { ToastStack, type ToastMessage, type ToastTone } from "./components/ToastStack";
 import { VideoBackground } from "./components/VideoBackground";
 import {
+  ApiError,
   apiDelete,
   apiGet,
   apiPost,
@@ -17,6 +22,7 @@ import {
   type CreateSessionResponse,
   type VoiceCatalogItem,
 } from "./lib/api";
+import { modelConnectionBadge, type ModelStatus } from "./lib/modelStatus";
 import { connectSse } from "./lib/sse";
 import {
   DEFAULT_TTS_PREVIEW_TEXT,
@@ -176,6 +182,7 @@ function usesCompactSquareStage(model: string): boolean {
 const MODEL_LABELS_FOR_STAGE: Record<string, string> = {
   flashhead: "FlashHead",
   flashtalk: "FlashTalk",
+  mock: "无驱动模式",
   musetalk: "MuseTalk",
   quicktalk: "QuickTalk",
   wav2lip: "Wav2Lip",
@@ -205,8 +212,10 @@ export default function App() {
   // Data
   const [avatars, setAvatars] = useState<AvatarSummary[]>([]);
   const [models, setModels] = useState<string[]>([]);
-  const [avatarId, setAvatarId] = useState("demo-avatar");
-  const [model, setModel] = useState("wav2lip");
+  const [modelStatuses, setModelStatuses] = useState<ModelStatus[]>([]);
+  const [avatarId, setAvatarId] = useState("singer");
+  const [model, setModel] = useState("flashtalk");
+  const [wav2lipPostprocessMode, setWav2lipPostprocessMode] = useState<Wav2LipPostprocessMode>("auto");
 
   // Connection
   const [connection, setConnection] = useState<ConnectionStatus>("idle");
@@ -529,15 +538,16 @@ export default function App() {
       try {
         const [av, mo] = await Promise.all([
           apiGet<AvatarSummary[]>("/avatars"),
-          apiGet<{ models: string[] }>("/models"),
+          apiGet<{ models: string[]; statuses?: ModelStatus[] }>("/models"),
           loadVoices(),
         ]);
         setAvatars(av);
         setModels(mo.models);
+        setModelStatuses(mo.statuses ?? mo.models.map((id) => ({ id, connected: true })));
         const initialAvatar = pickInitialAvatar(av, mo.models);
         if (initialAvatar) {
           setAvatarId(initialAvatar.id);
-          setModel((prev) => (mo.models.includes(prev) ? prev : initialAvatar.model_type));
+          setModel((prev) => (mo.models.includes(prev) ? prev : mo.models[0] ?? initialAvatar.model_type));
         }
       } catch {
         setConnection("error");
@@ -730,6 +740,8 @@ export default function App() {
         llm_system_prompt: llmSystemPrompt.trim() || undefined,
         tts_provider: ttsProvider,
         tts_voice: isEdgeTts(ttsProvider) ? edgeVoice : ttsProvider === "sambert" ? undefined : qwenVoice,
+        wav2lip_postprocess_mode:
+          model === "wav2lip" && wav2lipPostprocessMode !== "auto" ? wav2lipPostprocessMode : undefined,
       });
       createdSessionId = created.session_id;
       setSessionId(created.session_id);
@@ -776,7 +788,11 @@ export default function App() {
       resetLiveState();
       console.warn("Failed to start session", error);
       setConnection("error");
-      notify("启动会话失败，请稍后重试或查看后端日志。", "error");
+      const detail = error instanceof ApiError ? error.detail : null;
+      const msg = detail
+        ? `启动会话失败：${detail}`
+        : "启动会话失败，请稍后重试或查看后端日志。";
+      notify(msg, "error");
     }
   }, [
     avatarId,
@@ -790,6 +806,7 @@ export default function App() {
     resetLiveState,
     ttsProvider,
     waitForSessionReady,
+    wav2lipPostprocessMode,
   ]);
 
   const handleSavePrompt = useCallback(async () => {
@@ -886,6 +903,27 @@ export default function App() {
       setReferenceSaving(false);
     }
   }, [avatarId, notify, releaseSession, resetLiveState]);
+
+  const handleDeleteAvatar = useCallback(
+    async (target: AvatarSummary) => {
+      try {
+        await apiDelete(`/avatars/${encodeURIComponent(target.id)}`);
+        setAvatars((prev) => prev.filter((a) => a.id !== target.id));
+        // If the deleted avatar was selected, fall back to the first remaining one.
+        setAvatarId((current) => {
+          if (current !== target.id) return current;
+          const remaining = avatars.filter((a) => a.id !== target.id);
+          return remaining[0]?.id ?? "";
+        });
+        notify(`已删除自定义形象「${target.name ?? target.id}」。`, "success");
+      } catch (error) {
+        console.warn("delete avatar failed", error);
+        const detail = error instanceof ApiError ? error.detail : null;
+        notify(detail ? `删除失败：${detail}` : "删除失败，请查看后端日志。", "error");
+      }
+    },
+    [avatars, notify],
+  );
 
   const handleReturnToAvatarSelection = useCallback(() => {
     if (!window.confirm("更换数字人会结束当前会话，是否继续？")) return;
@@ -1265,6 +1303,10 @@ export default function App() {
   const showStart = connection === "idle" || connection === "error" || connection === "connecting" || connection === "queued";
   const chatMaxVisible = readChatMaxVisible();
   const selectedModelLabel = MODEL_LABELS_FOR_STAGE[model] ?? model;
+  const selectedModelStatus = modelStatuses.find((item) => item.id === model);
+  const selectedModelBadge = modelConnectionBadge(selectedModelStatus, models.includes(model));
+  const selectedModelConnected = selectedModelBadge.connected;
+  const wav2lipPostprocessModeLocked = sessionId !== null && connection !== "idle" && connection !== "error";
   const selectedVoiceLabel = isEdgeTts(ttsProvider)
     ? EDGE_ZH_VOICES.find((voice) => voice.id === edgeVoice)?.label ?? edgeVoice
     : bailianVoices.find((voice) => voice.id === qwenVoice)?.label ?? (qwenVoice || "暂无音色");
@@ -1335,11 +1377,16 @@ export default function App() {
             expanded={settingsExpanded}
             onExpandedChange={setSettingsExpanded}
             avatars={avatars}
-            models={models.length ? models : ["flashtalk", "musetalk", "wav2lip"]}
+            models={models}
+            modelStatuses={modelStatuses}
             avatarId={avatarId}
             model={model}
+            modelConnected={selectedModelConnected}
+            wav2lipPostprocessMode={wav2lipPostprocessMode}
+            wav2lipPostprocessModeLocked={wav2lipPostprocessModeLocked}
             onAvatarChange={handleAvatarChange}
             onModelChange={handleModelChange}
+            onWav2LipPostprocessModeChange={setWav2lipPostprocessMode}
             edgeVoice={edgeVoice}
             onEdgeVoiceChange={setEdgeVoice}
             edgeVoiceOptions={EDGE_ZH_VOICES}
@@ -1423,10 +1470,13 @@ export default function App() {
                     selectedVoiceLabel={selectedVoiceLabel}
                     loading={connection === "connecting"}
                     queued={connection === "queued"}
+                    modelConnected={selectedModelConnected}
+                    modelBadge={selectedModelBadge}
                     queueInfo={queueInfo}
                     onAvatarChange={handleAvatarChange}
                     onStart={() => void handleStart()}
                     onCustomAvatarCreate={(file, name) => void handleCreateCustomAvatar(file, name)}
+                    onAvatarDelete={(target) => void handleDeleteAvatar(target)}
                     referenceSaving={referenceSaving}
                   />
                 </div>

@@ -12,7 +12,7 @@ infrastructure:
   worker_url: http://127.0.0.1:9001
 flashtalk:
   mode: off
-  ws_url: ws://localhost:8765
+  ws_url: ""
   ckpt_dir: ./models/SoulX-FlashTalk-14B
   wav2vec_dir: ./models/chinese-wav2vec2-base
   port: 8765

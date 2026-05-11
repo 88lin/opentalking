@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { AvatarSummary } from "../lib/api";
 import { buildApiUrl } from "../lib/api";
+import type { ModelConnectionBadge } from "../lib/modelStatus";
 
 const CUSTOM_REFERENCE_NAME_KEY = "opentalking-custom-reference-name";
 
@@ -11,10 +12,13 @@ type AvatarSelectionStageProps = {
   selectedVoiceLabel: string;
   loading: boolean;
   queued: boolean;
+  modelConnected: boolean;
+  modelBadge: ModelConnectionBadge;
   queueInfo?: { position: number; message: string } | null;
   onAvatarChange: (id: string) => void;
   onStart: () => void;
   onCustomAvatarCreate: (file: File, name: string) => void;
+  onAvatarDelete?: (avatar: AvatarSummary) => void;
   referenceSaving?: boolean;
 };
 
@@ -38,10 +42,13 @@ export function AvatarSelectionStage({
   selectedVoiceLabel,
   loading,
   queued,
+  modelConnected,
+  modelBadge,
   queueInfo,
   onAvatarChange,
   onStart,
   onCustomAvatarCreate,
+  onAvatarDelete,
   referenceSaving = false,
 }: AvatarSelectionStageProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +63,7 @@ export function AvatarSelectionStage({
   const [customFile, setCustomFile] = useState<File | null>(null);
   const [customPreviewUrl, setCustomPreviewUrl] = useState<string | null>(null);
   const startLabel = queued ? "排队中" : loading ? "启动中..." : "开始对话";
-  const disabled = loading || queued || !selectedAvatar;
+  const disabled = loading || queued || !selectedAvatar || !modelConnected;
 
   useEffect(() => {
     return () => {
@@ -103,10 +110,7 @@ export function AvatarSelectionStage({
                 disabled={referenceSaving}
                 className="group overflow-hidden rounded-lg border border-dashed border-cyan-300 bg-cyan-50 text-left transition hover:border-cyan-400 hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <div className="flex h-12 items-center justify-between gap-2 border-b border-cyan-100 px-3">
-                  <span className="min-w-0 truncate text-base font-semibold text-slate-950">
-                    {customName.trim() || "上传形象"}
-                  </span>
+                <div className="flex h-12 items-center justify-end border-b border-cyan-100 px-3">
                   <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-medium text-cyan-700">
                     自定义
                   </span>
@@ -134,39 +138,64 @@ export function AvatarSelectionStage({
 
               {avatars.map((avatar) => {
                 const selected = avatar.id === selectedAvatar?.id;
+                const canDelete = avatar.is_custom && Boolean(onAvatarDelete);
                 return (
-                  <button
+                  <div
                     key={avatar.id}
-                    type="button"
-                    onClick={() => onAvatarChange(avatar.id)}
-                    className={`group overflow-hidden rounded-lg border bg-white text-left transition ${
+                    className={`group relative overflow-hidden rounded-lg border bg-white text-left transition ${
                       selected
                         ? "border-cyan-400 shadow-md shadow-cyan-100"
                         : "border-slate-200 shadow-sm shadow-slate-200/50 hover:border-slate-300"
                     }`}
                   >
-                    <div className="flex h-12 items-center justify-between gap-2 border-b border-slate-100 px-3">
-                      <span className="min-w-0 truncate text-base font-semibold text-slate-950">
-                        {avatar.name ?? avatar.id}
-                      </span>
-                      {selected ? (
-                        <span className="shrink-0 rounded-full bg-cyan-600 px-2 py-0.5 text-xs font-medium text-white">
-                          已选
+                    {canDelete ? (
+                      <button
+                        type="button"
+                        title="删除自定义形象"
+                        aria-label={`删除 ${avatar.name ?? avatar.id}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          if (
+                            window.confirm(
+                              `确认删除自定义形象「${avatar.name ?? avatar.id}」？此操作不可撤销。`,
+                            )
+                          ) {
+                            onAvatarDelete?.(avatar);
+                          }
+                        }}
+                        className="absolute right-2 top-2 z-10 hidden h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm transition hover:bg-rose-50 hover:text-rose-600 group-hover:flex"
+                      >
+                        ×
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => onAvatarChange(avatar.id)}
+                      className="block w-full text-left"
+                    >
+                      <div className="flex h-12 items-center justify-between gap-2 border-b border-slate-100 px-3">
+                        <span className="min-w-0 truncate text-base font-semibold text-slate-950">
+                          {avatar.name ?? avatar.id}
                         </span>
-                      ) : null}
-                    </div>
-                    <div className="aspect-[4/3] bg-slate-100">
-                      <AvatarPreviewImage
-                        avatar={avatar}
-                        className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
-                      />
-                    </div>
-                    <div className="px-3 py-2">
-                      <span className="truncate text-xs font-medium text-slate-500">
-                        数字人形象
-                      </span>
-                    </div>
-                  </button>
+                        {selected ? (
+                          <span className="shrink-0 rounded-full bg-cyan-600 px-2 py-0.5 text-xs font-medium text-white">
+                            已选
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="aspect-[4/3] bg-slate-100">
+                        <AvatarPreviewImage
+                          avatar={avatar}
+                          className="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
+                        />
+                      </div>
+                      <div className="px-3 py-2">
+                        <span className="truncate text-xs font-medium text-slate-500">
+                          {avatar.is_custom ? "自定义形象" : "数字人形象"}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
                 );
               })}
             </div>
@@ -197,7 +226,18 @@ export function AvatarSelectionStage({
               <div className="border-t border-slate-200 bg-white p-4">
                 <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-                    <p className="text-xs font-medium text-slate-500">已选驱动模型</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs font-medium text-slate-500">已选驱动模型</p>
+                      <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold ${
+                        modelBadge.tone === "connected"
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          : modelBadge.tone === "selfTest"
+                            ? "border-cyan-200 bg-cyan-50 text-cyan-700"
+                          : "border-slate-200 bg-white text-slate-500"
+                      }`}>
+                        {modelBadge.label}
+                      </span>
+                    </div>
                     <p className="mt-1 truncate text-sm font-semibold text-slate-950">{selectedModelLabel}</p>
                   </div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
@@ -208,6 +248,11 @@ export function AvatarSelectionStage({
                 {queued ? (
                   <p className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
                     前面还有 {queueInfo?.position ?? 1} 人，请稍候...
+                  </p>
+                ) : null}
+                {!modelConnected ? (
+                  <p className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-600">
+                    当前驱动模型未连接，请先启动对应模型服务。
                   </p>
                 ) : null}
                 <button

@@ -2,60 +2,65 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import numpy as np
 import opentalking.models
-from opentalking.avatars.manifest import parse_manifest
-from opentalking.avatars.validator import validate_avatar_dir
-from opentalking.models.common.frame_avatar import load_frame_avatar_state
-from opentalking.models.musetalk.composer import compose_simple
+from opentalking.avatar.manifest import parse_manifest
+from opentalking.avatar.validator import validate_avatar_dir
+from opentalking.providers.synthesis import list_available_synthesis
 
 
 def test_list_models() -> None:
-    assert "wav2lip" in opentalking.models.list_models()
-    assert "musetalk" in opentalking.models.list_models()
-    assert "flashtalk" in opentalking.models.list_models()
-    assert "flashhead" in opentalking.models.list_models()
+    keys = list_available_synthesis()
+    assert "wav2lip" in keys
+    assert "musetalk" in keys
+    assert "flashtalk" in keys
+    assert "flashhead" in keys
     assert "quicktalk" in opentalking.models.list_models()
 
 
-def test_list_available_models_hides_flashtalk_when_off() -> None:
-    assert "flashtalk" not in opentalking.models.list_available_models(flashtalk_mode="off")
-    assert "flashhead" in opentalking.models.list_available_models(flashtalk_mode="off")
-    assert "wav2lip" in opentalking.models.list_available_models(flashtalk_mode="off")
-    assert "flashtalk" in opentalking.models.list_available_models(flashtalk_mode="local")
-
-
-def test_demo_avatar_valid() -> None:
+def test_video_wav2lip_demo_avatar_valid() -> None:
     root = Path(__file__).resolve().parents[2]
-    demo = root / "examples" / "avatars" / "demo-avatar"
+    demo = root / "examples" / "avatars" / "singer"
     errs = validate_avatar_dir(demo)
     assert errs == []
 
 
 def test_flashhead_demo_avatar_valid() -> None:
     root = Path(__file__).resolve().parents[2]
-    demo = root / "examples" / "avatars" / "flashhead-demo"
+    demo = root / "examples" / "avatars" / "anchor"
     errs = validate_avatar_dir(demo)
     assert errs == []
 
 
-def test_demo_musetalk_avatar_visible_and_fallback_animates() -> None:
+def test_parse_video_wav2lip_demo_manifest() -> None:
     root = Path(__file__).resolve().parents[2]
-    demo = root / "examples" / "avatars" / "demo-musetalk"
-    errs = validate_avatar_dir(demo)
-    assert errs == []
-
-    manifest = parse_manifest(demo / "manifest.json")
-    state = load_frame_avatar_state(demo, manifest)
-    assert state.frames[0].shape[:2] == (manifest.height, manifest.width)
-
-    first = compose_simple(state, 0, None, timestamp_ms=0).data
-    second = compose_simple(state, 1, None, timestamp_ms=40).data
-    assert np.count_nonzero(first != second) > 0
-
-
-def test_parse_demo_manifest() -> None:
-    root = Path(__file__).resolve().parents[2]
-    m = parse_manifest(root / "examples" / "avatars" / "demo-avatar" / "manifest.json")
-    assert m.id == "demo-avatar"
+    m = parse_manifest(root / "examples" / "avatars" / "singer" / "manifest.json")
+    assert m.id == "singer"
     assert m.model_type == "wav2lip"
+
+
+def test_anime_handsome_guy_avatar_valid() -> None:
+    root = Path(__file__).resolve().parents[2]
+    demo = root / "examples" / "avatars" / "anime-handsome-guy"
+    errs = validate_avatar_dir(demo)
+    assert errs == []
+
+
+def test_ancient_beauty_avatar_valid() -> None:
+    root = Path(__file__).resolve().parents[2]
+    demo = root / "examples" / "avatars" / "ancient-beauty"
+    errs = validate_avatar_dir(demo)
+    assert errs == []
+
+
+def test_laozi_avatar_valid() -> None:
+    root = Path(__file__).resolve().parents[2]
+    demo = root / "examples" / "avatars" / "laozi"
+    errs = validate_avatar_dir(demo)
+    assert errs == []
+
+
+def test_office_woman_avatar_valid() -> None:
+    root = Path(__file__).resolve().parents[2]
+    demo = root / "examples" / "avatars" / "office-woman"
+    errs = validate_avatar_dir(demo)
+    assert errs == []

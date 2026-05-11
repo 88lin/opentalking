@@ -29,3 +29,45 @@ def test_create_app_accepts_supported_cors_formats(
 
     assert api_app.user_middleware[0].kwargs["allow_origins"] == expected
     assert unified_app.user_middleware[0].kwargs["allow_origins"] == expected
+
+
+def test_wav2lip_preload_defaults_on() -> None:
+    settings = Settings()
+
+    assert settings.wav2lip_preload is True
+
+
+def test_unprefixed_omnirt_endpoint_is_read_from_dotenv(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("OMNIRT_ENDPOINT", raising=False)
+    monkeypatch.delenv("OPENTALKING_OMNIRT_ENDPOINT", raising=False)
+    (tmp_path / ".env").write_text(
+        "OMNIRT_ENDPOINT=http://127.0.0.1:9000\n"
+        "OMNIRT_AUDIO2VIDEO_PATH_TEMPLATE=/v1/audio2video/{model}\n",
+        encoding="utf-8",
+    )
+
+    settings = Settings()
+
+    assert settings.omnirt_endpoint == "http://127.0.0.1:9000"
+    assert settings.omnirt_audio2video_path_template == "/v1/audio2video/{model}"
+
+
+def test_prefixed_omnirt_endpoint_takes_precedence_over_unprefixed_dotenv(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("OPENTALKING_OMNIRT_ENDPOINT", "http://10.0.0.2:9000")
+    monkeypatch.delenv("OMNIRT_ENDPOINT", raising=False)
+    (tmp_path / ".env").write_text(
+        "OMNIRT_ENDPOINT=http://127.0.0.1:9000\n",
+        encoding="utf-8",
+    )
+
+    settings = Settings()
+
+    assert settings.omnirt_endpoint == "http://10.0.0.2:9000"

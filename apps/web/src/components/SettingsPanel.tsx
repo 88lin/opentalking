@@ -1,14 +1,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { AvatarSummary } from "../lib/api";
+import { modelConnectionBadge, type ModelStatus } from "../lib/modelStatus";
 import type { TtsProviderExtended } from "../constants/ttsBailian";
 
 type VoiceOpt = { id: string; label: string; targetModel?: string | null };
+export type Wav2LipPostprocessMode = "auto" | "basic" | "opentalking_improved" | "easy_improved" | "easy_enhanced";
 
 export const SETTINGS_DOCK_EXPANDED_KEY = "opentalking-settings-dock-expanded";
 
 const MODEL_LABELS: Record<string, string> = {
   flashhead: "FlashHead",
   flashtalk: "FlashTalk",
+  mock: "无驱动模式",
   musetalk: "MuseTalk",
   quicktalk: "QuickTalk",
   wav2lip: "Wav2Lip",
@@ -28,16 +31,28 @@ const TTS_PROVIDER_SUBTITLES: Record<TtsProviderExtended, string> = {
   sambert: "Bailian",
 };
 
+const WAV2LIP_POSTPROCESS_OPTIONS: { id: Wav2LipPostprocessMode; label: string }[] = [
+  { id: "auto", label: "自动推荐" },
+  { id: "basic", label: "基础" },
+  { id: "opentalking_improved", label: "OpenTalking 优化" },
+  { id: "easy_improved", label: "Easy-Wav2Lip 优化" },
+];
+
 interface SettingsPanelProps {
   /** 展开时显示表单；收起时仅保留右侧竖条入口 */
   expanded: boolean;
   onExpandedChange: (expanded: boolean) => void;
   avatars: AvatarSummary[];
   models: string[];
+  modelStatuses: ModelStatus[];
   avatarId: string;
   model: string;
+  modelConnected: boolean;
+  wav2lipPostprocessMode: Wav2LipPostprocessMode;
+  wav2lipPostprocessModeLocked: boolean;
   onAvatarChange: (id: string) => void;
   onModelChange: (m: string) => void;
+  onWav2LipPostprocessModeChange: (mode: Wav2LipPostprocessMode) => void;
   edgeVoice: string;
   onEdgeVoiceChange: (voiceId: string) => void;
   edgeVoiceOptions: { id: string; label: string }[];
@@ -110,6 +125,9 @@ type ColumnOption = {
   label: string;
   subtitle?: string;
   hasChildren?: boolean;
+  connected?: boolean;
+  statusLabel?: string;
+  statusTone?: "connected" | "disconnected" | "selfTest";
 };
 
 function LevelOneButton({
@@ -138,6 +156,17 @@ function LevelOneButton({
         <span className={`${compact ? "max-w-[3rem] text-xs" : "min-w-0 flex-1 text-sm"} truncate font-semibold leading-tight`}>
           {option.label}
         </span>
+        {option.statusLabel && !compact ? (
+          <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold ${
+            option.statusTone === "connected"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+              : option.statusTone === "selfTest"
+                ? "border-cyan-200 bg-cyan-50 text-cyan-700"
+              : "border-slate-200 bg-slate-50 text-slate-500"
+          }`}>
+            {option.statusLabel}
+          </span>
+        ) : null}
         {option.hasChildren && !compact ? (
           <span className={`shrink-0 text-lg leading-none ${selected ? "text-cyan-600" : "text-slate-400"}`}>›</span>
         ) : null}
@@ -224,9 +253,14 @@ export function SettingsPanel({
   onExpandedChange,
   avatars,
   models,
+  modelStatuses,
   avatarId,
   model,
+  modelConnected,
+  wav2lipPostprocessMode,
+  wav2lipPostprocessModeLocked,
   onModelChange,
+  onWav2LipPostprocessModeChange,
   edgeVoice,
   onEdgeVoiceChange,
   edgeVoiceOptions,
@@ -281,11 +315,19 @@ export function SettingsPanel({
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
   const currentAvatar = avatars.find((a) => a.id === avatarId) ?? null;
-  const modelOptions = models.map((m) => ({
-    id: m,
-    label: MODEL_LABELS[m] ?? m,
-    subtitle: m,
-  }));
+  const modelStatusById = new Map(modelStatuses.map((item) => [item.id, item]));
+  const modelOptions = models.map((m) => {
+    const badge = modelConnectionBadge(modelStatusById.get(m));
+    return {
+      id: m,
+      label: MODEL_LABELS[m] ?? m,
+      subtitle: m === "mock" ? "本地自测" : m,
+      connected: badge.connected,
+      statusLabel: badge.label,
+      statusTone: badge.tone,
+    };
+  });
+  const selectedModelBadge = modelConnectionBadge(modelStatusById.get(model), modelConnected);
   const providerOptions: ColumnOption[] = (["edge", "dashscope", "cosyvoice", "sambert"] as TtsProviderExtended[]).map((p) => ({
     id: p,
     label: TTS_PROVIDER_LABELS[p],
@@ -368,6 +410,17 @@ export function SettingsPanel({
           title="驱动模型"
           open={openSections.model}
           onToggle={toggleSection}
+          action={
+            <span className={`shrink-0 rounded-full border px-2 py-0.5 text-xs font-semibold ${
+              selectedModelBadge.tone === "connected"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                : selectedModelBadge.tone === "selfTest"
+                  ? "border-cyan-200 bg-cyan-50 text-cyan-700"
+                : "border-slate-200 bg-slate-50 text-slate-500"
+            }`}>
+              {selectedModelBadge.label}
+            </span>
+          }
         >
           <div className="space-y-2">
             {modelOptions.map((option) => (
@@ -378,6 +431,40 @@ export function SettingsPanel({
                 onClick={() => onModelChange(option.id)}
               />
             ))}
+            {!selectedModelBadge.connected ? (
+              <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500">
+                当前模型未连接，启动对应模型服务后即可使用。
+              </p>
+            ) : null}
+            {model === "wav2lip" ? (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-2">
+                <p className="mb-2 px-1 text-xs font-semibold text-slate-500">口型融合模式</p>
+                <div className="grid grid-cols-1 gap-1">
+                  {WAV2LIP_POSTPROCESS_OPTIONS.map((option) => {
+                    const selected = option.id === wav2lipPostprocessMode;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        disabled={wav2lipPostprocessModeLocked}
+                        onClick={() => onWav2LipPostprocessModeChange(option.id)}
+                        className={`rounded-md border px-2.5 py-2 text-left text-xs font-semibold transition ${
+                          selected
+                            ? "border-cyan-300 bg-white text-cyan-800 shadow-sm"
+                            : "border-transparent bg-transparent text-slate-700 hover:border-slate-200 hover:bg-white"
+                        } ${
+                          wav2lipPostprocessModeLocked
+                            ? "cursor-not-allowed opacity-60 hover:border-transparent hover:bg-transparent"
+                            : ""
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
           </div>
         </SettingsSection>
 

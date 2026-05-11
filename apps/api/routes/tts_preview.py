@@ -10,9 +10,9 @@ from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 from opentalking.core.config import get_settings
-from opentalking.tts.factory import build_tts_adapter
-from opentalking.tts.providers import normalize_tts_provider
-from opentalking.tts.qwen_tts_voices import sanitize_qwen_model
+from opentalking.providers.tts.factory import build_tts_adapter
+from opentalking.providers.tts.providers import normalize_tts_provider
+from opentalking.providers.tts.qwen_tts_voices import sanitize_qwen_model
 
 router = APIRouter(prefix="/tts", tags=["tts"])
 

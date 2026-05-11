@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 from datetime import datetime
@@ -11,8 +12,9 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
 from PIL import Image
 
-from opentalking.avatars.loader import load_avatar_bundle
-from opentalking.avatars.validator import list_avatar_dirs
+from opentalking.avatar import mouth_metadata
+from opentalking.avatar.loader import load_avatar_bundle
+from opentalking.avatar.validator import list_avatar_dirs
 from apps.api.schemas.avatar import AvatarSummary
 
 router = APIRouter(prefix="/avatars", tags=["avatars"])
@@ -20,6 +22,23 @@ router = APIRouter(prefix="/avatars", tags=["avatars"])
 
 def _avatars_root(request: Request) -> Path:
     return Path(request.app.state.settings.avatars_dir).resolve()
+
+
+def _is_custom_avatar(manifest_path: Path) -> bool:
+    """Return True only for avatars created via /avatars/custom (deletable)."""
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return bool((raw.get("metadata") or {}).get("custom_avatar"))
+
+
+def _is_hidden_avatar(manifest_path: Path) -> bool:
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return bool((raw.get("metadata") or {}).get("hidden"))
 
 
 def _summary_from_dir(path: Path) -> AvatarSummary:
@@ -31,6 +50,7 @@ def _summary_from_dir(path: Path) -> AvatarSummary:
         model_type=m.model_type,
         width=m.width,
         height=m.height,
+        is_custom=_is_custom_avatar(path / "manifest.json"),
     )
 
 
@@ -77,11 +97,39 @@ def _write_custom_avatar_manifest(base_manifest_path: Path, target_manifest_path
     target_manifest_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _custom_avatar_max_size() -> tuple[int, int]:
+    width = int(os.environ.get("OPENTALKING_CUSTOM_AVATAR_MAX_WIDTH", "720"))
+    height = int(os.environ.get("OPENTALKING_CUSTOM_AVATAR_MAX_HEIGHT", "1280"))
+    return max(1, width), max(1, height)
+
+
+def _resize_uploaded_avatar_image(image: Image.Image, *, max_width: int, max_height: int) -> Image.Image:
+    if image.width <= max_width and image.height <= max_height:
+        return image.copy()
+    fitted = image.copy()
+    fitted.thumbnail((int(max_width), int(max_height)), Image.Resampling.LANCZOS)
+    return fitted
+
+
+def _update_manifest_dimensions(manifest_path: Path, image: Image.Image) -> None:
+    raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    raw["width"] = int(image.width)
+    raw["height"] = int(image.height)
+    manifest_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _model_type_from_manifest(manifest_path: Path) -> str:
+    raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return str(raw.get("model_type") or "")
+
+
 @router.get("", response_model=list[AvatarSummary])
 async def list_avatars(request: Request) -> list[AvatarSummary]:
     root = _avatars_root(request)
     out: list[AvatarSummary] = []
     for d in list_avatar_dirs(root):
+        if _is_hidden_avatar(d / "manifest.json"):
+            continue
         try:
             out.append(_summary_from_dir(d))
         except Exception:  # noqa: BLE001
@@ -125,8 +173,21 @@ async def create_custom_avatar(
             avatar_id=avatar_id,
             name=display_name,
         )
-        image_rgb.save(target_dir / "preview.png", format="PNG")
-        image_rgb.save(target_dir / "reference.png", format="PNG")
+        max_w, max_h = _custom_avatar_max_size()
+        fitted_image = _resize_uploaded_avatar_image(image_rgb, max_width=max_w, max_height=max_h)
+        _update_manifest_dimensions(target_dir / "manifest.json", fitted_image)
+        fitted_image.save(target_dir / "preview.png", format="PNG")
+        fitted_image.save(target_dir / "reference.png", format="PNG")
+        mouth_metadata.update_manifest_mouth_metadata(
+            target_dir / "manifest.json",
+            target_dir / "reference.png",
+            force=True,
+        )
+        if _model_type_from_manifest(target_dir / "manifest.json") == "wav2lip":
+            frames_dir = target_dir / "frames"
+            frames_dir.mkdir(parents=True, exist_ok=True)
+            frame_path = frames_dir / "frame_00000.png"
+            fitted_image.save(frame_path, format="PNG")
     except Exception as exc:  # noqa: BLE001
         shutil.rmtree(target_dir, ignore_errors=True)
         raise HTTPException(status_code=500, detail=f"failed to create custom avatar: {exc}") from exc
@@ -150,3 +211,38 @@ async def get_preview(avatar_id: str, request: Request) -> FileResponse:
     if not path.is_file():
         raise HTTPException(status_code=404, detail="preview not found")
     return FileResponse(path, media_type="image/png")
+
+
+@router.delete("/{avatar_id}")
+async def delete_avatar(avatar_id: str, request: Request) -> dict[str, str]:
+    """Delete a user-created custom avatar.
+
+    Built-in demo avatars cannot be deleted — they're tracked in git and would
+    just come back on next deploy. Only avatars with
+    `metadata.custom_avatar == true` (created via POST /avatars/custom)
+    are removable.
+    """
+    root = _avatars_root(request)
+    target = (root / avatar_id).resolve()
+    try:
+        target.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="invalid avatar_id") from exc
+    if not target.is_dir():
+        raise HTTPException(status_code=404, detail="avatar not found")
+
+    manifest = target / "manifest.json"
+    if not _is_custom_avatar(manifest):
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                f"avatar '{avatar_id}' is built-in and cannot be deleted. "
+                f"Only avatars created via the 'New' button are removable."
+            ),
+        )
+
+    try:
+        shutil.rmtree(target)
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail=f"failed to delete avatar: {exc}") from exc
+    return {"avatar_id": avatar_id, "status": "deleted"}

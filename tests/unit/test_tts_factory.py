@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from opentalking.tts.factory import build_tts_adapter, create_tts_adapter
+from opentalking.providers.tts.factory import build_tts_adapter, create_tts_adapter
 
 
 def _settings(**overrides):

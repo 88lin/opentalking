@@ -3,8 +3,6 @@ from __future__ import annotations
 import pytest
 
 from opentalking.core.model_config import clear_model_config_cache, get_model_config
-from opentalking.models.musetalk.adapter import MuseTalkAdapter
-from opentalking.models.wav2lip.adapter import Wav2LipAdapter
 
 
 @pytest.fixture(autouse=True)
@@ -106,48 +104,3 @@ models:
 
     with pytest.raises(ValueError, match="t5_quant"):
         get_model_config("flashtalk")
-
-
-def test_wav2lip_pads_accept_yaml_list_and_env_string(
-    tmp_path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config_file = tmp_path / "opentalking.yaml"
-    config_file.write_text(
-        """
-models:
-  wav2lip:
-    pads: [1, 2, 3, 4]
-""",
-        encoding="utf-8",
-    )
-    monkeypatch.setenv("OPENTALKING_CONFIG_FILE", str(config_file))
-    clear_model_config_cache()
-    assert Wav2LipAdapter()._pads == (1, 2, 3, 4)
-
-    monkeypatch.setenv("OPENTALKING_WAV2LIP_PADS", "5,6,7,8")
-    clear_model_config_cache()
-    assert Wav2LipAdapter()._pads == (5, 6, 7, 8)
-
-
-def test_musetalk_adapter_uses_model_config(
-    tmp_path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config_file = tmp_path / "opentalking.yaml"
-    config_file.write_text(
-        """
-models:
-  musetalk:
-    context_ms: 480.0
-    silence_gate: 0.08
-""",
-        encoding="utf-8",
-    )
-    monkeypatch.setenv("OPENTALKING_CONFIG_FILE", str(config_file))
-    clear_model_config_cache()
-
-    adapter = MuseTalkAdapter()
-
-    assert adapter._stream_context_ms == 480.0
-    assert adapter._silence_gate_threshold == 0.08

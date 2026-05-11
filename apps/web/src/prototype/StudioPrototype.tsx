@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const avatarPreviewUrl = new URL(
-  "../../../../examples/avatars/flashtalk-demo/preview.png",
+  "../../../../examples/avatars/anchor/preview.png",
   import.meta.url,
 ).href;
 
@@ -187,7 +187,7 @@ function ConfigSidebar() {
               <img src={avatarPreviewUrl} alt="数字人参考图" className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">flashtalk-demo</p>
+              <p className="truncate text-sm font-medium text-slate-900">主播</p>
               <p className="text-xs text-slate-500">1024x1024 · 已应用</p>
             </div>
           </div>

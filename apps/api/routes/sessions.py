@@ -18,7 +18,8 @@ import redis.asyncio as redis
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response, StreamingResponse
 
-from opentalking.avatars.loader import load_avatar_bundle
+from opentalking.avatar import mouth_metadata
+from opentalking.avatar.loader import load_avatar_bundle
 from apps.api.schemas.session import (
     ChatRequest,
     CreateSessionRequest,
@@ -35,15 +36,15 @@ from opentalking.core.session_store import (
     apply_flashtalk_recording_start,
     apply_flashtalk_recording_stop,
 )
-from opentalking.stt.dashscope_asr import (
+from opentalking.providers.stt.dashscope.adapter import (
     decode_audio_file_to_pcm_i16,
     transcribe_audio_file_path,
     transcribe_pcm_chunk_queue_sync,
 )
-from opentalking.tts.edge_zh_voices import normalize_optional_edge_voice
-from opentalking.tts.providers import BAILIAN_TTS_PROVIDERS, normalize_tts_provider
-from opentalking.tts.qwen_tts_voices import normalize_optional_qwen_voice, sanitize_qwen_model
-from opentalking.worker.flashtalk_recording import (
+from opentalking.providers.tts.edge_zh_voices import normalize_optional_edge_voice
+from opentalking.providers.tts.providers import BAILIAN_TTS_PROVIDERS, normalize_tts_provider
+from opentalking.providers.tts.qwen_tts_voices import normalize_optional_qwen_voice, sanitize_qwen_model
+from opentalking.pipeline.recording.recording import (
     export_flashtalk_recording,
     flashtalk_recording_session_dir,
 )
@@ -90,11 +91,8 @@ def _normalize_voice_for_speak(
             tm = str(tts_model).strip() if tts_model and str(tts_model).strip() else None
             return vn, eff, tm
         vn = normalize_optional_edge_voice(voice)
-        if tts_model and str(tts_model).strip():
-            raise HTTPException(
-                status_code=400,
-                detail="tts_model is only valid when using 百炼语音线路（tts_provider=dashscope、cosyvoice、sambert 等）",
-            )
+        # tts_model has no meaning for Edge TTS — silently drop it instead of
+        # 400ing, so users can flip provider without manually clearing the field.
         return vn, eff, None
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -249,24 +247,27 @@ async def create_session(body: CreateSessionRequest, request: Request) -> Create
     if not avatar_dir.is_dir():
         raise HTTPException(status_code=404, detail="avatar not found")
     try:
-        bundle = load_avatar_bundle(avatar_dir, strict=False)
+        load_avatar_bundle(avatar_dir, strict=False)
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=400, detail=f"invalid avatar: {exc}") from exc
-    if bundle.manifest.model_type != body.model:
+    # Avatar / model decoupling: every avatar bundle has a reference image, and
+    # every supported model (mock / flashtalk / flashhead / musetalk / wav2lip)
+    # can consume that reference image as its starting frame. The avatar's
+    # manifest.model_type is now treated as a *suggestion* for the UI, not a
+    # hard gate. If a chosen model genuinely needs assets that the avatar lacks
+    # (e.g. wav2lip prepared frames), the failure surfaces downstream with a
+    # clearer error than a generic 400 here.
+
+    # Deployment guard: only allow models the upstream backend actually serves.
+    from opentalking.providers.synthesis.availability import connected_model_ids
+
+    available_models = await connected_model_ids(settings)
+    if body.model not in available_models:
         raise HTTPException(
             status_code=400,
             detail=(
-                f"avatar '{body.avatar_id}' requires model '{bundle.manifest.model_type}', "
-                f"got '{body.model}'"
-            ),
-        )
-    if body.model == "flashtalk" and settings.normalized_flashtalk_mode == "off":
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                "FlashTalk is disabled in this deployment. "
-                "Use demo-avatar/wav2lip for the quickstart path, or switch "
-                "OPENTALKING_FLASHTALK_MODE to remote/local."
+                f"model '{body.model}' is not yet supported on this deployment. "
+                f"Currently available: {', '.join(available_models)}."
             ),
         )
     try:
@@ -289,6 +290,7 @@ async def create_session(body: CreateSessionRequest, request: Request) -> Create
         tts_voice=tts_voice,
         llm_system_prompt=llm_system_prompt,
         custom_ref_image_path=custom_ref_image_path,
+        wav2lip_postprocess_mode=body.wav2lip_postprocess_mode,
     )
     # Single-process mode: WebRTC offer runs immediately after; wait until init task
     # has created the SessionRunner (avoids 404 "session not loaded").
@@ -298,7 +300,7 @@ async def create_session(body: CreateSessionRequest, request: Request) -> Create
         settings = request.app.state.settings
 
         if is_flashtalk:
-            from opentalking.worker.task_consumer import slot_is_occupied
+            from opentalking.runtime.task_consumer import slot_is_occupied
             if slot_is_occupied():
                 # Slot busy: return immediately, client waits via SSE session.queued
                 return CreateSessionResponse(session_id=sid, status="queued")
@@ -378,6 +380,7 @@ async def customize_session(
             suffix = ".png"
         target = avatar_dir / f"reference_custom{suffix}"
         target.write_bytes(raw)
+        mouth_metadata.update_manifest_mouth_metadata(avatar_dir / "manifest.json", target, force=True)
         entry["custom_ref_image_path"] = str(target)
         updated_image = True
 
@@ -435,6 +438,7 @@ async def customize_reference(
         suffix = ".png"
     target = avatar_dir / f"reference_custom{suffix}"
     target.write_bytes(raw)
+    mouth_metadata.update_manifest_mouth_metadata(avatar_dir / "manifest.json", target, force=True)
 
     custom = _session_customizations(request)
     entry = dict(custom.get(avatar_id, {}))

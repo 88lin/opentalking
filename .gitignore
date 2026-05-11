@@ -9,6 +9,8 @@ build/
 venv/
 .env
 .deploy.env
+quick_start_draft.md
+scripts/quickstart/env
 *.so
 .pytest_cache/
 .playwright-cli/
@@ -26,6 +28,7 @@ node_modules/
 
 # Models / weights (large binary files) — only repo-root ./models/, not Python pkg src/opentalking/models/
 /models/
+omnirt/
 *.pth
 *.pt
 !examples/avatars/demo-musetalk/prepared/latents.pt
@@ -62,9 +65,6 @@ examples/avatars/*/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a
 
 # Backup files
 *.bak*
-
-# Server-side packaging
-packages/
 
 # Machine-specific credentials
 machine.md

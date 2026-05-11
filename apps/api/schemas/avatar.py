@@ -11,3 +11,5 @@ class AvatarSummary(BaseModel):
     model_type: str
     width: int
     height: int
+    # True for avatars created via POST /avatars/custom; only these are deletable.
+    is_custom: bool = False

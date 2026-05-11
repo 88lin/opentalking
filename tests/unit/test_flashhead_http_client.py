@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from opentalking.models.flashhead.http_client import FlashHeadHTTPClient
+from opentalking.providers.synthesis.flashhead.http_client import FlashHeadHTTPClient
 
 
 def test_flashhead_payload_matches_omnirt_schema(tmp_path: Path) -> None:

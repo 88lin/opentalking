@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from opentalking.core.types.frames import AudioChunk
-from opentalking.tts.edge import adapter
+from opentalking.providers.tts.edge import adapter
 
 
 @pytest.mark.asyncio

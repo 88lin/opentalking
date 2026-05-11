@@ -32,6 +32,7 @@ async def create_session(
     tts_voice: str | None = None,
     llm_system_prompt: str | None = None,
     custom_ref_image_path: str | None = None,
+    wav2lip_postprocess_mode: str | None = None,
 ) -> str:
     sid = f"sess_{uuid.uuid4().hex[:12]}"
     data = {
@@ -48,6 +49,8 @@ async def create_session(
         data["llm_system_prompt"] = llm_system_prompt
     if custom_ref_image_path:
         data["custom_ref_image_path"] = custom_ref_image_path
+    if wav2lip_postprocess_mode:
+        data["wav2lip_postprocess_mode"] = wav2lip_postprocess_mode
     await _await_result(r.hset(session_key(sid), mapping=data))
     init_task: dict[str, Any] = {
         "cmd": "init",
@@ -63,6 +66,8 @@ async def create_session(
         init_task["llm_system_prompt"] = llm_system_prompt
     if custom_ref_image_path:
         init_task["custom_ref_image_path"] = custom_ref_image_path
+    if wav2lip_postprocess_mode:
+        init_task["wav2lip_postprocess_mode"] = wav2lip_postprocess_mode
     await _push_task(
         r,
         init_task,

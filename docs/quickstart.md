@@ -2,66 +2,58 @@
 
 > 中文 · [English](./quickstart.en.md)
 
-用户视角的最短路径：OpenTalking 负责实时数字人编排，默认使用 `demo-avatar / wav2lip`，不需要下载 FlashTalk 权重，也不需要启动独立模型服务。先跑通 API、TTS、WebRTC 和前端，再按需要升级到 [FlashTalk + OmniRT](./flashtalk-omnirt.md)。
-
-## 0. 先决条件
-
-- Python ≥ 3.9、Node.js ≥ 18、FFmpeg
-- 阿里云百炼 API Key：在 [bailian.console.aliyun.com](https://bailian.console.aliyun.com/) 申请，用于 LLM 和 STT
-- TTS 默认 Edge TTS，无需 key
-
-## 1. 安装 OpenTalking
+最快的方式：3 行命令一键部署。
 
 ```bash
-git clone https://github.com/datascale-ai/opentalking.git
-cd opentalking
-
-python3 -m venv .venv
-source .venv/bin/activate
-
-pip install -e ".[dev]"
+git clone https://github.com/<org>/opentalking && cd opentalking
 cp .env.example .env
+bash scripts/install.sh
 ```
 
-打开 `.env`，确认快速体验默认值保持如下：
+打开 http://localhost:5173 即可对话。
 
-```env
-OPENTALKING_DEFAULT_MODEL=wav2lip
-OPENTALKING_FLASHTALK_MODE=off
-```
+## 一键脚本做了什么
 
-然后填入百炼密钥：
+`scripts/install.sh` 流程：
 
-```env
-OPENTALKING_LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-OPENTALKING_LLM_API_KEY=sk-your-dashscope-key
-OPENTALKING_LLM_MODEL=qwen-flash
+1. `scripts/detect_hardware.sh` 探测硬件（CUDA / Ascend / CPU）→ 选 profile
+2. 根据 profile 选择 `deploy/compose/docker-compose.<profile>.yml`
+3. `docker compose pull` 拉镜像
+4. `scripts/up.sh` 起容器（redis + omnirt + api + worker + web）
+5. `scripts/ensure_omnirt.sh` 等 omnirt 健康检查通过
+6. 输出访问地址
 
-DASHSCOPE_API_KEY=sk-your-dashscope-key
-OPENTALKING_STT_MODEL=paraformer-realtime-v2
-
-OPENTALKING_TTS_PROVIDER=edge
-OPENTALKING_TTS_VOICE=zh-CN-XiaoxiaoNeural
-```
-
-## 2. 启动后端 + 前端
+## Native 模式（不用 Docker）
 
 ```bash
-# 后端
-cd opentalking
-source .venv/bin/activate
-bash scripts/start_unified.sh
-
-# 前端（另一个终端）
-cd opentalking/apps/web
-npm ci
-npm run dev -- --host 0.0.0.0
+bash scripts/install.sh native
 ```
 
-浏览器打开 `http://localhost:5173`。默认会使用 `demo-avatar / wav2lip`；在这个模式下 `/models` 不暴露 `flashtalk`，因此不需要 FlashTalk WebSocket。
+需要自行启动 omnirt，并在 `.env` 中配置 `OMNIRT_ENDPOINT`。
 
-## 3. 下一步
+## 前端联调（无 GPU）
 
-- 轻量模型适配：查看 [Avatar 格式](./avatar-format.md) 和 [模型适配](./model-adapter.md)，使用 `wav2lip` 或 `musetalk` 验证资产与适配器。
-- 高质量部署：复制 `.env.flashtalk.example` 为 `.env`，按 [FlashTalk + OmniRT 部署](./flashtalk-omnirt.md) 启动 FlashTalk-compatible WebSocket。
-- 分布式部署、Docker Compose、硬件建议：查看 [部署文档](./deployment.md) 和 [硬件指南](./hardware.md)。
+```bash
+docker compose -f deploy/compose/docker-compose.dev.yml up
+```
+
+此模式不连 omnirt，API 走 `OPENTALKING_INFERENCE_MOCK=1`，仅供前端样式调试。
+
+## 自定义环境变量
+
+模板见 [.env.example](../.env.example)，分组：
+
+- `Service` — 端口 / profile
+- `Inference (omnirt)` — endpoint / API key
+- `Storage` — avatar / voice 目录、Redis URL
+- `STT / TTS / LLM` — 各 provider 凭据
+
+详细每项含义见 [configuration.md](configuration.md)。
+
+## 常见问题
+
+- **Docker 镜像拉不下来**：检查 `OMNIRT_ENDPOINT` 是否配置；本地 omnirt 镜像源参考 [datascale-ai/omnirt](https://github.com/datascale-ai/omnirt)。
+- **omnirt 启动慢**：首次启动需下载模型权重，可达几十 GB；进度看 `docker logs <omnirt-container>`。
+- **FlashTalk 14B 权重大**：`bash scripts/download_flashtalk.sh` 可单独预拉，否则 omnirt 首次调用时按需拉取。
+
+更多硬件适配见 [hardware.md](hardware.md)，部署变体见 [deployment.md](deployment.md)。

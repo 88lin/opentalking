@@ -24,9 +24,45 @@ export function buildWsUrl(path: string): string {
   }
 }
 
+/** Rich error type so callers can show the FastAPI {"detail": "..."} message. */
+export class ApiError extends Error {
+  status: number;
+  detail: string | null;
+  body: string;
+  constructor(status: number, detail: string | null, body: string) {
+    super(detail || `HTTP ${status}: ${body}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.detail = detail;
+    this.body = body;
+  }
+}
+
+async function throwIfNotOk(r: Response): Promise<void> {
+  if (r.ok) return;
+  const body = await r.text();
+  let detail: string | null = null;
+  try {
+    const parsed = JSON.parse(body);
+    if (typeof parsed?.detail === "string") {
+      detail = parsed.detail;
+    } else if (Array.isArray(parsed?.detail)) {
+      // FastAPI validation errors arrive as a list of {loc, msg, ...}
+      detail = parsed.detail
+        .map((d: { msg?: string }) => d?.msg ?? JSON.stringify(d))
+        .join("; ");
+    } else if (parsed?.detail != null) {
+      detail = JSON.stringify(parsed.detail);
+    }
+  } catch {
+    // body wasn't JSON; leave detail null
+  }
+  throw new ApiError(r.status, detail, body);
+}
+
 export async function apiGet<T>(path: string): Promise<T> {
   const r = await fetch(buildApiUrl(path));
-  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  await throwIfNotOk(r);
   return r.json() as Promise<T>;
 }
 
@@ -36,7 +72,7 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
     headers: { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  await throwIfNotOk(r);
   return r.json() as Promise<T>;
 }
 
@@ -46,20 +82,20 @@ export async function apiPostBlob(path: string, body?: unknown): Promise<Blob> {
     headers: { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  await throwIfNotOk(r);
   return r.blob();
 }
 
 /** multipart/form-data（语音识别 speak_audio / transcribe） */
 export async function apiPostForm<T>(path: string, form: FormData, init?: RequestInit): Promise<T> {
   const r = await fetch(buildApiUrl(path), { method: "POST", body: form, ...init });
-  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  await throwIfNotOk(r);
   return r.json() as Promise<T>;
 }
 
 export async function apiDelete<T>(path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(buildApiUrl(path), { ...init, method: "DELETE" });
-  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  await throwIfNotOk(r);
   return r.json() as Promise<T>;
 }
 
@@ -69,6 +105,7 @@ export type AvatarSummary = {
   model_type: string;
   width: number;
   height: number;
+  is_custom: boolean;
 };
 
 export type CreateSessionResponse = { session_id: string; status: string };

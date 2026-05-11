@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from opentalking.core.types.frames import VideoFrameData
-from opentalking.rtc.aiortc_adapter import WebRTCSession
+from opentalking.providers.rtc.aiortc.adapter import WebRTCSession
 
 
 def test_buffered_reset_clocks_resets_timeline_without_rewinding_pts() -> None:

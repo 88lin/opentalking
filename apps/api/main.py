@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.core.config import get_settings
 from apps.api.routes import avatars, events, health, models, sessions, tts_preview, voices
-from opentalking.voices.store import init_voice_store
+from opentalking.voice.store import init_voice_store
 
 
 @asynccontextmanager

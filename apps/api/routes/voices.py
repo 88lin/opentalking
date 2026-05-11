@@ -12,8 +12,8 @@ from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 
-from opentalking.voices import bailian_clone
-from opentalking.voices.store import delete_entry, get_entry, init_voice_store, insert_clone, list_voices
+from opentalking.providers.tts.dashscope_qwen import clone as bailian_clone
+from opentalking.voice.store import delete_entry, get_entry, init_voice_store, insert_clone, list_voices
 
 log = logging.getLogger(__name__)
 

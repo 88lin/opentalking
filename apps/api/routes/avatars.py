@@ -43,6 +43,47 @@ def _is_hidden_avatar(manifest_path: Path) -> bool:
     return bool((raw.get("metadata") or {}).get("hidden"))
 
 
+def _avatar_preview_video_path(avatar_dir: Path) -> Path | None:
+    manifest_path = avatar_dir / "manifest.json"
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+    metadata = raw.get("metadata")
+    if not isinstance(metadata, dict):
+        metadata = {}
+
+    candidates: list[str] = []
+    source_video = metadata.get("source_video")
+    if source_video:
+        candidates.append(str(source_video))
+    for name in ("idle.mp4", "idle.webm", "idle.mov", "idle.avi", "source.mp4"):
+        candidates.append(name)
+
+    avatar_root = avatar_dir.resolve()
+    for raw_candidate in candidates:
+        candidate = (avatar_root / raw_candidate).resolve()
+        try:
+            candidate.relative_to(avatar_root)
+        except ValueError:
+            continue
+        if candidate.is_file() and candidate.suffix.lower() in {".mp4", ".webm", ".mov", ".avi"}:
+            return candidate
+    return None
+
+
+def _video_media_type(path: Path) -> str:
+    suffix = path.suffix.lower()
+    if suffix == ".webm":
+        return "video/webm"
+    if suffix == ".mov":
+        return "video/quicktime"
+    if suffix == ".avi":
+        return "video/x-msvideo"
+    return "video/mp4"
+
+
 def _summary_from_dir(path: Path) -> AvatarSummary:
     b = load_avatar_bundle(path, strict=False)
     m = b.manifest
@@ -53,6 +94,7 @@ def _summary_from_dir(path: Path) -> AvatarSummary:
         width=m.width,
         height=m.height,
         is_custom=_is_custom_avatar(path / "manifest.json"),
+        has_preview_video=_avatar_preview_video_path(path) is not None,
     )
 
 
@@ -161,16 +203,14 @@ def _prepare_quicktalk_custom_assets(manifest_path: Path, image: Image.Image) ->
     raw = _read_manifest(manifest_path)
     metadata = dict(raw.get("metadata") or {})
     quicktalk = metadata.get("quicktalk")
-    if not isinstance(quicktalk, dict):
+    quicktalk_dir = manifest_path.parent / "quicktalk"
+    if not isinstance(quicktalk, dict) and not quicktalk_dir.is_dir():
         return
 
-    quicktalk = dict(quicktalk)
     template_rel = "quicktalk/template_900.mp4"
     template_path = manifest_path.parent / template_rel
     _write_static_quicktalk_template(image, template_path, fps=int(raw.get("fps") or 25))
-    quicktalk["template_video"] = template_rel
-    quicktalk.pop("face_cache", None)
-    metadata["quicktalk"] = quicktalk
+    metadata.pop("quicktalk", None)
     raw["metadata"] = metadata
     _write_manifest(manifest_path, raw)
 
@@ -264,6 +304,22 @@ async def get_preview(avatar_id: str, request: Request) -> FileResponse:
     if not path.is_file():
         raise HTTPException(status_code=404, detail="preview not found")
     return FileResponse(path, media_type="image/png")
+
+
+@router.get("/{avatar_id}/preview-video")
+async def get_preview_video(avatar_id: str, request: Request) -> FileResponse:
+    root = _avatars_root(request)
+    avatar_dir = (root / avatar_id).resolve()
+    try:
+        avatar_dir.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="invalid avatar_id") from exc
+    if not avatar_dir.is_dir():
+        raise HTTPException(status_code=404, detail="avatar not found")
+    path = _avatar_preview_video_path(avatar_dir)
+    if path is None:
+        raise HTTPException(status_code=404, detail="preview video not found")
+    return FileResponse(path, media_type=_video_media_type(path))
 
 
 @router.delete("/{avatar_id}")

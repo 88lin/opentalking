@@ -68,6 +68,79 @@ def test_create_custom_avatar_adds_listed_asset_with_preview(tmp_path):
     assert preview.headers["content-type"] == "image/png"
 
 
+def test_video_avatar_exposes_preview_video(tmp_path):
+    base = tmp_path / "video-avatar"
+    base.mkdir()
+    (base / "preview.png").write_bytes(_png_bytes())
+    source_dir = base / "source"
+    source_dir.mkdir()
+    (source_dir / "idle.mp4").write_bytes(b"fake-mp4")
+    (base / "manifest.json").write_text(
+        json.dumps(
+            {
+                "id": "video-avatar",
+                "name": "Video Avatar",
+                "model_type": "wav2lip",
+                "fps": 25,
+                "sample_rate": 16000,
+                "width": 416,
+                "height": 704,
+                "version": "1.0",
+                "metadata": {
+                    "idle_mode": "loop",
+                    "source_video": "source/idle.mp4",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    app = FastAPI()
+    app.state.settings = SimpleNamespace(avatars_dir=str(tmp_path))
+    app.include_router(avatars.router)
+    client = TestClient(app)
+
+    listed = client.get("/avatars").json()
+    video_avatar = next(item for item in listed if item["id"] == "video-avatar")
+    assert video_avatar["has_preview_video"] is True
+
+    preview_video = client.get("/avatars/video-avatar/preview-video")
+    assert preview_video.status_code == 200
+    assert preview_video.headers["content-type"] == "video/mp4"
+    assert preview_video.content == b"fake-mp4"
+
+
+def test_image_avatar_does_not_expose_preview_video(tmp_path):
+    base = tmp_path / "image-avatar"
+    base.mkdir()
+    (base / "preview.png").write_bytes(_png_bytes())
+    (base / "manifest.json").write_text(
+        json.dumps(
+            {
+                "id": "image-avatar",
+                "name": "Image Avatar",
+                "model_type": "wav2lip",
+                "fps": 25,
+                "sample_rate": 16000,
+                "width": 416,
+                "height": 704,
+                "version": "1.0",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    app = FastAPI()
+    app.state.settings = SimpleNamespace(avatars_dir=str(tmp_path))
+    app.include_router(avatars.router)
+    client = TestClient(app)
+
+    listed = client.get("/avatars").json()
+    image_avatar = next(item for item in listed if item["id"] == "image-avatar")
+    assert image_avatar["has_preview_video"] is False
+    assert client.get("/avatars/image-avatar/preview-video").status_code == 404
+
+
 def test_create_custom_wav2lip_avatar_writes_frame_and_mouth_metadata(tmp_path, monkeypatch):
     base = tmp_path / "base-wav2lip"
     base.mkdir()
@@ -207,12 +280,7 @@ def test_create_custom_avatar_generates_quicktalk_template_from_upload(tmp_path,
                 "width": 416,
                 "height": 704,
                 "version": "1.0",
-                "metadata": {
-                    "quicktalk": {
-                        "template_video": "quicktalk/template_900.mp4",
-                        "face_cache": "quicktalk/face_cache_v3_900.npz",
-                    }
-                },
+                "metadata": {},
             }
         ),
         encoding="utf-8",
@@ -246,9 +314,7 @@ def test_create_custom_avatar_generates_quicktalk_template_from_upload(tmp_path,
     created = response.json()
     custom_dir = tmp_path / created["id"]
     manifest = json.loads((custom_dir / "manifest.json").read_text(encoding="utf-8"))
-    quicktalk = manifest["metadata"]["quicktalk"]
-    assert quicktalk["template_video"] == "quicktalk/template_900.mp4"
-    assert "face_cache" not in quicktalk
+    assert "quicktalk" not in manifest["metadata"]
     assert (custom_dir / "quicktalk" / "template_900.mp4").is_file()
     assert (custom_dir / "quicktalk" / "template_900.mp4").read_bytes() != b"old-template"
 

@@ -516,6 +516,36 @@ class FlashTalkRunner:
         config["fps"] = 25
         return config
 
+    def _quicktalk_cache_video_size(self) -> tuple[int, int] | None:
+        config = self._quicktalk_video_config()
+        if not config:
+            return None
+        width = int(config.get("width") or 0)
+        height = int(config.get("height") or 0)
+        if width <= 0 or height <= 0:
+            return None
+        try:
+            max_long_edge = int(
+                os.environ.get("OPENTALKING_QUICKTALK_MAX_LONG_EDGE")
+                or os.environ.get("OMNIRT_QUICKTALK_MAX_LONG_EDGE")
+                or 900
+            )
+        except ValueError:
+            max_long_edge = 900
+        if max_long_edge <= 0:
+            max_long_edge = 900
+        long_edge = max(width, height)
+        if long_edge > max_long_edge:
+            scale = max_long_edge / long_edge
+            width = max(2, int(round(width * scale)))
+            height = max(2, int(round(height * scale)))
+            width -= width % 2
+            height -= height % 2
+        else:
+            width = self._even_video_dim(width)
+            height = self._even_video_dim(height)
+        return width, height
+
     def _wav2lip_manifest_metadata(self) -> dict[str, Any]:
         if self.model_type != "wav2lip":
             return {}
@@ -564,6 +594,31 @@ class FlashTalkRunner:
             return path
         if path is not None:
             log.warning("Ignoring missing quicktalk face_cache: %s", path)
+        quicktalk_dir = self.avatar_path() / "quicktalk"
+        if not quicktalk_dir.is_dir():
+            return None
+        cache_size = self._quicktalk_cache_video_size()
+        candidates: list[Path] = []
+        if cache_size is not None:
+            width, height = cache_size
+            candidates.append(quicktalk_dir / f"face_cache_v3_{width}x{height}.npz")
+        metadata = self._quicktalk_manifest_metadata()
+        has_video_source = bool(self._quicktalk_template_video() or metadata.get("source_video"))
+        if not has_video_source:
+            candidates.append(quicktalk_dir / "face_cache_v3_900.npz")
+            candidates.extend(sorted(quicktalk_dir.glob("face_cache_v3_*.npz")))
+        seen: set[Path] = set()
+        for candidate in candidates:
+            candidate = candidate.resolve()
+            if candidate in seen:
+                continue
+            seen.add(candidate)
+            try:
+                candidate.relative_to(self.avatar_path())
+            except ValueError:
+                continue
+            if candidate.is_file():
+                return candidate
         return None
 
     def _quicktalk_template_video(self) -> Path | None:

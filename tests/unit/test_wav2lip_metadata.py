@@ -525,6 +525,126 @@ async def test_quicktalk_init_session_sends_asset_face_cache(tmp_path: Path) -> 
     assert fake.kwargs["quicktalk_face_cache"] == cache.resolve()
 
 
+@pytest.mark.asyncio
+async def test_quicktalk_init_session_derives_face_cache_from_asset_quicktalk_dir(tmp_path: Path) -> None:
+    avatar_dir = tmp_path / "avatar"
+    avatar_dir.mkdir()
+    reference = avatar_dir / "reference.png"
+    _write_png(reference, (255, 255, 255))
+    source_dir = avatar_dir / "source"
+    source_dir.mkdir()
+    (source_dir / "avatar.mp4").write_bytes(b"video")
+    quicktalk_dir = avatar_dir / "quicktalk"
+    quicktalk_dir.mkdir()
+    cache = quicktalk_dir / "face_cache_v3_674x900.npz"
+    cache.write_bytes(b"cache")
+    (avatar_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "id": "avatar",
+                "model_type": "wav2lip",
+                "width": 830,
+                "height": 1108,
+                "fps": 30,
+                "metadata": {
+                    "reference_mode": "frames",
+                    "frame_dir": "frames",
+                    "source_video": "source/avatar.mp4",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    class FakeFlashTalk:
+        def __init__(self) -> None:
+            self.kwargs = None
+
+        async def init_session(self, ref_image, **kwargs) -> None:
+            self.kwargs = kwargs
+
+    fake = FakeFlashTalk()
+    runner = FlashTalkRunner.__new__(FlashTalkRunner)
+    runner.model_type = "quicktalk"
+    runner.avatar_id = "avatar"
+    runner.avatars_root = tmp_path
+    runner.flashtalk = fake
+
+    await runner._init_flashtalk_session(reference)
+
+    assert fake.kwargs["template_mode"] == "video"
+    assert fake.kwargs["quicktalk_face_cache"] == cache.resolve()
+
+
+def test_quicktalk_video_avatar_does_not_use_mismatched_generic_face_cache(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OPENTALKING_QUICKTALK_MAX_LONG_EDGE", "1080")
+    avatar_dir = tmp_path / "avatar"
+    avatar_dir.mkdir()
+    source_dir = avatar_dir / "source"
+    source_dir.mkdir()
+    (source_dir / "avatar.mp4").write_bytes(b"video")
+    quicktalk_dir = avatar_dir / "quicktalk"
+    quicktalk_dir.mkdir()
+    (quicktalk_dir / "face_cache_v3_900.npz").write_bytes(b"stale-cache")
+    (avatar_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "id": "avatar",
+                "model_type": "wav2lip",
+                "width": 830,
+                "height": 1108,
+                "fps": 30,
+                "metadata": {"source_video": "source/avatar.mp4"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    runner = FlashTalkRunner.__new__(FlashTalkRunner)
+    runner.model_type = "quicktalk"
+    runner.avatar_id = "avatar"
+    runner.avatars_root = tmp_path
+
+    assert runner._quicktalk_cache_video_size() == (808, 1080)
+    assert runner._quicktalk_face_cache() is None
+
+
+def test_quicktalk_image_avatar_keeps_generic_face_cache_compatibility(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OPENTALKING_QUICKTALK_MAX_LONG_EDGE", "1080")
+    avatar_dir = tmp_path / "avatar"
+    avatar_dir.mkdir()
+    quicktalk_dir = avatar_dir / "quicktalk"
+    quicktalk_dir.mkdir()
+    cache = quicktalk_dir / "face_cache_v3_900.npz"
+    cache.write_bytes(b"cache")
+    (avatar_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "id": "avatar",
+                "model_type": "wav2lip",
+                "width": 720,
+                "height": 900,
+                "fps": 30,
+                "metadata": {"reference_mode": "image"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    runner = FlashTalkRunner.__new__(FlashTalkRunner)
+    runner.model_type = "quicktalk"
+    runner.avatar_id = "avatar"
+    runner.avatars_root = tmp_path
+
+    assert runner._quicktalk_face_cache() == cache.resolve()
+
+
 
 def test_quicktalk_template_video_can_come_from_quicktalk_metadata(tmp_path: Path) -> None:
     avatar_dir = tmp_path / "avatar"

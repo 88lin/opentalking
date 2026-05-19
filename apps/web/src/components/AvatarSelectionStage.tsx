@@ -23,7 +23,20 @@ type AvatarSelectionStageProps = {
 };
 
 function AvatarPreviewImage({ avatar, className }: { avatar: AvatarSummary; className: string }) {
-  return (
+  return avatar.has_preview_video ? (
+    <video
+      src={buildApiUrl(`/avatars/${encodeURIComponent(avatar.id)}/preview-video`)}
+      className={className}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      onError={(event) => {
+        event.currentTarget.style.display = "none";
+      }}
+    />
+  ) : (
     <img
       src={buildApiUrl(`/avatars/${encodeURIComponent(avatar.id)}/preview`)}
       alt={avatar.name ?? avatar.id}

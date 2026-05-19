@@ -106,6 +106,7 @@ export type AvatarSummary = {
   width: number;
   height: number;
   is_custom: boolean;
+  has_preview_video: boolean;
 };
 
 export type CreateSessionResponse = { session_id: string; status: string };

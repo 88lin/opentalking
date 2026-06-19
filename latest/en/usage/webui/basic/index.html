@@ -1,0 +1,6430 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open-source real-time digital-human orchestration layer with pluggable model backends, LLM, TTS, WebRTC, and character voices.">
+      
+      
+      
+        <link rel="canonical" href="https://datascale-ai.github.io/opentalking/latest/en/usage/webui/basic/">
+      
+      
+        <link rel="prev" href="../../cli-advanced/">
+      
+      
+        <link rel="next" href="../video-creation/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Basic Usage - OpenTalking</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/navigation.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#webui-basic-usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../" title="OpenTalking" class="md-header__button md-logo" aria-label="OpenTalking" data-md-component="logo">
+      
+  <img src="../../../../assets/images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenTalking
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Basic Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../../usage/webui/basic/" hreflang="zh" class="md-select__link">
+              中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/datascale-ai/opentalking" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datascale-ai/opentalking
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../" class="md-tabs__link">
+          
+  
+    
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../quick-start/" class="md-tabs__link">
+          
+  
+    
+  
+  Quick Start
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+    
+  
+  Usage
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../examples/" class="md-tabs__link">
+          
+  
+    
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../model-support/" class="md-tabs__link">
+          
+  
+    
+  
+  Model Support
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../model-deployment/" class="md-tabs__link">
+          
+  
+    
+  
+  Deployment Guide
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+    
+  
+  Reference Materials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../faq/" class="md-tabs__link">
+          
+  
+    
+  
+  FAQ
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../" title="OpenTalking" class="md-nav__button md-logo" aria-label="OpenTalking" data-md-component="logo">
+      
+  <img src="../../../../assets/images/logo.png" alt="logo">
+
+    </a>
+    OpenTalking
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/datascale-ai/opentalking" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datascale-ai/opentalking
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Home
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../quick-start/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Quick Start
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/platform-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Platform Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Compshare Image Quick Experience
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/docker-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/windows-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_2" id="__nav_1_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Command Line Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Command Line Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command Line Tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced CLI Arguments
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    WebUI Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            WebUI Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Basic Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Basic Usage
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-webui-is-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      What WebUI Is For
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-entrypoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow Entrypoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-webui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open WebUI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#page-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page Layout
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Page Layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avatar-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Avatar Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voice-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Voice Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conversation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conversation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-creation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Creation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-and-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status and Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-use-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      First-use Flow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First-use Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-select-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Select Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-select-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Select Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-select-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Select Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create Session
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-allow-microphone-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Allow Microphone Permission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-start-conversation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Start Conversation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switch-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-captions-and-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      View Captions and Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Clone
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-or-recreate-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop or Recreate Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blank-page-or-failed-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blank Page or Failed Assets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-creation-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session Creation Fails
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Audio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microphone-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Microphone Unavailable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-cannot-start-the-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Cannot Start the Camera
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-service-connection-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Service Connection Fails
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video-creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video Creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video-clone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video Clone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Voice and TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../examples/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Examples
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/companion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Emotional Companion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/customer-support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI Customer Support
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/product-demo-live-sales/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product Demo and Live Sales
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/course-news-presenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Course and News Presenter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/private-assistant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Private Digital Human Assistant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-support/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Model Support
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            Model Support
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/selection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model and Backend Selection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_3" id="__nav_1_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Runtime Backends
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Runtime Backends
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/local-adapter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/direct-websocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Direct WebSocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Supported Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            Supported Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Deployment Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Deployment Basics
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_1" id="__nav_1_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment Topology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Avatar Assets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Backend Modes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_2" id="__nav_1_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Backend Modes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Talking-Head Model Deployment
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            Talking-Head Model Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_3" id="__nav_1_6_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            QuickTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apple Silicon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_4" id="__nav_1_6_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Wav2Lip
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_5" id="__nav_1_6_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            MuseTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Recipes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            Recipes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Audio + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V100 + FasterLivePortrait + FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LLM and STT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mem0 Memory Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Support Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Reference Materials
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_7" id="__nav_1_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            Reference Materials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../community/publishing-docs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docs Publishing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/benchmark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            FAQ
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../quick-start/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Quick Start
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/platform-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Platform Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Compshare Image Quick Experience
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/docker-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/windows-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Command Line Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Command Line Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command Line Tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli-advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced CLI Arguments
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    WebUI Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            WebUI Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Basic Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Basic Usage
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-webui-is-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      What WebUI Is For
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-entrypoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow Entrypoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-webui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open WebUI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#page-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page Layout
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Page Layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avatar-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Avatar Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voice-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Voice Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conversation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conversation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-creation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Creation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-and-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status and Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-use-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      First-use Flow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First-use Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-select-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Select Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-select-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Select Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-select-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Select Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create Session
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-allow-microphone-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Allow Microphone Permission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-start-conversation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Start Conversation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switch-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-captions-and-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      View Captions and Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Clone
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-or-recreate-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop or Recreate Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blank-page-or-failed-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blank Page or Failed Assets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-creation-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session Creation Fails
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Audio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microphone-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Microphone Unavailable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-cannot-start-the-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Cannot Start the Camera
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-service-connection-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Service Connection Fails
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video-creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video Creation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../video-clone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Video Clone
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Voice and TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../examples/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Examples
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/companion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Emotional Companion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/customer-support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI Customer Support
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/product-demo-live-sales/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Product Demo and Live Sales
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/course-news-presenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Course and News Presenter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/private-assistant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Private Digital Human Assistant
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-support/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Model Support
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Model Support
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/selection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model and Backend Selection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Runtime Backends
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Runtime Backends
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/local-adapter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/direct-websocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Direct WebSocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Supported Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            Supported Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Deployment Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Deployment Basics
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment Topology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Avatar Assets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Backend Modes
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Backend Modes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Talking-Head Model Deployment
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            Talking-Head Model Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_3" id="__nav_6_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            QuickTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apple Silicon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_4" id="__nav_6_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Wav2Lip
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_5" id="__nav_6_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            MuseTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Recipes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            Recipes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Audio + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V100 + FasterLivePortrait + FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LLM and STT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mem0 Memory Engine
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Support Matrix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Reference Materials
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Reference Materials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/benchmark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            FAQ
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-webui-is-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      What WebUI Is For
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-entrypoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow Entrypoints
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-webui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open WebUI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#page-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page Layout
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Page Layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#avatar-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Avatar Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Model Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voice-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Voice Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conversation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conversation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-creation-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Creation Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-and-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status and Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-use-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      First-use Flow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First-use Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-select-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Select Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-select-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Select Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-select-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Select Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create Session
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-allow-microphone-permission" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Allow Microphone Permission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-start-conversation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Start Conversation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switch-avatar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Avatar
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switch-voice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switch Voice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-captions-and-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      View Captions and Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-video-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Video Clone
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-or-recreate-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stop or Recreate Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#blank-page-or-failed-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blank Page or Failed Assets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-creation-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session Creation Fails
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Audio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microphone-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Microphone Unavailable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-cannot-start-the-camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Cannot Start the Camera
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#video-clone-service-connection-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      Video Clone Service Connection Fails
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/datascale-ai/opentalking/edit/main/docs/en/usage/webui/basic.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="webui-basic-usage">WebUI Basic Usage<a class="headerlink" href="#webui-basic-usage" title="Permanent link">&para;</a></h1>
+<p>WebUI is OpenTalking's interactive workspace for avatar selection, model selection, voice configuration, and conversation validation. It is useful for quick checks and for letting non-engineering teammates preview the digital human experience.</p>
+<h2 id="what-webui-is-for">What WebUI Is For<a class="headerlink" href="#what-webui-is-for" title="Permanent link">&para;</a></h2>
+<p>Use WebUI to:</p>
+<ul>
+<li>Select built-in or custom avatars.</li>
+<li>Choose the model for the current session.</li>
+<li>Select TTS provider and voice.</li>
+<li>Converse through text or voice.</li>
+<li>Inspect connection status, session state, and errors.</li>
+</ul>
+<p>WebUI is not a production admin system or a full asset management platform. It is a visual validation and debugging entry point.</p>
+<h2 id="workflow-entrypoints">Workflow Entrypoints<a class="headerlink" href="#workflow-entrypoints" title="Permanent link">&para;</a></h2>
+<p>The top navigation exposes different workflows:</p>
+<ul>
+<li>“Realtime Conversation”: select avatar, model, and voice, then enter the LLM / TTS / talking-head pipeline.</li>
+<li>“Video Creation”: select an avatar and audio source, then generate an offline digital-human video.</li>
+<li>“Video Clone”: keep one digital-human asset as the source, then drive its expression and head motion with a camera or uploaded video.</li>
+</ul>
+<p>Video Creation and Video Clone are independent from the realtime conversation <code>speak</code> queue. Video Creation is for downloadable narrated videos. Video Clone is for validating camera-driven expression cloning after the FasterLivePortrait runtime is available.</p>
+<h2 id="open-webui">Open WebUI<a class="headerlink" href="#open-webui" title="Permanent link">&para;</a></h2>
+<p>Start services with:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span>--mock
+</span></code></pre></div>
+<p>The script prints the WebUI URL. The default is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>http://127.0.0.1:5173
+</span></code></pre></div>
+<p>If you changed ports, use the URL printed by the terminal.</p>
+<p><img alt="WebUI first screen: workflow tabs, model selection, avatar library, and session panel." src="../../../../assets/images/usage/webui/webui-first-screen.png" /></p>
+<p><em>WebUI first screen: workflow tabs, model selection, avatar library, and session panel.</em></p>
+<h2 id="page-layout">Page Layout<a class="headerlink" href="#page-layout" title="Permanent link">&para;</a></h2>
+<h3 id="avatar-selection">Avatar Selection<a class="headerlink" href="#avatar-selection" title="Permanent link">&para;</a></h3>
+<p>The avatar area lists available digital humans. Each item usually has a preview image, name, and type label. Custom avatars are marked as custom and can be deleted.</p>
+<p>If an expected avatar is missing, confirm that it is under <code>OPENTALKING_AVATARS_DIR</code> and contains a valid <code>manifest.json</code> and preview image.</p>
+<h3 id="model-selection">Model Selection<a class="headerlink" href="#model-selection" title="Permanent link">&para;</a></h3>
+<p>Model selection controls which digital human driver model is used for the session. In Mock mode, choose a driverless/mock option. In local or OmniRT mode, make sure model weights, backend services, and startup arguments are ready.</p>
+<p>Model capabilities and backend choices are covered in <a href="../../../model-support/">Model Support</a>.</p>
+<h3 id="voice-selection">Voice Selection<a class="headerlink" href="#voice-selection" title="Permanent link">&para;</a></h3>
+<p>Voice selection controls the TTS provider and voice used for generated speech. Different providers have different voice identifiers, credentials, and latency profiles.</p>
+<p>For first validation, use the default voice. For a business-specific voice, see <a href="../voice-and-tts/">Voice and TTS</a>.</p>
+<h3 id="conversation-panel">Conversation Panel<a class="headerlink" href="#conversation-panel" title="Permanent link">&para;</a></h3>
+<p>The conversation panel is used for text input, replies, and digital human playback. When voice input is enabled, the browser asks for microphone permission.</p>
+<p>Start with short text to verify first frame, audio, and captions before testing long prompts or continuous voice.</p>
+<h3 id="video-creation-panel">Video Creation Panel<a class="headerlink" href="#video-creation-panel" title="Permanent link">&para;</a></h3>
+<p>After entering “Video Creation”, the page has three columns:</p>
+<ul>
+<li>Left Source: select the avatar for the narrated video, or upload an image to create a new avatar.</li>
+<li>Center Offline Generation: choose the generation model, title, and audio source. Audio can come from an upload, TTS text, or a cloned voice.</li>
+<li>Right Result: preview, download, or open the asset library after generation completes.</li>
+</ul>
+<p>See <a href="../video-creation/">Video Creation</a> for the detailed workflow.</p>
+<h3 id="video-clone-panel">Video Clone Panel<a class="headerlink" href="#video-clone-panel" title="Permanent link">&para;</a></h3>
+<p>After entering “Video Clone”, the page has three columns:</p>
+<ul>
+<li>Left Source: select an existing avatar or upload a new source image. The source is the digital-human asset that will be driven.</li>
+<li>Center Output: cloned output, connection status, sent/received frames, dropped frames, and latency.</li>
+<li>Right Driving: select a camera, set FPS/resolution, or upload a driving video. Driving only provides expression and head motion; it does not become the identity.</li>
+</ul>
+<p>For source uploads, use a clear frontal or half-body image. The uploaded image is added to the avatar library and selected automatically. Uploading a driving video is a separate flow for testing a selfie video as the motion input.</p>
+<p>Useful controls:</p>
+<ul>
+<li>“Pasteback”: preserve the original source composition instead of showing only a zoomed head.</li>
+<li>“Crop driving face”: off by default; enable it only when the driving face is small or unstable.</li>
+<li>“Mouth opening” and “lip retargeting”: tune mouth motion. Retargeting can improve mouth shape, but aggressive settings may reduce motion to simple vertical opening.</li>
+<li>“Animation region”: choose mouth-only for lip tests, or full expression for richer motion.</li>
+</ul>
+<p>See <a href="../video-clone/">Video Clone</a> for the detailed workflow.</p>
+<h3 id="status-and-errors">Status and Errors<a class="headerlink" href="#status-and-errors" title="Permanent link">&para;</a></h3>
+<p>WebUI displays connection, session, model, and TTS errors. When something fails, read the page message first, then inspect API and WebUI logs.</p>
+<h2 id="first-use-flow">First-use Flow<a class="headerlink" href="#first-use-flow" title="Permanent link">&para;</a></h2>
+<h3 id="1-select-avatar">1. Select Avatar<a class="headerlink" href="#1-select-avatar" title="Permanent link">&para;</a></h3>
+<p>Select an avatar from the library. For the first run, use a built-in avatar to avoid custom asset issues.</p>
+<h3 id="2-select-model">2. Select Model<a class="headerlink" href="#2-select-model" title="Permanent link">&para;</a></h3>
+<p>Choose a model that matches the startup mode:</p>
+<ul>
+<li>Mock mode: choose the mock / driverless option.</li>
+<li>Local QuickTalk: choose <code>quicktalk</code>.</li>
+<li>OmniRT backend: choose the model specified in startup arguments.</li>
+</ul>
+<h3 id="3-select-voice">3. Select Voice<a class="headerlink" href="#3-select-voice" title="Permanent link">&para;</a></h3>
+<p>Use the default voice first. If multiple providers are configured, preview voices before selecting one.</p>
+<h3 id="4-create-session">4. Create Session<a class="headerlink" href="#4-create-session" title="Permanent link">&para;</a></h3>
+<p>Create a session after avatar, model, and voice are selected. When creation succeeds, the page enters the conversation state.</p>
+<h3 id="5-allow-microphone-permission">5. Allow Microphone Permission<a class="headerlink" href="#5-allow-microphone-permission" title="Permanent link">&para;</a></h3>
+<p>If you use voice input, allow microphone access in the browser. Text-only usage does not require it.</p>
+<h3 id="6-start-conversation">6. Start Conversation<a class="headerlink" href="#6-start-conversation" title="Permanent link">&para;</a></h3>
+<p>Try a short message:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Hello, please briefly introduce OpenTalking.
+</span></code></pre></div>
+<p>After reply, audio, and video are working, test more complex input.</p>
+<p><img alt="Pre-session confirmation: selected avatar, driver model, and voice." src="../../../../assets/images/usage/webui/webui-session-ready.png" /></p>
+<p><em>Pre-session confirmation: check avatar, driver model, and voice before clicking Start Conversation.</em></p>
+<h2 id="common-operations">Common Operations<a class="headerlink" href="#common-operations" title="Permanent link">&para;</a></h2>
+<h3 id="switch-avatar">Switch Avatar<a class="headerlink" href="#switch-avatar" title="Permanent link">&para;</a></h3>
+<p>After switching avatars, recreate the session. Different avatars may have different assets and model compatibility.</p>
+<h3 id="switch-model">Switch Model<a class="headerlink" href="#switch-model" title="Permanent link">&para;</a></h3>
+<p>Before switching models, make sure the backend supports the selected model. Otherwise session creation may fail.</p>
+<h3 id="switch-voice">Switch Voice<a class="headerlink" href="#switch-voice" title="Permanent link">&para;</a></h3>
+<p>Voice changes affect future replies. Already generated audio is not re-synthesized.</p>
+<h3 id="view-captions-and-events">View Captions and Events<a class="headerlink" href="#view-captions-and-events" title="Permanent link">&para;</a></h3>
+<p>The page shows conversation text, generated replies, and some status events. For detailed backend events, inspect API logs or later reference materials.</p>
+<h3 id="use-video-creation">Use Video Creation<a class="headerlink" href="#use-video-creation" title="Permanent link">&para;</a></h3>
+<p>After OpenTalking is running:</p>
+<ol>
+<li>Switch the top navigation to “Video Creation”.</li>
+<li>Select an existing avatar on the left, or upload an image to create a narrated-video avatar.</li>
+<li>Choose <code>quicktalk</code> or <code>wav2lip</code> as the generation model.</li>
+<li>Choose an audio source: upload audio, synthesize text, or clone a voice first.</li>
+<li>Click Generate and Save.</li>
+<li>Preview the result on the right or open the asset library to download it.</li>
+</ol>
+<h3 id="use-video-clone">Use Video Clone<a class="headerlink" href="#use-video-clone" title="Permanent link">&para;</a></h3>
+<p>After FasterLivePortrait and OmniRT are started according to the model documentation:</p>
+<ol>
+<li>Switch the top navigation to “Video Clone”.</li>
+<li>Select an existing avatar on the left, or upload a new source image.</li>
+<li>Select a camera on the right; for uploaded-video testing, upload a driving video.</li>
+<li>Adjust FPS, resolution, animation region, and mouth controls as needed.</li>
+<li>Click Start and inspect the output in the center.</li>
+<li>Click Stop or switch pages to release the camera and WebSocket.</li>
+</ol>
+<h3 id="stop-or-recreate-session">Stop or Recreate Session<a class="headerlink" href="#stop-or-recreate-session" title="Permanent link">&para;</a></h3>
+<p>If inference stalls, audio breaks, or configuration changes behave unexpectedly, stop the current session and create a new one. If needed, restart services:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>scripts/quickstart/stop_all.sh
+</span></code></pre></div>
+<h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
+<h3 id="blank-page-or-failed-assets">Blank Page or Failed Assets<a class="headerlink" href="#blank-page-or-failed-assets" title="Permanent link">&para;</a></h3>
+<p>Check that the WebUI dev server is still running and that the frontend has no compilation errors.</p>
+<h3 id="session-creation-fails">Session Creation Fails<a class="headerlink" href="#session-creation-fails" title="Permanent link">&para;</a></h3>
+<p>Check API status:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bash<span class="w"> </span>scripts/quickstart/status.sh
+</span></code></pre></div>
+<p>Then confirm the selected model matches the backend that was started.</p>
+<h3 id="no-audio">No Audio<a class="headerlink" href="#no-audio" title="Permanent link">&para;</a></h3>
+<p>Check browser mute state, TTS provider configuration, voice availability, credentials, and network access.</p>
+<h3 id="microphone-unavailable">Microphone Unavailable<a class="headerlink" href="#microphone-unavailable" title="Permanent link">&para;</a></h3>
+<p>Check browser permissions, system microphone permissions, and whether the page is opened from <code>localhost</code> or <code>127.0.0.1</code>.</p>
+<h3 id="video-clone-cannot-start-the-camera">Video Clone Cannot Start the Camera<a class="headerlink" href="#video-clone-cannot-start-the-camera" title="Permanent link">&para;</a></h3>
+<p>Open the page from <code>localhost</code> or <code>127.0.0.1</code>, allow camera permissions, and make sure the camera is not occupied by another app. If camera access is unavailable, upload a driving video first to validate the backend video-clone service.</p>
+<h3 id="video-clone-service-connection-fails">Video Clone Service Connection Fails<a class="headerlink" href="#video-clone-service-connection-fails" title="Permanent link">&para;</a></h3>
+<p>Check <code>/video-clone/status</code>, then verify that the OmniRT FasterLivePortrait runtime is running. Startup steps are covered in <a href="../../../model-support/models/fasterliveportrait/">FasterLivePortrait</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/datascale-ai/opentalking" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>

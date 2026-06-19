@@ -1,0 +1,5726 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open-source real-time digital-human orchestration layer with pluggable model backends, LLM, TTS, WebRTC, and character voices.">
+      
+      
+      
+        <link rel="canonical" href="https://datascale-ai.github.io/opentalking/latest/docs/api/tts-and-voices/">
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>TTS 与音色 - OpenTalking</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/navigation.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tts" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="OpenTalking" class="md-header__button md-logo" aria-label="OpenTalking" data-md-component="logo">
+      
+  <img src="../../../assets/images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenTalking
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TTS 与音色
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="选择当前语言">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="zh" class="md-select__link">
+              中文
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../../en/docs/api/tts-and-voices/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/datascale-ai/opentalking" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datascale-ai/opentalking
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+    
+  
+  首页
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../quick-start/" class="md-tabs__link">
+          
+  
+    
+  
+  快速开始
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../usage/" class="md-tabs__link">
+          
+  
+    
+  
+  使用指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../examples/" class="md-tabs__link">
+          
+  
+    
+  
+  案例教程
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../model-support/" class="md-tabs__link">
+          
+  
+    
+  
+  模型支持
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../model-deployment/" class="md-tabs__link">
+          
+  
+    
+  
+  部署指南
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+    
+  
+  参考资料
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../faq/" class="md-tabs__link">
+          
+  
+    
+  
+  常见问题
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="OpenTalking" class="md-nav__button md-logo" aria-label="OpenTalking" data-md-component="logo">
+      
+  <img src="../../../assets/images/logo.png" alt="logo">
+
+    </a>
+    OpenTalking
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/datascale-ai/opentalking" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datascale-ai/opentalking
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../.." class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    首页
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            首页
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../quick-start/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    快速开始
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            快速开始
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/platform-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    平台说明
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优云智算镜像快速体验
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/docker-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker 部署
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/windows-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows 部署
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../usage/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    使用指南
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            使用指南
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_2" id="__nav_1_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    命令行使用
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            命令行使用
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令行工具
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/cli-advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令行进阶参数
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    WebUI 使用
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            WebUI 使用
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/basic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    基础使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/video-creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    视频创作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/video-clone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    视频克隆
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/custom-avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    自定义 Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    音色与 TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../examples/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    案例教程
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            案例教程
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/companion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    情绪安抚与实时陪伴
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/customer-support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI 客服数字人
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/product-demo-live-sales/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    商品讲解与直播导购
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/course-news-presenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    课程与新闻口播
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/private-assistant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    私有数字人助手
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-support/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    模型支持
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            模型支持
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/selection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    模型与后端选择
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_3" id="__nav_1_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    推理后端
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            推理后端
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/local-adapter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/direct-websocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Direct WebSocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    支持的模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            支持的模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    部署指南
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            部署指南
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    部署基础
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_1" id="__nav_1_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            部署基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    部署拓扑
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Avatar 资产
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    后端模式
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_2" id="__nav_1_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            后端模式
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    数字人模型部署
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            数字人模型部署
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_3" id="__nav_1_6_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            QuickTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apple Silicon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_4" id="__nav_1_6_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Wav2Lip
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_3_5" id="__nav_1_6_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            MuseTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    部署配方
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            部署配方
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    本地语音 + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V100 + FasterLivePortrait + FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LLM 与 STT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mem0 记忆引擎
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    支持矩阵
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    参考资料
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_7" id="__nav_1_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            参考资料
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../community/publishing-docs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    文档发布
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/benchmark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    更新日志
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    常见问题
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            常见问题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    常见问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../quick-start/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    快速开始
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            快速开始
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/platform-notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    平台说明
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优云智算镜像快速体验
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/docker-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker 部署
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/windows-deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows 部署
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../usage/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    使用指南
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            使用指南
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    命令行使用
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            命令行使用
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令行工具
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/cli-advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令行进阶参数
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    WebUI 使用
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            WebUI 使用
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/basic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    基础使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/video-creation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    视频创作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/video-clone/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    视频克隆
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/custom-avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    自定义 Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/webui/voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    音色与 TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../examples/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    案例教程
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            案例教程
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/companion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    情绪安抚与实时陪伴
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/customer-support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI 客服数字人
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/product-demo-live-sales/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    商品讲解与直播导购
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/course-news-presenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    课程与新闻口播
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/private-assistant/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    私有数字人助手
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-support/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    模型支持
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            模型支持
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/selection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    模型与后端选择
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    推理后端
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            推理后端
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/local-adapter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/direct-websocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Direct WebSocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/runtime-backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    支持的模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            支持的模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    部署指南
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            部署指南
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    部署基础
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            部署基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    部署拓扑
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Avatar 资产
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    后端模式
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            后端模式
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Adapter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    数字人模型部署
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            数字人模型部署
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mock/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mock Backend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_3" id="__nav_6_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QuickTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            QuickTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apple Silicon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_4" id="__nav_6_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Wav2Lip
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Wav2Lip
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3_5" id="__nav_6_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    MuseTalk
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            MuseTalk
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OmniRT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    部署配方
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            部署配方
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    本地语音 + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    V100 + FasterLivePortrait + FlashHead
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LLM 与 STT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mem0 记忆引擎
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    支持矩阵
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    参考资料
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            参考资料
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/benchmark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Benchmark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    更新日志
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    常见问题
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            常见问题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    常见问题
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tts_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      TTS 预览
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TTS 预览">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-ttspreview" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST /tts/preview
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      音色目录
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="音色目录">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-voices" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET /voices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-voicesclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      POST /voices/clone
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-voicesentry_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      DELETE /voices/{entry_id}
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-voice-uploadstoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      GET /voice-uploads/{token}
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Provider 对比
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      源文件
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/datascale-ai/opentalking/edit/main/docs/zh/docs/api/tts-and-voices.md" title="编辑此页" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="tts">TTS 与音色<a class="headerlink" href="#tts" title="Permanent link">&para;</a></h1>
+<p>提供不依赖会话的一次性语音合成与复刻音色管理。</p>
+<h2 id="tts_1">TTS 预览<a class="headerlink" href="#tts_1" title="Permanent link">&para;</a></h2>
+<h3 id="post-ttspreview"><code>POST /tts/preview</code><a class="headerlink" href="#post-ttspreview" title="Permanent link">&para;</a></h3>
+<p>不创建会话直接合成一段短音频。前端在启动会话前用以试听音色。</p>
+<p><strong>请求体 — <code>application/json</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td>string</td>
+<td>是</td>
+<td>待合成文本，最长 1000 字。</td>
+</tr>
+<tr>
+<td><code>voice</code></td>
+<td>string</td>
+<td>否</td>
+<td>音色标识符，格式取决于 <code>tts_provider</code>。</td>
+</tr>
+<tr>
+<td><code>tts_provider</code></td>
+<td>string</td>
+<td>否</td>
+<td><code>edge</code>、<code>dashscope</code>、<code>local_cosyvoice</code>、<code>indextts</code>、<code>cosyvoice</code>、<code>elevenlabs</code>、<code>openai_compatible</code>、<code>xiaomi_mimo</code> 之一，默认取 <code>OPENTALKING_TTS_DEFAULT_PROVIDER</code>。</td>
+</tr>
+<tr>
+<td><code>tts_model</code></td>
+<td>string</td>
+<td>否</td>
+<td>provider 专属模型标识符。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>响应 — <code>200 OK</code></strong></p>
+<p>Content-Type：<code>audio/wav</code>。响应体为 16 位 PCM WAV，采样率与会话默认值一致（默认
+16000 Hz）。</p>
+<div class="language-bash highlight"><span class="filename">curl</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/tts/preview<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;你好，这是音色试听。&quot;, &quot;tts_provider&quot;: &quot;edge&quot;, &quot;voice&quot;: &quot;zh-CN-XiaoxiaoNeural&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span>-o<span class="w"> </span>preview.wav
+</span></code></pre></div>
+<p><strong>错误响应</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>400</code></td>
+<td><code>text</code> 为空，或超出配置的长度上限。</td>
+</tr>
+<tr>
+<td><code>502</code></td>
+<td>上游 TTS provider 返回错误。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_1">音色目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>音色目录使用本地 SQLite 数据库持久化复刻音色。复刻音色在显式删除前一直可用，进程
+重启后仍存在。</p>
+<h3 id="get-voices"><code>GET /voices</code><a class="headerlink" href="#get-voices" title="Permanent link">&para;</a></h3>
+<p>列出复刻音色。</p>
+<p><strong>查询参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>provider</code></td>
+<td>string | null</td>
+<td>按 provider 过滤。常用值：<code>dashscope</code>、<code>cosyvoice</code>、<code>local_cosyvoice</code>、<code>indextts</code>、<code>xiaomi_mimo</code>。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>响应 — <code>200 OK</code></strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dashscope&quot;</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">&quot;voice_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;u3e7c12ab&quot;</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">&quot;display_label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice 的音色&quot;</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="nt">&quot;target_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qwen3-tts-flash-realtime&quot;</span><span class="p">,</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;clone&quot;</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>字段说明：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>integer</td>
+<td>目录主键，用于 <code>DELETE /voices/{entry_id}</code>。</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>string | null</td>
+<td>为多租户预留。</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td>音色所属 provider，例如 <code>dashscope</code>、<code>cosyvoice</code>、<code>local_cosyvoice</code>、<code>indextts</code> 或 <code>xiaomi_mimo</code>。</td>
+</tr>
+<tr>
+<td><code>voice_id</code></td>
+<td>string</td>
+<td>provider 端的音色标识符。会话中作为 <code>tts_voice</code> 传入即可使用该复刻音色。</td>
+</tr>
+<tr>
+<td><code>display_label</code></td>
+<td>string</td>
+<td>人类可读名。</td>
+</tr>
+<tr>
+<td><code>target_model</code></td>
+<td>string</td>
+<td>复刻所针对的 TTS 模型标识符。</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td>string</td>
+<td>通过本端点创建的条目恒为 <code>"clone"</code>。</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><span class="filename">curl</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>curl<span class="w"> </span>-s<span class="w"> </span><span class="s1">&#39;http://localhost:8000/voices?provider=dashscope&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq
+</span></code></pre></div>
+<h3 id="post-voicesclone"><code>POST /voices/clone</code><a class="headerlink" href="#post-voicesclone" title="Permanent link">&para;</a></h3>
+<p>由音频样本复刻音色。支持本地 CosyVoice、IndexTTS、云端 CosyVoice、DashScope 和小米 MiMo，各 provider 有不同要求。</p>
+<p><strong>请求体 — <code>multipart/form-data</code></strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>provider</code></td>
+<td>string</td>
+<td>是</td>
+<td><code>local_cosyvoice</code>、<code>indextts</code>、<code>cosyvoice</code>、<code>dashscope</code> 或 <code>xiaomi_mimo</code>。</td>
+</tr>
+<tr>
+<td><code>target_model</code></td>
+<td>string</td>
+<td>是</td>
+<td>复刻所针对的 TTS 模型标识符。DashScope 需支持复刻的 Qwen VC 模型；CosyVoice 需 CosyVoice 模型标识符。</td>
+</tr>
+<tr>
+<td><code>display_label</code></td>
+<td>string</td>
+<td>是</td>
+<td>人类可读名。同名时端点自动追加时间戳后缀去重。</td>
+</tr>
+<tr>
+<td><code>audio</code></td>
+<td>file</td>
+<td>是</td>
+<td>音频样本，最小 256 字节，最大 12 MB。</td>
+</tr>
+<tr>
+<td><code>prefix</code></td>
+<td>string</td>
+<td>否</td>
+<td>仅 CosyVoice 使用。可选音色标识符前缀，缺省时随机生成。</td>
+</tr>
+<tr>
+<td><code>preferred_name</code></td>
+<td>string</td>
+<td>否</td>
+<td>仅 DashScope 使用。建议音色名，缺省时随机生成。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>provider 相关要求</strong></p>
+<ul>
+<li><strong>CosyVoice</strong> 将音频样本上传至本地并把样本的公网 URL 提供给 DashScope；OpenTalking
+  服务须能被 DashScope 反向访问。通过 <code>OPENTALKING_PUBLIC_BASE_URL</code> 指定公网 URL。
+  样本上传后约 300 秒由后台任务自动从磁盘移除。</li>
+<li><strong>local_cosyvoice</strong> 和 <strong>indextts</strong> 将参考音频保存到本地音色目录，不需要公网可达。</li>
+<li><strong>DashScope</strong> 使用 base64 内联音频，无需公网可达。</li>
+<li><strong>xiaomi_mimo</strong> 将参考音频保存为 data URI，合成时传给小米 voice clone 模型。</li>
+</ul>
+<p><strong>响应 — <code>200 OK</code></strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;entry_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;voice_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;u3e7c12ab&quot;</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">&quot;display_label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice 的音色&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">&quot;provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dashscope&quot;</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">&quot;target_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qwen3-tts-flash-realtime&quot;</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entry_id</code></td>
+<td>integer</td>
+<td>目录主键，供后续删除使用。</td>
+</tr>
+<tr>
+<td><code>voice_id</code></td>
+<td>string</td>
+<td>provider 端的音色标识符。<code>speak</code> 或 <code>chat</code> 调用时使用该值。</td>
+</tr>
+<tr>
+<td><code>display_label</code></td>
+<td>string</td>
+<td>解析后的展示名（可能含去重后缀）。</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td>人类可读状态信息。</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><span class="filename">curl：DashScope 复刻</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/voices/clone<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>-F<span class="w"> </span><span class="nv">provider</span><span class="o">=</span>dashscope<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>-F<span class="w"> </span><span class="nv">target_model</span><span class="o">=</span>qwen3-tts-flash-realtime<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span>-F<span class="w"> </span><span class="nv">display_label</span><span class="o">=</span><span class="s2">&quot;Alice 的音色&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span>-F<span class="w"> </span><span class="nv">audio</span><span class="o">=</span>@sample.wav
+</span></code></pre></div>
+<p><strong>错误响应</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>400</code></td>
+<td><code>provider</code> 不在支持列表内；音频过短、缺失或超过 12 MB；音频格式无法转换为 24 kHz 单声道 WAV。</td>
+</tr>
+<tr>
+<td><code>502</code></td>
+<td>上游 provider 返回错误（DashScope 拒绝、CosyVoice 复刻失败等）。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="delete-voicesentry_id"><code>DELETE /voices/{entry_id}</code><a class="headerlink" href="#delete-voicesentry_id" title="Permanent link">&para;</a></h3>
+<p>从目录中删除复刻音色。</p>
+<p><strong>路径参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entry_id</code></td>
+<td>integer</td>
+<td>来自 <code>GET /voices</code> 的目录主键。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>响应 — <code>200 OK</code></strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span><span class="nt">&quot;deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>错误响应</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>404</code></td>
+<td>条目不存在。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="get-voice-uploadstoken"><code>GET /voice-uploads/{token}</code><a class="headerlink" href="#get-voice-uploadstoken" title="Permanent link">&para;</a></h3>
+<p>供 CosyVoice 反查上传音频样本的内部端点。其存在的目的是让 DashScope CosyVoice 服务
+通过 HTTP 取得样本。</p>
+<p><strong>路径参数</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token</code></td>
+<td>string</td>
+<td><code>POST /voices/clone</code> 生成的 32 字符十六进制 token。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>响应 — <code>200 OK</code></strong></p>
+<p>Content-Type：<code>audio/wav</code>。响应体为上传的音频样本。</p>
+<p><strong>错误响应</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>404</code></td>
+<td>token 格式错误或样本已过期。</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">公网暴露</p>
+<p>该端点对外提供用户上传音频。生产部署应在反向代理层对该路径限流，并仅在启用
+CosyVoice 复刻时将 <code>OPENTALKING_PUBLIC_BASE_URL</code> 指向公网可达地址。</p>
+</div>
+<h2 id="provider">Provider 对比<a class="headerlink" href="#provider" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>复刻</th>
+<th>音色格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>edge</code></td>
+<td>不支持</td>
+<td><code>&lt;lang&gt;-&lt;region&gt;-&lt;name&gt;Neural</code>（如 <code>zh-CN-XiaoxiaoNeural</code>）</td>
+<td>内置，无须 API Key。</td>
+</tr>
+<tr>
+<td><code>dashscope</code></td>
+<td>支持</td>
+<td>控制台音色名（如 <code>xiaoxiao</code>）或复刻返回的 <code>voice_id</code></td>
+<td>需 <code>OPENTALKING_TTS_DASHSCOPE_API_KEY</code>。</td>
+</tr>
+<tr>
+<td><code>cosyvoice</code></td>
+<td>支持</td>
+<td>复刻返回的 <code>voice_id</code>（带前缀）</td>
+<td>OpenTalking 服务须可被 DashScope 反向访问。</td>
+</tr>
+<tr>
+<td><code>elevenlabs</code></td>
+<td>在 OpenTalking 之外完成</td>
+<td>ElevenLabs <code>voice_id</code></td>
+<td>需 <code>OPENTALKING_TTS_ELEVENLABS_API_KEY</code>。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">源文件<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>apps/api/routes/tts_preview.py</code> —— <code>/tts/preview</code>。</li>
+<li><code>apps/api/routes/voices.py</code> —— <code>/voices/*</code>、<code>/voice-uploads/{token}</code>。</li>
+<li><code>opentalking/providers/tts/dashscope_qwen/clone.py</code> —— DashScope 与 CosyVoice 复刻实现。</li>
+<li><code>opentalking/voice/store.py</code> —— 音色目录（SQLite）。</li>
+<li><code>opentalking/tts/adapters/</code> —— <code>/tts/preview</code> 与会话合成所用的 provider 适配器。</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/datascale-ai/opentalking" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>

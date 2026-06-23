@@ -154,6 +154,81 @@ def test_video_creation_audio_upload_returns_export_video(tmp_path: Path, monkey
     assert payload["export_video"]["download_url"].startswith("/exports/videos/")
 
 
+def test_video_creation_route_passes_composition_config(tmp_path: Path, monkeypatch) -> None:
+    client, creators = _client(tmp_path, monkeypatch)
+    composition = {
+        "scene_composition_id": "scene-anchor-news",
+        "background_id": "bg-newsroom",
+        "background_color": "#ffffff",
+        "avatar_fit": "contain",
+        "avatar_anchor": "center",
+        "avatar_scale": 1.25,
+        "avatar_offset_x": 96,
+        "avatar_offset_y": -32,
+    }
+    with client:
+        response = client.post(
+            "/video-creation/jobs",
+            data={
+                "model": "wav2lip",
+                "avatar_id": "anchor",
+                "audio_source": "upload",
+                "title": "Composed take",
+                "composition_config": json.dumps(composition),
+            },
+            files={"audio_file": ("speech.wav", b"RIFFaudio", "audio/wav")},
+        )
+
+    assert response.status_code == 200, response.text
+    assert creators[0].calls[0][1]["composition_config"] == composition
+
+
+def test_video_creation_route_rejects_invalid_composition_config(tmp_path: Path, monkeypatch) -> None:
+    client, _creators = _client(tmp_path, monkeypatch)
+    with client:
+        response = client.post(
+            "/video-creation/jobs",
+            data={
+                "model": "wav2lip",
+                "avatar_id": "anchor",
+                "audio_source": "upload",
+                "title": "Broken composition",
+                "composition_config": "{",
+            },
+            files={"audio_file": ("speech.wav", b"RIFFaudio", "audio/wav")},
+        )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "composition_config must be valid JSON"
+
+
+def test_write_video_only_preserves_bgr_frames_for_opencv_writer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    captured: list[np.ndarray] = []
+
+    class FakeWriter:
+        def isOpened(self) -> bool:
+            return True
+
+        def write(self, frame: np.ndarray) -> None:
+            captured.append(np.asarray(frame).copy())
+
+        def release(self) -> None:
+            return None
+
+    monkeypatch.setattr(video_creation_module.cv2, "VideoWriter_fourcc", lambda *_args: 0)
+    monkeypatch.setattr(video_creation_module.cv2, "VideoWriter", lambda *_args, **_kwargs: FakeWriter())
+
+    bgr = np.zeros((2, 2, 3), dtype=np.uint8)
+    bgr[:, :] = [200, 20, 10]
+
+    video_creation_module._write_video_only(tmp_path / "out.mp4", [bgr], 25)
+
+    assert captured
+    assert captured[0][0, 0].tolist() == [200, 20, 10]
+
+
 def test_video_creation_quicktalk_default_backend_is_omnirt(monkeypatch: pytest.MonkeyPatch) -> None:
     from opentalking.core.model_config import clear_model_config_cache
     from opentalking.providers.synthesis.backends import resolve_model_backend
@@ -891,6 +966,133 @@ async def test_video_creation_service_renders_quicktalk_via_omnirt(
     assert client.closed is True
     assert result["source"] == "upload"
     assert result["export_video"]["model"] == "quicktalk"
+
+
+@pytest.mark.asyncio
+async def test_video_creation_service_composites_generated_frames_over_scene_background(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+    from opentalking.scene_assets import SceneAssetStore
+    from PIL import Image
+    import io
+
+    avatars = tmp_path / "avatars"
+    exports = tmp_path / "exports"
+    scene_assets = tmp_path / "scene-assets"
+    _write_avatar(avatars)
+    transparent_reference = Image.new("RGBA", (4, 4), (255, 0, 0, 0))
+    transparent_reference.save(avatars / "anchor" / "reference.png")
+    uploaded = tmp_path / "speech.wav"
+    uploaded.write_bytes(b"RIFFaudio")
+
+    buffer = io.BytesIO()
+    Image.new("RGB", (4, 4), (10, 20, 200)).save(buffer, format="PNG")
+    background = SceneAssetStore(scene_assets).create_background(
+        content=buffer.getvalue(),
+        filename="blue.png",
+        mime_type="image/png",
+        name="Blue",
+    )
+
+    captured_frames: list[np.ndarray] = []
+
+    class FakeWSClient:
+        def __init__(self, ws_url: str, *, extra_headers: dict[str, str] | None = None) -> None:
+            self.ws_url = ws_url
+            self.extra_headers = extra_headers or {}
+
+    class FakeOmniRTClient:
+        def __init__(self, _ws_client: FakeWSClient) -> None:
+            self.fps = 25
+            self.audio_chunk_samples = 4
+
+        async def init_session(self, **_kwargs: object) -> dict[str, object]:
+            return {"type": "init_ok"}
+
+        async def prewarm(self) -> dict[str, object]:
+            return {"type": "prewarm_skipped"}
+
+        async def generate(self, _audio_pcm: np.ndarray) -> list[VideoFrameData]:
+            red = np.zeros((4, 4, 3), dtype=np.uint8)
+            red[:, :, 0] = 255
+            return [VideoFrameData(data=red, width=4, height=4, timestamp_ms=0.0)]
+
+        async def close(self, send_close_msg: bool = True) -> None:
+            return None
+
+    async def fake_decode(_path: Path) -> np.ndarray:
+        return np.arange(4, dtype=np.int16)
+
+    async def fake_mux(_ffmpeg_bin: str, _video_in: Path, _audio_in: Path, out_mp4: Path) -> None:
+        out_mp4.write_bytes(b"mp4")
+
+    def fake_write_video_only(path: Path, frames: list[np.ndarray], _fps: float) -> None:
+        captured_frames.extend(np.asarray(frame).copy() for frame in frames)
+        path.write_bytes(b"video")
+
+    def fake_create_video_export(root: Path, **kwargs: object) -> dict[str, object]:
+        return {
+            "id": "export-composed",
+            "kind": "video_creation",
+            "title": kwargs["title"],
+            "duration_sec": kwargs["duration_sec"],
+            "size_bytes": len(kwargs["content"]),
+            "mime_type": "video/mp4",
+            "created_at": "2026-06-04T00:00:00Z",
+            "path": str(root / "export-composed.mp4"),
+            "session_id": kwargs["session_id"],
+            "avatar_id": kwargs["avatar_id"],
+            "model": kwargs["model"],
+        }
+
+    monkeypatch.setattr(video_creation_module, "FlashTalkWSClient", FakeWSClient, raising=False)
+    monkeypatch.setattr(video_creation_module, "OmniRTAudio2VideoClient", FakeOmniRTClient, raising=False)
+    monkeypatch.setattr(video_creation_module, "decode_audio_file_to_pcm_i16", fake_decode)
+    monkeypatch.setattr(video_creation_module, "_write_video_only", fake_write_video_only)
+    monkeypatch.setattr(video_creation_module, "_ffmpeg_mux", fake_mux)
+    monkeypatch.setattr(
+        video_creation_module,
+        "resolve_model_backend",
+        lambda model, _settings: SimpleNamespace(model=model, backend="omnirt", ws_url=""),
+    )
+    monkeypatch.setattr(video_creation_module, "create_video_export", fake_create_video_export)
+
+    service = VideoCreationService(
+        SimpleNamespace(
+            avatars_dir=str(avatars),
+            exports_dir=str(exports),
+            scene_assets_dir=str(scene_assets),
+            export_max_bytes=1024 * 1024,
+            ffmpeg_bin="ffmpeg",
+            omnirt_endpoint="http://127.0.0.1:9000",
+            omnirt_audio2video_path_template="/v1/audio2video/{model}",
+            omnirt_api_key="",
+        )
+    )
+
+    result = await service.create_from_audio_file(
+        model="wav2lip",
+        avatar_id="anchor",
+        upload_path=uploaded,
+        title="Composed take",
+        composition_config={
+            "background_id": background["id"],
+            "avatar_fit": "contain",
+            "avatar_anchor": "center",
+            "avatar_scale": 1.0,
+            "avatar_offset_x": 0,
+            "avatar_offset_y": 0,
+            "output_width": 320,
+            "output_height": 180,
+        },
+    )
+
+    assert result["export_video"]["model"] == "wav2lip"
+    assert captured_frames
+    assert captured_frames[0].shape == (180, 320, 3)
+    assert captured_frames[0][0, 0].tolist() == [200, 20, 10]
 
 
 @pytest.mark.asyncio

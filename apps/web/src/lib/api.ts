@@ -332,6 +332,19 @@ export type VideoCreationJobResponse = {
   export_video: ExportVideoItem;
 };
 
+export type VideoCreationCompositionConfig = {
+  scene_composition_id?: string | null;
+  background_id?: string | null;
+  background_color?: string;
+  avatar_fit?: "contain" | "cover";
+  avatar_anchor?: "center" | "bottom" | "left" | "right";
+  avatar_scale?: number;
+  avatar_offset_x?: number;
+  avatar_offset_y?: number;
+  output_width?: number;
+  output_height?: number;
+};
+
 export type CreateVideoCreationJobInput = {
   model: string;
   avatarId: string;
@@ -346,6 +359,7 @@ export type CreateVideoCreationJobInput = {
   fasterliveportraitConfig?: Record<string, unknown>;
   indexttsConfig?: IndexTTSConfig;
   indexttsEmotionAudioFile?: File | null;
+  compositionConfig?: VideoCreationCompositionConfig | null;
 };
 
 export async function createVideoCreationJob(input: CreateVideoCreationJobInput): Promise<VideoCreationJobResponse> {
@@ -372,6 +386,9 @@ export async function createVideoCreationJob(input: CreateVideoCreationJobInput)
   }
   if (input.indexttsEmotionAudioFile) {
     form.set("indextts_emotion_audio_file", input.indexttsEmotionAudioFile);
+  }
+  if (input.compositionConfig) {
+    form.set("composition_config", JSON.stringify(input.compositionConfig));
   }
   return apiPostForm<VideoCreationJobResponse>("/video-creation/jobs", form);
 }

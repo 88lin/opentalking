@@ -25,6 +25,7 @@ from opentalking.providers.synthesis.backends import resolve_model_backend
 from opentalking.providers.synthesis.flashtalk.ws_client import FlashTalkWSClient
 from opentalking.providers.synthesis.omnirt import auth_headers, resolve_synthesis_ws_url
 from opentalking.providers.tts.factory import build_tts_adapter
+from opentalking.scene_assets import SceneAssetStore
 
 log = logging.getLogger(__name__)
 
@@ -87,6 +88,204 @@ def _validate_reference_duration(settings: object, duration_sec: int | None) -> 
         allowed = ", ".join(str(item) for item in sorted(options))
         raise ValueError(f"duration_sec must be one of: {allowed}")
     return value
+
+
+def _coerce_composition_float(
+    payload: Mapping[str, object],
+    key: str,
+    default: float,
+    *,
+    min_value: float,
+    max_value: float,
+) -> float:
+    raw = payload.get(key)
+    if raw in (None, ""):
+        return default
+    if not isinstance(raw, str | int | float):
+        raise ValueError(f"{key} must be a number")
+    try:
+        value = float(raw)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{key} must be a number") from exc
+    if value < min_value or value > max_value:
+        raise ValueError(f"{key} must be between {min_value:g} and {max_value:g}")
+    return value
+
+
+def _coerce_composition_int(
+    payload: Mapping[str, object],
+    key: str,
+    default: int,
+    *,
+    min_value: int,
+    max_value: int,
+) -> int:
+    raw = payload.get(key)
+    if raw in (None, ""):
+        value = default
+    elif isinstance(raw, str | int | float):
+        try:
+            value = int(raw)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{key} must be an integer") from exc
+    else:
+        raise ValueError(f"{key} must be an integer")
+    if value < min_value or value > max_value:
+        raise ValueError(f"{key} must be between {min_value:g} and {max_value:g}")
+    return value + (value % 2)
+
+
+def _normalize_video_composition_config(
+    settings: object,
+    avatar_path: Path,
+    config: Mapping[str, object] | None,
+) -> dict[str, object] | None:
+    if not config:
+        return None
+    background_id = str(config.get("background_id") or "").strip()
+    if not background_id:
+        return None
+    store = SceneAssetStore(_settings_path(settings, "scene_assets_dir", "./data/scene-assets"))
+    background = next((item for item in store.list_backgrounds() if item.get("id") == background_id), None)
+    if background is None:
+        raise ValueError("background_id not found")
+    if str(background.get("kind") or "") == "video":
+        raise ValueError("video backgrounds are not supported for video creation")
+    background_path = store.background_file_path(background_id)
+    if background_path is None:
+        raise FileNotFoundError("background file not found")
+    avatar_fit = str(config.get("avatar_fit") or "contain").strip()
+    avatar_anchor = str(config.get("avatar_anchor") or "center").strip()
+    if avatar_fit not in {"contain", "cover"}:
+        raise ValueError("invalid avatar_fit")
+    if avatar_anchor not in {"center", "bottom", "left", "right"}:
+        raise ValueError("invalid avatar_anchor")
+    return {
+        "background_path": background_path,
+        "avatar_mask_path": _reference_image_path(avatar_path),
+        "avatar_fit": avatar_fit,
+        "avatar_anchor": avatar_anchor,
+        "avatar_scale": _coerce_composition_float(config, "avatar_scale", 1.0, min_value=0.1, max_value=4.0),
+        "avatar_offset_x": _coerce_composition_float(config, "avatar_offset_x", 0.0, min_value=-2000.0, max_value=2000.0),
+        "avatar_offset_y": _coerce_composition_float(config, "avatar_offset_y", 0.0, min_value=-2000.0, max_value=2000.0),
+        "output_width": _coerce_composition_int(config, "output_width", 1280, min_value=320, max_value=3840),
+        "output_height": _coerce_composition_int(config, "output_height", 720, min_value=180, max_value=2160),
+    }
+
+
+def _resize_cover(image: np.ndarray, width: int, height: int) -> np.ndarray:
+    src_h, src_w = image.shape[:2]
+    scale = max(float(width) / float(src_w), float(height) / float(src_h))
+    new_w = max(1, int(round(src_w * scale)))
+    new_h = max(1, int(round(src_h * scale)))
+    resized = cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
+    left = max(0, (new_w - width) // 2)
+    top = max(0, (new_h - height) // 2)
+    return np.ascontiguousarray(resized[top:top + height, left:left + width])
+
+
+def _avatar_anchor_origin(anchor: str, canvas_w: int, canvas_h: int, layer_w: int, layer_h: int) -> tuple[int, int]:
+    if anchor == "bottom":
+        return (canvas_w - layer_w) // 2, canvas_h - layer_h
+    if anchor == "left":
+        return 0, (canvas_h - layer_h) // 2
+    if anchor == "right":
+        return canvas_w - layer_w, (canvas_h - layer_h) // 2
+    return (canvas_w - layer_w) // 2, (canvas_h - layer_h) // 2
+
+
+def _load_avatar_alpha_mask(path: object) -> np.ndarray | None:
+    image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+    if image is None or image.ndim != 3 or image.shape[2] < 4:
+        return None
+    return image[:, :, 3].astype(np.float32) / 255.0
+
+
+def _composite_avatar_layer(
+    background: np.ndarray,
+    frame: np.ndarray,
+    *,
+    avatar_fit: str,
+    avatar_anchor: str,
+    avatar_scale: float,
+    avatar_offset_x: float,
+    avatar_offset_y: float,
+    fallback_alpha: np.ndarray | None = None,
+) -> np.ndarray:
+    canvas_h, canvas_w = background.shape[:2]
+    layer = np.asarray(frame, dtype=np.uint8)
+    if layer.ndim != 3 or layer.shape[2] < 3:
+        return background
+    bgr = layer[:, :, :3]
+    if layer.shape[2] >= 4:
+        alpha = layer[:, :, 3].astype(np.float32) / 255.0
+    elif fallback_alpha is not None:
+        alpha = fallback_alpha
+        if alpha.shape[:2] != bgr.shape[:2]:
+            alpha = cv2.resize(alpha, (bgr.shape[1], bgr.shape[0]), interpolation=cv2.INTER_AREA).astype(np.float32)
+    else:
+        alpha = np.ones(layer.shape[:2], dtype=np.float32)
+    fit_scale = min(float(canvas_w) / float(bgr.shape[1]), float(canvas_h) / float(bgr.shape[0]))
+    if avatar_fit == "cover":
+        fit_scale = max(float(canvas_w) / float(bgr.shape[1]), float(canvas_h) / float(bgr.shape[0]))
+    scale = max(0.01, fit_scale * float(avatar_scale))
+    layer_w = max(1, int(round(bgr.shape[1] * scale)))
+    layer_h = max(1, int(round(bgr.shape[0] * scale)))
+    bgr_resized = cv2.resize(bgr, (layer_w, layer_h), interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
+    alpha_resized = cv2.resize(alpha, (layer_w, layer_h), interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
+    origin_x, origin_y = _avatar_anchor_origin(avatar_anchor, canvas_w, canvas_h, layer_w, layer_h)
+    left = int(round(origin_x + avatar_offset_x))
+    top = int(round(origin_y + avatar_offset_y))
+    dst_left = max(0, left)
+    dst_top = max(0, top)
+    dst_right = min(canvas_w, left + layer_w)
+    dst_bottom = min(canvas_h, top + layer_h)
+    if dst_left >= dst_right or dst_top >= dst_bottom:
+        return background
+    src_left = dst_left - left
+    src_top = dst_top - top
+    src_right = src_left + (dst_right - dst_left)
+    src_bottom = src_top + (dst_bottom - dst_top)
+    out = background.copy()
+    fg = bgr_resized[src_top:src_bottom, src_left:src_right].astype(np.float32)
+    mask = alpha_resized[src_top:src_bottom, src_left:src_right].astype(np.float32)[:, :, None]
+    bg = out[dst_top:dst_bottom, dst_left:dst_right].astype(np.float32)
+    out[dst_top:dst_bottom, dst_left:dst_right] = np.clip((fg * mask) + (bg * (1.0 - mask)), 0, 255).astype(np.uint8)
+    return out
+
+
+def _apply_video_composition(
+    frames: list[np.ndarray],
+    *,
+    config: Mapping[str, object] | None,
+) -> list[np.ndarray]:
+    if not frames or not config:
+        return frames
+    first = np.asarray(frames[0])
+    frame_height, frame_width = first.shape[:2]
+    width = _coerce_composition_int(config, "output_width", int(frame_width), min_value=320, max_value=3840)
+    height = _coerce_composition_int(config, "output_height", int(frame_height), min_value=180, max_value=2160)
+    background_raw = cv2.imread(str(config["background_path"]), cv2.IMREAD_COLOR)
+    if background_raw is None:
+        raise FileNotFoundError("background file not found")
+    background = _resize_cover(background_raw, int(width), int(height))
+    fallback_alpha = _load_avatar_alpha_mask(config.get("avatar_mask_path"))
+    avatar_scale = _coerce_composition_float(config, "avatar_scale", 1.0, min_value=0.1, max_value=4.0)
+    avatar_offset_x = _coerce_composition_float(config, "avatar_offset_x", 0.0, min_value=-2000.0, max_value=2000.0)
+    avatar_offset_y = _coerce_composition_float(config, "avatar_offset_y", 0.0, min_value=-2000.0, max_value=2000.0)
+    return [
+        _composite_avatar_layer(
+            background,
+            frame,
+            avatar_fit=str(config.get("avatar_fit") or "contain"),
+            avatar_anchor=str(config.get("avatar_anchor") or "center"),
+            avatar_scale=avatar_scale,
+            avatar_offset_x=avatar_offset_x,
+            avatar_offset_y=avatar_offset_y,
+            fallback_alpha=fallback_alpha,
+        )
+        for frame in frames
+    ]
 
 
 def _build_reference_driver_pcm(total_samples: int, *, level: float = 480.0) -> np.ndarray:
@@ -550,7 +749,8 @@ def _frame_array(frame: VideoFrameData | Any) -> np.ndarray | None:
     arr = np.asarray(data)
     if arr.ndim != 3 or arr.shape[2] < 3:
         return None
-    return np.ascontiguousarray(arr[:, :, :3].astype(np.uint8, copy=False))
+    channels = 4 if arr.shape[2] >= 4 else 3
+    return np.ascontiguousarray(arr[:, :, :channels].astype(np.uint8, copy=False))
 
 
 def _write_wav(path: Path, pcm: np.ndarray, sample_rate: int = 16000) -> None:
@@ -584,6 +784,8 @@ def _write_video_only(path: Path, frames: list[np.ndarray], fps: float) -> None:
             if arr.shape[:2] != (height, width):
                 resized = cv2.resize(arr, (width, height), interpolation=cv2.INTER_AREA)
                 arr = np.asarray(resized, dtype=np.uint8)
+            if arr.ndim == 3 and arr.shape[2] >= 4:
+                arr = arr[:, :, :3]
             writer.write(arr)
     finally:
         writer.release()
@@ -631,6 +833,7 @@ class VideoCreationService:
         title: str,
         mime_type: str | None = None,
         fasterliveportrait_config: Mapping[str, object] | None = None,
+        composition_config: Mapping[str, object] | None = None,
     ) -> dict[str, Any]:
         pcm = await decode_audio_file_to_pcm_i16(upload_path)
         if pcm.size == 0:
@@ -642,6 +845,7 @@ class VideoCreationService:
             title=title,
             source="upload",
             fasterliveportrait_config=fasterliveportrait_config,
+            composition_config=composition_config,
         )
 
     async def create_from_tts_text(
@@ -657,6 +861,7 @@ class VideoCreationService:
         source: str = "tts_text",
         fasterliveportrait_config: Mapping[str, object] | None = None,
         indextts_config: Mapping[str, object] | None = None,
+        composition_config: Mapping[str, object] | None = None,
     ) -> dict[str, Any]:
         text_value = text.strip()
         if not text_value:
@@ -694,6 +899,7 @@ class VideoCreationService:
             title=title,
             source=source,
             fasterliveportrait_config=fasterliveportrait_config,
+            composition_config=composition_config,
         )
 
     async def create_reference_video(
@@ -703,6 +909,7 @@ class VideoCreationService:
         avatar_id: str,
         duration_sec: int | None,
         title: str,
+        composition_config: Mapping[str, object] | None = None,
     ) -> dict[str, Any]:
         model_value = _normalize_model(model)
         if model_value != "flashtalk":
@@ -720,6 +927,7 @@ class VideoCreationService:
             pcm=pcm,
             title=title,
             source="reference_video",
+            composition_config=composition_config,
         )
 
     async def _resample_pcm(self, pcm: np.ndarray, sample_rate: int) -> np.ndarray:
@@ -763,9 +971,11 @@ class VideoCreationService:
         title: str,
         source: str,
         fasterliveportrait_config: Mapping[str, object] | None = None,
+        composition_config: Mapping[str, object] | None = None,
     ) -> dict[str, Any]:
         model_value = _normalize_model(model)
         avatar_path = _avatar_dir(self.settings, avatar_id)
+        normalized_composition_config = _normalize_video_composition_config(self.settings, avatar_path, composition_config)
         job_id = uuid.uuid4().hex
         work_dir = _settings_path(self.settings, "exports_dir", "./data/exports") / "video_creation_jobs" / job_id
         work_dir.mkdir(parents=True, exist_ok=False)
@@ -832,6 +1042,7 @@ class VideoCreationService:
         target_frames = max(1, int(round(float(pcm.size) * fps / float(sample_rate))))
         if len(frames) > target_frames:
             frames = frames[:target_frames]
+        frames = _apply_video_composition(frames, config=normalized_composition_config)
 
         video_only = work_dir / "video_only.mp4"
         _write_video_only(video_only, frames, fps)

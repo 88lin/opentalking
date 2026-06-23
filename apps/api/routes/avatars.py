@@ -21,6 +21,7 @@ from PIL import Image
 
 from opentalking.avatar import mouth_metadata
 from opentalking.avatar.loader import load_avatar_bundle
+from opentalking.avatar.matting import MattingError, image_has_transparency, remove_avatar_background
 from opentalking.avatar.validator import list_avatar_dirs
 from opentalking.models.quicktalk.paths import resolve_quicktalk_asset_root
 from opentalking.models.registry import get_adapter
@@ -247,13 +248,7 @@ def _resize_uploaded_avatar_image(image: Image.Image, *, max_width: int, max_hei
 
 
 def _avatar_image_has_alpha(image: Image.Image) -> bool:
-    if "A" not in image.getbands():
-        return False
-    alpha = image.getchannel("A")
-    low, high = alpha.getextrema()
-    if not isinstance(low, int | float) or not isinstance(high, int | float):
-        return False
-    return low < 255 or high < 255
+    return image_has_transparency(image)
 
 
 def _update_manifest_matting_status(manifest_path: Path, image: Image.Image) -> None:
@@ -262,6 +257,21 @@ def _update_manifest_matting_status(manifest_path: Path, image: Image.Image) -> 
     metadata["matting_status"] = "transparent_ready" if _avatar_image_has_alpha(image) else "opaque"
     raw["metadata"] = metadata
     manifest_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _update_manifest_matting_source(
+    manifest_path: Path,
+    *,
+    provider_name: str,
+    original_source_image: str,
+) -> None:
+    raw = _read_manifest(manifest_path)
+    metadata = dict(raw.get("metadata") or {})
+    metadata["matting_provider"] = provider_name
+    metadata["matting_source"] = "upload_auto"
+    metadata["original_source_image"] = original_source_image
+    raw["metadata"] = metadata
+    _write_manifest(manifest_path, raw)
 
 
 def _update_manifest_dimensions(manifest_path: Path, image: Image.Image) -> None:
@@ -920,6 +930,7 @@ async def create_custom_avatar(
     base_avatar_id: str = Form(...),
     name: str = Form(...),
     model: str | None = Form(default=None),
+    remove_background: bool = Form(default=False),
     image: UploadFile | None = File(default=None),
     video: UploadFile | None = File(default=None),
 ) -> AvatarSummary:
@@ -965,12 +976,28 @@ async def create_custom_avatar(
         )
         max_w, max_h = _custom_avatar_max_size()
         fitted_image = _resize_uploaded_avatar_image(image_rgb, max_width=max_w, max_height=max_h)
+        source_dir = target_dir / "source"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        if remove_background and video_body is None:
+            original_image = fitted_image.copy()
+            try:
+                fitted_image, matting_provider = remove_avatar_background(
+                    fitted_image,
+                    provider_name=str(getattr(request.app.state.settings, "avatar_matting_provider", "rembg")),
+                    settings=request.app.state.settings,
+                )
+            except MattingError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            original_image.save(source_dir / "original.png", format="PNG")
+            _update_manifest_matting_source(
+                target_dir / "manifest.json",
+                provider_name=matting_provider,
+                original_source_image="source/original.png",
+            )
         _update_manifest_dimensions(target_dir / "manifest.json", fitted_image)
         _update_manifest_matting_status(target_dir / "manifest.json", fitted_image)
         fitted_image.save(target_dir / "preview.png", format="PNG")
         fitted_image.save(target_dir / "reference.png", format="PNG")
-        source_dir = target_dir / "source"
-        source_dir.mkdir(parents=True, exist_ok=True)
         fitted_image.save(source_dir / "source.png", format="PNG")
         if video_body is not None:
             video_name = f"source_video{video_suffix}"
@@ -1000,6 +1027,9 @@ async def create_custom_avatar(
             metadata["frame_dir"] = "frames"
             raw["metadata"] = metadata
             _write_manifest(target_dir / "manifest.json", raw)
+    except HTTPException:
+        shutil.rmtree(target_dir, ignore_errors=True)
+        raise
     except Exception as exc:  # noqa: BLE001
         shutil.rmtree(target_dir, ignore_errors=True)
         raise HTTPException(status_code=500, detail=f"failed to create custom avatar: {exc}") from exc

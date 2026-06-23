@@ -24,7 +24,11 @@ type AvatarSelectionStageProps = {
   prewarmState?: "idle" | "preparing" | "ready" | "failed";
   onAvatarChange: (id: string) => void;
   onStart: () => void;
-  onCustomAvatarCreate: (file: File, name: string) => void;
+  onCustomAvatarCreate: (
+    file: File,
+    name: string,
+    options?: { removeBackground?: boolean },
+  ) => Promise<AvatarSummary | null | void>;
   onAvatarDelete?: (avatar: AvatarSummary) => void;
   referenceSaving?: boolean;
   personas: PersonaSummary[];
@@ -94,6 +98,9 @@ export function AvatarSelectionStage({
   });
   const [customFile, setCustomFile] = useState<File | null>(null);
   const [customPreviewUrl, setCustomPreviewUrl] = useState<string | null>(null);
+  const [customRemoveBackground, setCustomRemoveBackground] = useState(false);
+  const [customUploadState, setCustomUploadState] = useState<"idle" | "processing" | "complete">("idle");
+  const [createdCustomAvatar, setCreatedCustomAvatar] = useState<AvatarSummary | null>(null);
   const selectedPersona = personas.find((persona) => persona.id === selectedPersonaId) ?? null;
   const configDisabled = loading || queued || prewarmState === "preparing";
   const baseDisabled = loading || queued || prewarmState === "preparing" || !selectedAvatar || !modelConnected;
@@ -120,7 +127,14 @@ export function AvatarSelectionStage({
     setCustomPreviewUrl(file ? URL.createObjectURL(file) : null);
   };
 
-  const handleCustomUpload = () => {
+  const closeCustomUpload = () => {
+    if (referenceSaving || customUploadState === "processing") return;
+    setCustomUploadOpen(false);
+    setCustomUploadState("idle");
+    setCreatedCustomAvatar(null);
+  };
+
+  const handleCustomUpload = async () => {
     const name = customName.trim();
     if (!customFile || !name) return;
     try {
@@ -128,8 +142,19 @@ export function AvatarSelectionStage({
     } catch {
       /* ignore */
     }
-    onCustomAvatarCreate(customFile, name);
-    setCustomUploadOpen(false);
+    setCreatedCustomAvatar(null);
+    setCustomUploadState(customRemoveBackground ? "processing" : "idle");
+    const created = await onCustomAvatarCreate(customFile, name, { removeBackground: customRemoveBackground });
+    if (created) {
+      setCreatedCustomAvatar(created);
+      if (customRemoveBackground) {
+        setCustomUploadState("complete");
+      } else {
+        setCustomUploadOpen(false);
+      }
+    } else {
+      setCustomUploadState("idle");
+    }
   };
 
   const handlePersonaFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -396,6 +421,7 @@ export function AvatarSelectionStage({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={referenceSaving}
                 className="flex w-full items-center gap-3 rounded-lg border border-dashed border-cyan-300 bg-cyan-50 p-3 text-left transition hover:bg-cyan-100"
               >
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white text-2xl font-light text-cyan-700">
@@ -412,23 +438,67 @@ export function AvatarSelectionStage({
                   <span className="mt-0.5 block text-xs text-slate-500">会作为新资产加入形象库</span>
                 </span>
               </button>
+              <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                <input
+                  type="checkbox"
+                  checked={customRemoveBackground}
+                  onChange={(event) => setCustomRemoveBackground(event.target.checked)}
+                  disabled={referenceSaving}
+                  className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                />
+                <span className="text-sm font-medium text-slate-700">上传时抠除背景</span>
+              </label>
+              {customUploadState === "processing" ? (
+                <div className="rounded-lg border border-cyan-200 bg-cyan-50 px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-semibold text-cyan-800">正在抠除背景...</span>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-cyan-200 border-t-cyan-600" />
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-cyan-100">
+                    <div className="h-full w-2/3 animate-pulse rounded-full bg-cyan-500" />
+                  </div>
+                  <p className="mt-2 text-xs text-cyan-700">正在识别人像边缘，首次处理可能较慢。</p>
+                </div>
+              ) : null}
+              {customUploadState === "complete" && createdCustomAvatar ? (
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[linear-gradient(45deg,#e2e8f0_25%,transparent_25%),linear-gradient(-45deg,#e2e8f0_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#e2e8f0_75%),linear-gradient(-45deg,transparent_75%,#e2e8f0_75%)] bg-[length:16px_16px] bg-[position:0_0,0_8px,8px_-8px,-8px_0]">
+                      <img
+                        src={buildApiUrl(`/avatars/${encodeURIComponent(createdCustomAvatar.id)}/preview`)}
+                        alt={createdCustomAvatar.name ?? createdCustomAvatar.id}
+                        className="h-full w-full object-contain"
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-emerald-900">抠图完成</span>
+                      <span className="mt-0.5 block truncate text-xs text-emerald-700">
+                        {createdCustomAvatar.name ?? createdCustomAvatar.id} 已加入形象库
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              ) : null}
             </div>
             <div className="flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50 px-4 py-3">
               <button
                 type="button"
-                onClick={() => setCustomUploadOpen(false)}
+                onClick={closeCustomUpload}
+                disabled={referenceSaving || customUploadState === "processing"}
                 className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
               >
-                取消
+                {customUploadState === "complete" ? "完成" : "取消"}
               </button>
-              <button
-                type="button"
-                onClick={handleCustomUpload}
-                disabled={referenceSaving || !customFile || !customName.trim()}
-                className="rounded-lg bg-cyan-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {referenceSaving ? "创建中..." : "保存形象"}
-              </button>
+              {customUploadState !== "complete" ? (
+                <button
+                  type="button"
+                  onClick={() => void handleCustomUpload()}
+                  disabled={referenceSaving || !customFile || !customName.trim()}
+                  className="rounded-lg bg-cyan-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {referenceSaving && customRemoveBackground ? "正在抠除背景..." : referenceSaving ? "创建中..." : "保存形象"}
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

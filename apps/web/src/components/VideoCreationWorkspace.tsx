@@ -10,6 +10,9 @@ import {
   type AvatarSummary,
   type ExportVideoItem,
   type IndexTTSConfig,
+  type SceneBackgroundAsset,
+  type SceneComposition,
+  type VideoCreationCompositionConfig,
   type VoiceCatalogItem,
 } from "../lib/api";
 import type { VoiceCloneApplication } from "../lib/voiceCloneApply";
@@ -19,12 +22,16 @@ import { buildTTSPreviewPayload, requestTTSPreview } from "../lib/ttsPreview";
 
 export type VideoCreationAudioSource = "upload" | "tts_text" | "voice_clone";
 type VideoCreationMode = "spoken_video" | "reference_video";
+type VideoCreationOutputAspect = "16:9" | "9:16" | "1:1";
 
 type VoiceOpt = { id: string; label: string; targetModel?: string | null };
 
 type VideoCreationWorkspaceProps = {
   avatars: AvatarSummary[];
   avatarId: string;
+  sceneBackgrounds: SceneBackgroundAsset[];
+  sceneCompositions: SceneComposition[];
+  selectedSceneIdsByAvatar?: Record<string, string>;
   models: string[];
   onAvatarChange: (id: string) => void;
   onAvatarUploaded: (avatar: AvatarSummary) => void;
@@ -68,6 +75,12 @@ const VIDEO_CREATION_MODEL_LABELS: Record<string, string> = {
   quicktalk: "QuickTalk",
   wav2lip: "Wav2Lip",
 };
+const VIDEO_CREATION_OUTPUT_SIZES = {
+  "16:9": { label: "16:9", width: 1280, height: 720, previewClassName: "aspect-video w-full" },
+  "9:16": { label: "9:16", width: 720, height: 1280, previewClassName: "aspect-[9/16] w-[min(100%,22rem)]" },
+  "1:1": { label: "1:1", width: 1080, height: 1080, previewClassName: "aspect-square w-[min(100%,34rem)]" },
+} as const satisfies Record<VideoCreationOutputAspect, { label: string; width: number; height: number; previewClassName: string }>;
+const VIDEO_CREATION_OUTPUT_ASPECTS = Object.keys(VIDEO_CREATION_OUTPUT_SIZES) as VideoCreationOutputAspect[];
 const VIDEO_CREATION_SCRIPT_MAX_CHARS = 1000;
 const FASTERLIVEPORTRAIT_ANIMATION_REGION_OPTIONS: { id: FasterLivePortraitConfig["animation_region"]; label: string }[] = [
   { id: "lip", label: "嘴部" },
@@ -245,9 +258,16 @@ function avatarNameFromFile(file: File): string {
   return stem ? `视频创作 ${stem}` : "视频创作形象";
 }
 
+function sceneBackgroundUrl(background: SceneBackgroundAsset): string {
+  return buildApiUrl(background.url);
+}
+
 export function VideoCreationWorkspace({
   avatars,
   avatarId,
+  sceneBackgrounds,
+  sceneCompositions,
+  selectedSceneIdsByAvatar = {},
   models,
   onAvatarChange,
   onAvatarUploaded,
@@ -285,6 +305,9 @@ export function VideoCreationWorkspace({
   const [indexttsConfig, setIndexttsConfig] = useState<IndexTTSConfig>(() => freshIndexTTSConfig());
   const [indexttsEmotionAudioFile, setIndexttsEmotionAudioFile] = useState<File | null>(null);
   const [activeIndexTTSPresetLabel, setActiveIndexTTSPresetLabel] = useState<string | null>(null);
+  const [videoBackgroundId, setVideoBackgroundId] = useState<string | null>(null);
+  const [videoAvatarAdjust, setVideoAvatarAdjust] = useState({ x: 0, y: 0, scale: 1 });
+  const [videoOutputAspect, setVideoOutputAspect] = useState<VideoCreationOutputAspect>("16:9");
   const sourceUploadRef = useRef<HTMLInputElement>(null);
   const ttsPreviewAudioRef = useRef<HTMLAudioElement | null>(null);
   const ttsPreviewUrlRef = useRef<string | null>(null);
@@ -302,6 +325,59 @@ export function VideoCreationWorkspace({
   const showIndexTTSControls = !isReferenceVideoMode && audioSource !== "upload" && INDEXTTS_PROVIDER_SET.has(ttsProvider);
   const effectiveIndexTTSConfig = showIndexTTSControls ? buildIndexTTSQualityConfig(indexTTSRequestConfig(indexttsConfig)) : undefined;
   const showIndexTTSEmotionStrength = indexttsConfig.emotion_mode !== "voice";
+  const selectedScene = useMemo(() => {
+    if (!selectedAvatar) return null;
+    const selectedSceneId = selectedSceneIdsByAvatar[selectedAvatar.id];
+    const avatarScenes = sceneCompositions.filter((scene) => scene.avatar_id === selectedAvatar.id);
+    return avatarScenes.find((scene) => scene.id === selectedSceneId) ?? avatarScenes[0] ?? null;
+  }, [sceneCompositions, selectedAvatar, selectedSceneIdsByAvatar]);
+  const selectedVideoBackground = useMemo(
+    () => videoBackgroundId ? sceneBackgrounds.find((background) => background.id === videoBackgroundId) ?? null : null,
+    [sceneBackgrounds, videoBackgroundId],
+  );
+  const videoAvatarAnchor = selectedScene?.avatar_anchor ?? "center";
+  const videoAvatarFit = selectedScene?.avatar_fit ?? "contain";
+  const videoAvatarBaseScale = selectedScene?.avatar_scale ?? 1;
+  const videoAvatarDisplayScale = videoAvatarBaseScale * videoAvatarAdjust.scale;
+  const selectedVideoOutputSize = VIDEO_CREATION_OUTPUT_SIZES[videoOutputAspect];
+  const videoAvatarPreviewLayer = useMemo(() => {
+    const canvasW = selectedVideoOutputSize.width;
+    const canvasH = selectedVideoOutputSize.height;
+    const avatarW = Math.max(1, Number(selectedAvatar?.width || canvasW));
+    const avatarH = Math.max(1, Number(selectedAvatar?.height || canvasH));
+    const containScale = Math.min(canvasW / avatarW, canvasH / avatarH);
+    const coverScale = Math.max(canvasW / avatarW, canvasH / avatarH);
+    const fitScale = videoAvatarFit === "cover" ? coverScale : containScale;
+    const layerW = Math.max(1, avatarW * fitScale * videoAvatarDisplayScale);
+    const layerH = Math.max(1, avatarH * fitScale * videoAvatarDisplayScale);
+    const originX = videoAvatarAnchor === "left"
+      ? 0
+      : videoAvatarAnchor === "right"
+        ? canvasW - layerW
+        : (canvasW - layerW) / 2;
+    const originY = videoAvatarAnchor === "bottom" ? canvasH - layerH : (canvasH - layerH) / 2;
+    return {
+      leftPct: ((originX + videoAvatarAdjust.x) / canvasW) * 100,
+      topPct: ((originY + videoAvatarAdjust.y) / canvasH) * 100,
+      widthPct: (layerW / canvasW) * 100,
+      heightPct: (layerH / canvasH) * 100,
+    };
+  }, [selectedAvatar?.height, selectedAvatar?.width, selectedVideoOutputSize.height, selectedVideoOutputSize.width, videoAvatarAdjust.x, videoAvatarAdjust.y, videoAvatarAnchor, videoAvatarDisplayScale, videoAvatarFit]);
+  const compositionConfig = useMemo<VideoCreationCompositionConfig | null>(() => {
+    if (!videoBackgroundId) return null;
+    return {
+      scene_composition_id: selectedScene?.id ?? null,
+      background_id: videoBackgroundId,
+      background_color: selectedScene?.background_color ?? "#ffffff",
+      avatar_fit: videoAvatarFit,
+      avatar_anchor: videoAvatarAnchor,
+      avatar_scale: videoAvatarDisplayScale,
+      avatar_offset_x: videoAvatarAdjust.x,
+      avatar_offset_y: videoAvatarAdjust.y,
+      output_width: selectedVideoOutputSize.width,
+      output_height: selectedVideoOutputSize.height,
+    };
+  }, [selectedScene?.background_color, selectedScene?.id, selectedVideoOutputSize.height, selectedVideoOutputSize.width, videoAvatarAdjust.scale, videoAvatarAdjust.x, videoAvatarAdjust.y, videoAvatarAnchor, videoAvatarDisplayScale, videoAvatarFit, videoBackgroundId]);
 
   const updateFasterLivePortraitNumber = useCallback((
     key: Exclude<keyof FasterLivePortraitConfig, "animation_region" | "flag_stitching" | "flag_pasteback" | "flag_relative_motion" | "flag_normalize_lip" | "flag_lip_retargeting">,
@@ -350,6 +426,11 @@ export function VideoCreationWorkspace({
       }
     };
   }, []);
+
+  useEffect(() => {
+    setVideoBackgroundId(selectedScene?.background_id ?? null);
+    setVideoAvatarAdjust({ x: 0, y: 0, scale: 1 });
+  }, [selectedAvatar?.id, selectedScene?.id, selectedScene?.background_id]);
 
   const handleSourceAsset = useCallback(async (file: File | null) => {
     if (!file || !selectedAvatar) return;
@@ -468,6 +549,7 @@ export function VideoCreationWorkspace({
           title,
           audioSource: "reference_video",
           durationSec: referenceDurationSec,
+          compositionConfig,
         });
         setResult(response.export_video);
         onExportCreated?.(response.export_video);
@@ -487,6 +569,7 @@ export function VideoCreationWorkspace({
         fasterliveportraitConfig: effectiveModel === "fasterliveportrait" ? fasterliveportraitConfig : undefined,
         indexttsConfig: effectiveIndexTTSConfig,
         indexttsEmotionAudioFile,
+        compositionConfig,
       });
       setResult(response.export_video);
       onExportCreated?.(response.export_video);
@@ -498,11 +581,11 @@ export function VideoCreationWorkspace({
     } finally {
       setGenerating(false);
     }
-  }, [audioFile, audioSource, edgeVoice, effectiveIndexTTSConfig, effectiveModel, fasterliveportraitConfig, indexttsConfig.emotion_mode, indexttsEmotionAudioFile, isReferenceVideoMode, models, onExportCreated, onNotify, qwenModel, qwenVoice, referenceDurationSec, selectedAvatar, showIndexTTSControls, text, title, ttsProvider]);
+  }, [audioFile, audioSource, compositionConfig, edgeVoice, effectiveIndexTTSConfig, effectiveModel, fasterliveportraitConfig, indexttsConfig.emotion_mode, indexttsEmotionAudioFile, isReferenceVideoMode, models, onExportCreated, onNotify, qwenModel, qwenVoice, referenceDurationSec, selectedAvatar, showIndexTTSControls, text, title, ttsProvider]);
 
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-slate-100 p-4">
-      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[20rem_minmax(0,1fr)_22rem]">
+      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[18rem_minmax(28rem,1fr)_minmax(32rem,42rem)]">
         <section className="min-h-0 overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -969,27 +1052,168 @@ export function VideoCreationWorkspace({
               </button>
               {result ? <span className="text-sm font-medium text-emerald-700">已保存到资产库</span> : null}
             </div>
+            {result ? (
+              <div data-testid="video-creation-result-panel" className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500">Result</p>
+                    <h2 className="mt-1 text-base font-semibold text-slate-950">生成结果</h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <a href={buildApiDownloadUrl(result.download_url)} download className="rounded-lg bg-cyan-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-cyan-500">下载</a>
+                    <button type="button" onClick={onGoAssetLibrary} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-700">去资产库查看</button>
+                  </div>
+                </div>
+                <video src={buildApiDownloadUrl(result.download_url)} className={`mt-3 mx-auto rounded-lg bg-slate-950 object-contain ${selectedVideoOutputSize.previewClassName}`} controls preload="metadata" />
+                <div className="mt-3 rounded-lg bg-white p-3 text-xs text-slate-600">
+                  <p className="font-semibold text-slate-800">{result.title}</p>
+                  <p className="mt-1 break-all font-mono text-[11px]">{result.path}</p>
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
 
-        <aside className="flex min-h-0 flex-col rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-medium text-slate-500">Result</p>
-          <h2 className="mt-1 text-base font-semibold text-slate-950">生成结果</h2>
-          {result ? (
-            <div className="mt-4 space-y-3">
-              <video src={buildApiDownloadUrl(result.download_url)} className="aspect-video w-full rounded-lg bg-slate-950 object-contain" controls preload="metadata" />
-              <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
-                <p className="font-semibold text-slate-800">{result.title}</p>
-                <p className="mt-1 break-all font-mono text-[11px]">{result.path}</p>
+        <aside className="flex min-h-0 flex-col overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500">Composition</p>
+          <h2 className="mt-1 text-base font-semibold text-slate-950">构图设置</h2>
+          <div className="mt-4 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-950 p-3">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold text-white/55">画面预览</p>
+                <h3 className="text-sm font-semibold text-white">生成前预览</h3>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <a href={buildApiDownloadUrl(result.download_url)} download className="rounded-lg bg-cyan-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-cyan-500">下载</a>
-                <button type="button" onClick={onGoAssetLibrary} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-700">去资产库查看</button>
+              <span className="rounded-md border border-white/15 bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/75">
+                {selectedVideoOutputSize.width}x{selectedVideoOutputSize.height}
+              </span>
+            </div>
+            <div
+              className={`relative mx-auto overflow-hidden rounded-md border border-white/10 bg-white ${selectedVideoOutputSize.previewClassName}`}
+              style={{ backgroundColor: selectedScene?.background_color ?? "#f8fafc" }}
+            >
+              {selectedVideoBackground?.kind === "image" ? (
+                <img src={sceneBackgroundUrl(selectedVideoBackground)} alt={selectedVideoBackground.name} className="absolute inset-0 h-full w-full object-cover" />
+              ) : null}
+              {selectedVideoBackground?.kind === "video" ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-900 px-4 text-center text-xs font-medium text-white/80">
+                  视频创作暂不支持视频背景
+                </div>
+              ) : null}
+              {!selectedVideoBackground ? (
+                <div className="absolute inset-0 bg-white" />
+              ) : null}
+              {selectedAvatar ? (
+                <div
+                  className="absolute"
+                  style={{
+                    left: `${videoAvatarPreviewLayer.leftPct}%`,
+                    top: `${videoAvatarPreviewLayer.topPct}%`,
+                    width: `${videoAvatarPreviewLayer.widthPct}%`,
+                    height: `${videoAvatarPreviewLayer.heightPct}%`,
+                  }}
+                >
+                  <img
+                    src={buildApiUrl(`/avatars/${encodeURIComponent(selectedAvatar.id)}/preview`)}
+                    alt={selectedAvatar.name ?? selectedAvatar.id}
+                    className="absolute inset-0 h-full w-full object-fill"
+                  />
+                </div>
+              ) : null}
+              <div className="pointer-events-none absolute inset-x-5 bottom-5 rounded border border-white/35 bg-slate-950/35 px-3 py-1 text-center text-xs font-semibold text-white/80">
+                字幕安全区
               </div>
             </div>
-          ) : (
-            <div className="mt-4 flex min-h-[18rem] items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-sm font-medium text-slate-500">生成后显示视频预览</div>
-          )}
+          </div>
+          <div data-testid="video-creation-composition-controls" className="mt-3 space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <div>
+              <p className="mb-1.5 text-xs font-semibold text-slate-700">输出画幅</p>
+              <div className="grid grid-cols-3 gap-2">
+                {VIDEO_CREATION_OUTPUT_ASPECTS.map((aspect) => {
+                  const option = VIDEO_CREATION_OUTPUT_SIZES[aspect];
+                  const active = aspect === videoOutputAspect;
+                  return (
+                    <button
+                      key={aspect}
+                      type="button"
+                      onClick={() => setVideoOutputAspect(aspect)}
+                      className={`rounded-md border px-2 py-1.5 text-xs font-semibold transition-colors ${
+                        active
+                          ? "border-cyan-500 bg-cyan-50 text-cyan-700"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-cyan-200 hover:text-cyan-700"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <label className="block text-xs font-semibold text-slate-700">
+              本次生成背景
+              <select
+                value={videoBackgroundId ?? ""}
+                onChange={(event) => setVideoBackgroundId(event.target.value || null)}
+                className="mt-1 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-700"
+              >
+                <option value="">不使用背景</option>
+                {sceneBackgrounds.map((background) => (
+                  <option key={background.id} value={background.id}>{background.name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-xs font-medium text-slate-600">
+              <span className="mb-1 flex items-center justify-between gap-2">
+                <span>水平位置</span>
+                <span className="tabular-nums">{videoAvatarAdjust.x}px</span>
+              </span>
+              <input
+                type="range"
+                min="-800"
+                max="800"
+                step="4"
+                value={videoAvatarAdjust.x}
+                onChange={(event) => setVideoAvatarAdjust((current) => ({ ...current, x: Number(event.target.value) }))}
+                className="w-full accent-cyan-600"
+              />
+            </label>
+            <label className="block text-xs font-medium text-slate-600">
+              <span className="mb-1 flex items-center justify-between gap-2">
+                <span>垂直位置</span>
+                <span className="tabular-nums">{videoAvatarAdjust.y}px</span>
+              </span>
+              <input
+                type="range"
+                min="-600"
+                max="600"
+                step="4"
+                value={videoAvatarAdjust.y}
+                onChange={(event) => setVideoAvatarAdjust((current) => ({ ...current, y: Number(event.target.value) }))}
+                className="w-full accent-cyan-600"
+              />
+            </label>
+            <label className="block text-xs font-medium text-slate-600">
+              <span className="mb-1 flex items-center justify-between gap-2">
+                <span>人物缩放</span>
+                <span className="tabular-nums">{videoAvatarDisplayScale.toFixed(2)}x</span>
+              </span>
+              <input
+                type="range"
+                min="0.2"
+                max="3"
+                step="0.02"
+                value={videoAvatarAdjust.scale}
+                onChange={(event) => setVideoAvatarAdjust((current) => ({ ...current, scale: Number(event.target.value) }))}
+                className="w-full accent-cyan-600"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => setVideoAvatarAdjust({ x: 0, y: 0, scale: 1 })}
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-cyan-200 hover:text-cyan-700"
+            >
+              重置本次生成构图
+            </button>
+          </div>
         </aside>
       </div>
 

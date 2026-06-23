@@ -70,6 +70,18 @@ def _parse_indextts_config(tts_provider: str | None, raw: str | None, *, emotion
     return dict(config) or None
 
 
+def _parse_video_composition_config(raw: str | None) -> dict[str, object] | None:
+    if not raw:
+        return None
+    try:
+        decoded = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail="composition_config must be valid JSON") from exc
+    if not isinstance(decoded, dict):
+        raise HTTPException(status_code=400, detail="composition_config must be a JSON object")
+    return decoded
+
+
 async def _save_indextts_emotion_audio(upload: UploadFile | None) -> Path | None:
     if upload is None:
         return None
@@ -97,6 +109,7 @@ async def create_video_creation_job(
     duration_sec: int | None = Form(default=None),
     fasterliveportrait_config: str | None = Form(default=None),
     indextts_config: str | None = Form(default=None),
+    composition_config: str | None = Form(default=None),
     indextts_emotion_audio_file: UploadFile | None = File(default=None),
 ) -> dict[str, Any]:
     source = audio_source.strip().lower()
@@ -104,6 +117,7 @@ async def create_video_creation_job(
         raise HTTPException(status_code=400, detail="audio_source must be upload, tts_text, voice_clone, or reference_video")
     settings = request.app.state.settings
     flp_config = _parse_fasterliveportrait_config(model, fasterliveportrait_config)
+    video_composition_config = _parse_video_composition_config(composition_config)
     emotion_audio_path = await _save_indextts_emotion_audio(indextts_emotion_audio_file)
     try:
         index_config = _parse_indextts_config(tts_provider, indextts_config, emotion_audio_path=emotion_audio_path)
@@ -134,6 +148,7 @@ async def create_video_creation_job(
                     title=title,
                     mime_type=audio_file.content_type,
                     fasterliveportrait_config=flp_config,
+                    composition_config=video_composition_config,
                 )
             finally:
                 upload_path.unlink(missing_ok=True)
@@ -145,6 +160,7 @@ async def create_video_creation_job(
                 avatar_id=avatar_id,
                 duration_sec=duration_sec,
                 title=title,
+                composition_config=video_composition_config,
             )
             return _with_download_url(result)
 
@@ -159,6 +175,7 @@ async def create_video_creation_job(
             source=source,
             fasterliveportrait_config=flp_config,
             indextts_config=index_config,
+            composition_config=video_composition_config,
         )
         return _with_download_url(result)
     except HTTPException:

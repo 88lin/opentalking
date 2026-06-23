@@ -1040,6 +1040,10 @@ export function AssetLibraryWorkspace({
   );
 
   const avatarById = useMemo(() => new Map((avatars ?? []).map((avatar) => [avatar.id, avatar])), [avatars]);
+  const backgroundById = useMemo(
+    () => new Map(sceneBackgrounds.map((background) => [background.id, background])),
+    [sceneBackgrounds],
+  );
   const sceneGroups = useMemo(() => {
     const avatarGroups = (avatars ?? [])
       .map((avatar) => ({
@@ -1182,6 +1186,9 @@ export function AssetLibraryWorkspace({
                 {scenes.map((scene) => {
                   const selected = selectedSceneIdsByAvatar[scene.avatar_id] === scene.id;
                   const sceneAvatar = avatarById.get(scene.avatar_id);
+                  const sceneBackground = scene.background_id
+                    ? backgroundById.get(scene.background_id)
+                    : null;
                   return (
                     <article
                       key={scene.id}
@@ -1192,8 +1199,12 @@ export function AssetLibraryWorkspace({
                       }`}
                     >
                       <p className="truncate text-sm font-semibold text-slate-950">{scene.name}</p>
-                      <p className="mt-1 truncate text-xs text-slate-500">Avatar {sceneAvatar?.name ?? scene.avatar_id}</p>
-                      <p className="mt-1 truncate text-xs text-slate-500">Background {scene.background_id ?? scene.background_color}</p>
+                      <p className="mt-1 truncate text-xs text-slate-500">
+                        数字人形象：{sceneAvatar?.name ?? scene.avatar_id}
+                      </p>
+                      <p className="mt-1 truncate text-xs text-slate-500">
+                        背景：{sceneBackground?.name ?? scene.background_id ?? scene.background_color}
+                      </p>
                       <div className="mt-3 flex items-center gap-3">
                         <button
                           type="button"

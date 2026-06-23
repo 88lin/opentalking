@@ -197,6 +197,32 @@ def test_video_clone_allows_uploading_source_avatar():
     assert "onAvatarUploaded={handleVideoCloneAvatarUploaded}" in app
 
 
+def test_custom_avatar_upload_can_request_background_removal():
+    app = (WEB / "App.tsx").read_text(encoding="utf-8")
+    stage = (WEB / "components" / "AvatarSelectionStage.tsx").read_text(encoding="utf-8")
+
+    assert "上传时抠除背景" in stage
+    assert "customRemoveBackground" in stage
+    assert "customUploadState" in stage
+    assert "正在抠除背景..." in stage
+    assert "抠图完成" in stage
+    assert "createdCustomAvatar" in stage
+    assert "buildApiUrl(`/avatars/${encodeURIComponent(createdCustomAvatar.id)}/preview`)" in stage
+    assert "removeBackground: customRemoveBackground" in stage
+    assert "await onCustomAvatarCreate" in stage
+    assert 'fd.set("remove_background", options?.removeBackground ? "true" : "false")' in app
+    assert "return created" in app
+    assert "创建失败：" in app
+    assert "e instanceof ApiError ? e.detail : null" in app
+    toast = (WEB / "components" / "ToastStack.tsx").read_text(encoding="utf-8")
+    assert "whitespace-pre-line break-words" in toast
+    assert "tone !== \"error\"" in app
+    assert "pauseToast" in app
+    assert "resumeToast" in app
+    assert "onMouseEnter={() => onPause(toast.id)}" in toast
+    assert "onMouseLeave={() => onResume(toast.id)}" in toast
+
+
 def test_video_clone_lip_retargeting_disables_relative_motion():
     clone = (WEB / "components" / "VideoCloneWorkspace.tsx").read_text(encoding="utf-8")
 
@@ -475,6 +501,58 @@ def test_video_creation_workspace_wires_offline_generation_flow():
     assert "onVoiceCloned" in workspace
     assert "已保存到资产库" in workspace
     assert "去资产库查看" in workspace
+
+
+def test_video_creation_workspace_supports_one_off_scene_composition():
+    app = (WEB / "App.tsx").read_text(encoding="utf-8")
+    api = (WEB / "lib" / "api.ts").read_text(encoding="utf-8")
+    workspace = (WEB / "components" / "VideoCreationWorkspace.tsx").read_text(encoding="utf-8")
+
+    assert "sceneBackgrounds={sceneBackgrounds}" in app
+    assert "sceneCompositions={sceneCompositions}" in app
+    assert "selectedSceneIdsByAvatar={selectedSceneIdsByAvatar}" in app
+    assert "export type VideoCreationCompositionConfig" in api
+    assert "compositionConfig?: VideoCreationCompositionConfig | null" in api
+    assert 'form.set("composition_config", JSON.stringify(input.compositionConfig))' in api
+    assert "sceneBackgrounds: SceneBackgroundAsset[]" in workspace
+    assert "sceneCompositions: SceneComposition[]" in workspace
+    assert "selectedSceneIdsByAvatar?: Record<string, string>" in workspace
+    assert "生成前预览" in workspace
+    assert "本次生成" in workspace
+    assert "水平位置" in workspace
+    assert "垂直位置" in workspace
+    assert "人物缩放" in workspace
+    assert "compositionConfig" in workspace
+    assert "VIDEO_CREATION_OUTPUT_SIZES" in workspace
+    assert '"16:9"' in workspace
+    assert '"9:16"' in workspace
+    assert '"1:1"' in workspace
+    assert "videoOutputAspect" in workspace
+    assert "selectedVideoOutputSize" in workspace
+    assert "videoAvatarPreviewLayer" in workspace
+    assert "left: `${videoAvatarPreviewLayer.leftPct}%`" in workspace
+    assert "top: `${videoAvatarPreviewLayer.topPct}%`" in workspace
+    assert "width: `${videoAvatarPreviewLayer.widthPct}%`" in workspace
+    assert "height: `${videoAvatarPreviewLayer.heightPct}%`" in workspace
+    assert "translate(${videoAvatarAdjust.x}px" not in workspace
+    assert "output_width: selectedVideoOutputSize.width" in workspace
+    assert "output_height: selectedVideoOutputSize.height" in workspace
+    assert 'data-testid="video-creation-result-panel"' in workspace
+    assert 'data-testid="video-creation-composition-controls"' in workspace
+    assert "flex min-h-0 flex-col overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm" in workspace
+    assert "mt-3 space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-3" in workspace
+    assert "mt-3 min-h-0 flex-1 space-y-3 overflow-y-auto" not in workspace
+    assert "mt-4 shrink-0 overflow-hidden" in workspace
+    assert "aspect-video w-full" in workspace
+    assert "aspect-[9/16]" in workspace
+    assert "aspect-square" in workspace
+    assert "aspectRatio: selectedVideoOutputSize.aspectRatio" not in workspace
+    assert "xl:grid-cols-[18rem_minmax(28rem,1fr)_minmax(32rem,42rem)]" in workspace
+    assert "画面预览" in workspace
+    assert "输出画幅" in workspace
+    assert "h-[clamp(18rem,42vh,30rem)]" not in workspace
+    assert workspace.index('data-testid="video-creation-result-panel"') < workspace.index("构图设置")
+    assert workspace.index("构图设置") < workspace.index("生成前预览")
 
 
 def test_frontend_export_controls_include_audio_renderer_models():

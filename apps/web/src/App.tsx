@@ -1001,6 +1001,7 @@ export default function App() {
     }
   });
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const toastTimersRef = useRef<Map<string, ReturnType<typeof window.setTimeout>>>(new Map());
   const [recordingSaving, setRecordingSaving] = useState(false);
   const [ftRecordPhase, setFtRecordPhase] = useState<"idle" | "recording" | "stopped">("idle");
   const [ftRecordBusy, setFtRecordBusy] = useState(false);
@@ -1098,16 +1099,40 @@ export default function App() {
   );
 
   const dismissToast = useCallback((id: string) => {
+    const timer = toastTimersRef.current.get(id);
+    if (timer) window.clearTimeout(timer);
+    toastTimersRef.current.delete(id);
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   const notify = useCallback((message: string, tone: ToastTone = "info") => {
     const id = makeToastId();
     setToasts((prev) => [...prev.slice(-2), { id, tone, message }]);
-    window.setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    }, tone === "error" ? 5200 : 3600);
+    if (tone !== "error") {
+      const timer = window.setTimeout(() => {
+        toastTimersRef.current.delete(id);
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
+      }, 3600);
+      toastTimersRef.current.set(id, timer);
+    }
   }, []);
+
+  const pauseToast = useCallback((id: string) => {
+    const timer = toastTimersRef.current.get(id);
+    if (!timer) return;
+    window.clearTimeout(timer);
+    toastTimersRef.current.delete(id);
+  }, []);
+
+  const resumeToast = useCallback((id: string) => {
+    const toast = toasts.find((item) => item.id === id);
+    if (!toast || toast.tone === "error" || toastTimersRef.current.has(id)) return;
+    const timer = window.setTimeout(() => {
+      toastTimersRef.current.delete(id);
+      setToasts((prev) => prev.filter((item) => item.id !== id));
+    }, 1800);
+    toastTimersRef.current.set(id, timer);
+  }, [toasts]);
 
   const syncRuntimeConfigSelection = useCallback((next: RuntimeConfigResponse) => {
     const nextAsrProvider = normalizeAsrProvider(next.stt.provider, "dashscope");
@@ -2328,7 +2353,32 @@ export default function App() {
     }
   }, [connection, fasterliveportraitConfig, model, notify]);
 
-  const handleCreateCustomAvatar = useCallback(async (file: File, name: string) => {
+  const handleSavePrompt = useCallback(async () => {
+    setPromptSaving(true);
+    try {
+      await apiPost("/sessions/customize/prompt", {
+        avatar_id: avatarId,
+        llm_system_prompt: llmSystemPrompt,
+      });
+      const sid = sessionIdRef.current;
+      if (sid) await releaseSession(sid);
+      resetLiveState(true);
+      setConnection("idle");
+      notify("System Prompt 已保存，页面即将刷新并在新会话生效。", "success");
+      window.setTimeout(() => window.location.reload(), 900);
+    } catch (e) {
+      console.warn("save prompt failed", e);
+      notify("保存 Prompt 失败，请查看后端日志。", "error");
+    } finally {
+      setPromptSaving(false);
+    }
+  }, [avatarId, llmSystemPrompt, notify, releaseSession, resetLiveState]);
+
+  const handleCreateCustomAvatar = useCallback(async (
+    file: File,
+    name: string,
+    options?: { removeBackground?: boolean },
+  ) => {
     const trimmedName = name.trim();
     if (!trimmedName) {
       notify("请先给形象起个名字。", "info");
@@ -2346,6 +2396,7 @@ export default function App() {
       fd.set("name", trimmedName);
       fd.set("model", model);
       fd.set("image", file);
+      fd.set("remove_background", options?.removeBackground ? "true" : "false");
       const created = await apiPostForm<AvatarSummary>("/avatars/custom", fd);
       setAvatars((prev) => {
         const filtered = prev.filter((avatar) => avatar.id !== created.id);
@@ -2358,9 +2409,12 @@ export default function App() {
       resetLiveState(true);
       setConnection("idle");
       notify(`自定义形象「${created.name ?? trimmedName}」已加入形象库。`, "success");
+      return created;
     } catch (e) {
       console.warn("create custom avatar failed", e);
-      notify("创建自定义形象失败，请查看后端日志。", "error");
+      const detail = e instanceof ApiError ? e.detail : null;
+      notify(detail ? `创建失败：${detail}` : "创建自定义形象失败，请查看后端日志。", "error");
+      return null;
     } finally {
       setReferenceSaving(false);
     }
@@ -2901,6 +2955,9 @@ export default function App() {
           <VideoCreationWorkspace
             avatars={avatars}
             avatarId={avatarId}
+            sceneBackgrounds={sceneBackgrounds}
+            sceneCompositions={sceneCompositions}
+            selectedSceneIdsByAvatar={selectedSceneIdsByAvatar}
             models={models}
             onAvatarChange={handleAvatarChange}
             onAvatarUploaded={handleVideoCloneAvatarUploaded}
@@ -3170,7 +3227,7 @@ export default function App() {
                     onPersonaImport={handlePersonaImport}
                     onAvatarChange={handleAvatarChange}
                     onStart={() => void handleStart()}
-                    onCustomAvatarCreate={(file, name) => void handleCreateCustomAvatar(file, name)}
+                    onCustomAvatarCreate={(file, name, options) => handleCreateCustomAvatar(file, name, options)}
                     onAvatarDelete={(target) => void handleDeleteAvatar(target)}
                     referenceSaving={referenceSaving}
                   />
@@ -3304,7 +3361,7 @@ export default function App() {
         </aside>
       </div>
       )}
-      <ToastStack toasts={toasts} onDismiss={dismissToast} />
+      <ToastStack toasts={toasts} onDismiss={dismissToast} onPause={pauseToast} onResume={resumeToast} />
     </div>
   );
 }

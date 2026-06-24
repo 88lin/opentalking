@@ -5655,189 +5655,320 @@
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_RUNTIME_DIR=./models/local-audio/runtime/CosyVoice
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_SERVICE_URL=http://127.0.0.1:19090/synthesize
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_DEVICE=cuda:0
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_FP16=auto
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_LOAD_TRT=0
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_MAX_TOKEN_TEXT_RATIO=6
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_MASK_STOP_TOKENS=1
 </span></code></pre></div>
 <p>下载本地音频权重：</p>
 <div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PIP_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PIP_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_LINK_MODE</span><span class="o">=</span>copy
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--extra<span class="w"> </span>models<span class="w"> </span>--extra<span class="w"> </span>local-audio<span class="w"> </span>--extra<span class="w"> </span>local-cosyvoice-service<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--extra<span class="w"> </span>models<span class="w"> </span>--extra<span class="w"> </span>local-audio<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>.venv/bin/python<span class="w"> </span>scripts/download_local_audio_models.py<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--root<span class="w"> </span>./models/local-audio<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span>--model<span class="w"> </span>fun-cosyvoice3-0.5b-2512
 </span></code></pre></div>
+<p>这一步会从 ModelScope 下载 CosyVoice3 主模型：</p>
+<table>
+<thead>
+<tr>
+<th>资产</th>
+<th>来源</th>
+<th>目标目录</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CosyVoice3 主权重</td>
+<td>ModelScope <code>FunAudioLLM/Fun-CosyVoice3-0.5B-2512</code></td>
+<td><code>./models/local-audio/FunAudioLLM__Fun-CosyVoice3-0.5B-2512/</code></td>
+</tr>
+</tbody>
+</table>
+<p>主模型目录至少需要包含 sidecar runtime 会加载的文件，包括 <code>cosyvoice3.yaml</code>、
+<code>llm.pt</code>、<code>flow.pt</code>、<code>hift.pt</code>、<code>speech_tokenizer_v3.onnx</code>、
+<code>speech_tokenizer_v3.batch.onnx</code>、<code>campplus.onnx</code> 和
+<code>flow.decoder.estimator.fp32.onnx</code>。内置 zero-shot 音色还需要
+<code>OPENTALKING_TTS_LOCAL_COSYVOICE_PROMPT_AUDIO</code> 指向一段 prompt wav；复刻音色会把
+自己的 prompt wav 保存在本地音色目录。</p>
+<p>如果要启用 fp16 TensorRT，再从 Hugging Face 下载额外 ONNX 资产，并放到同一个主模型目录：</p>
+<table>
+<thead>
+<tr>
+<th>资产</th>
+<th>来源</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flow.decoder.estimator.autocast_fp16.onnx</code></td>
+<td>Hugging Face <code>yuekai/Fun-CosyVoice3-0.5B-2512-FP16-ONNX</code></td>
+<td><code>FP16 + LOAD_TRT=1</code> 必需；OpenTalking 会由它生成 <code>flow.decoder.estimator.autocast_fp16.mygpu.plan</code>。</td>
+</tr>
+<tr>
+<td><code>flow.decoder.estimator.streaming.autocast_fp16.onnx</code></td>
+<td>Hugging Face <code>yuekai/Fun-CosyVoice3-0.5B-2512-FP16-ONNX</code></td>
+<td>可选 streaming fp16 ONNX 资产；建议和 estimator ONNX 放在一起，保持 runtime 兼容。</td>
+</tr>
+</tbody>
+</table>
+<p>生成的 <code>*.mygpu.plan</code> 是和机器绑定的 TensorRT engine，不要跨 GPU / TensorRT /
+CUDA 环境复制；在目标机器上由 ONNX 重新构建。</p>
+<p>这个主 <code>.venv</code> 负责 OpenTalking、SenseVoice 和视频后端。CosyVoice 需要独立
+sidecar venv，避免它的 <code>transformers==4.51.3</code> runtime 与 OpenTalking 的
+<code>transformers&gt;=4.57,&lt;6</code> 冲突。</p>
 <p>准备 CosyVoice runtime：</p>
 <div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./models/local-audio/runtime
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/FunAudioLLM/CosyVoice.git<span class="w"> </span>./models/local-audio/runtime/CosyVoice
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">cd</span><span class="w"> </span>./models/local-audio/runtime/CosyVoice
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
 </span></code></pre></div>
-<p>启动本地 TTS service：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">OPENTALKING_TTS_LOCAL_COSYVOICE_PRELOAD</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>python<span class="w"> </span>scripts/local_cosyvoice_service.py<span class="w"> </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">19090</span>
+<p>创建或更新 CosyVoice 专用 sidecar venv：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">OPENTALKING_COSYVOICE_VENV_DIR</span><span class="o">=</span>.venv-cosyvoice<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>bash<span class="w"> </span>scripts/prepare_cosyvoice_venv.sh
 </span></code></pre></div>
+<p>如果要启用 TensorRT，把 TRT 依赖安装在 CosyVoice sidecar venv 中，不要安装进 OpenTalking 主 <code>.venv</code>：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">PIP_EXTRA_INDEX_URL</span><span class="o">=</span>https://pypi.nvidia.com/<span class="w"> </span><span class="nv">OPENTALKING_COSYVOICE_INSTALL_TENSORRT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nv">OPENTALKING_COSYVOICE_VENV_DIR</span><span class="o">=</span>.venv-cosyvoice<span class="w"> </span>bash<span class="w"> </span>scripts/prepare_cosyvoice_venv.sh
+</span></code></pre></div>
+<p>启动本地 TTS service：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bash<span class="w"> </span>scripts/quickstart/start_local_cosyvoice.sh<span class="w"> </span>--port<span class="w"> </span><span class="m">19090</span>
+</span></code></pre></div>
+<p>在既有 GPU 验证中，CosyVoice3 的关键问题不是单次 TTFA，而是随机种子导致的生成长度漂移。OpenTalking 的本地 CosyVoice service 因此默认保留两类稳定性保护：<code>OPENTALKING_TTS_LOCAL_COSYVOICE_MASK_STOP_TOKENS=1</code> 会屏蔽 CosyVoice LLM 暴露的全部 stop token，<code>OPENTALKING_TTS_LOCAL_COSYVOICE_MAX_TOKEN_TEXT_RATIO=6</code> 会限制 token/text 比例，避免长文本偶发生成过长音频。不要为了追求更快首包把这两个保护关掉。</p>
+<p>TensorRT 是可选加速。只有当当前 CosyVoice runtime、CUDA、onnxruntime-gpu/TensorRT engine 与模型目录匹配时再开启：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>.venv-cosyvoice/bin/python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import tensorrt as trt; print(trt.__version__)&quot;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span>./models/local-audio/FunAudioLLM__Fun-CosyVoice3-0.5B-2512/flow.decoder.estimator.fp32.onnx
+</span></code></pre></div>
+<p>CosyVoice3 的 fp16 TRT 推荐使用官方 autocast fp16 ONNX 资产。普通 <code>flow.decoder.estimator.fp32.onnx</code> 可以生成 TRT engine，但在部分 GPU/TensorRT 组合上会出现 NaN 或静音；如果要开启 <code>FP16 + LOAD_TRT</code>，先把 <code>flow.decoder.estimator.autocast_fp16.onnx</code> 放到同一个模型目录。服务器需要代理访问 Hugging Face 时，只给下载命令临时注入代理变量即可，不要写入 OpenTalking 主服务环境：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>env<span class="w"> </span><span class="nv">ALL_PROXY</span><span class="o">=</span>socks5h://127.0.0.1:7890<span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span>socks5h://127.0.0.1:7890<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span>https://huggingface.co<span class="w"> </span>.venv-cosyvoice/bin/python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;PY&#39;</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="s">from huggingface_hub import hf_hub_download</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="s">repo = &quot;yuekai/Fun-CosyVoice3-0.5B-2512-FP16-ONNX&quot;</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="s">target = &quot;./models/local-audio/FunAudioLLM__Fun-CosyVoice3-0.5B-2512&quot;</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="s">for name in [&quot;flow.decoder.estimator.autocast_fp16.onnx&quot;, &quot;flow.decoder.estimator.streaming.autocast_fp16.onnx&quot;]:</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="s">    hf_hub_download(repo_id=repo, filename=name, repo_type=&quot;model&quot;, local_dir=target)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="s">PY</span>
+</span></code></pre></div>
+<div class="language-text highlight"><span class="filename">scripts/quickstart/env</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_FP16=auto
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_LOAD_TRT=1
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_TRT_CONCURRENT=1
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_TOKEN_HOP_LEN=8
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_TOKEN_MAX_HOP_LEN=16
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>OPENTALKING_TTS_LOCAL_COSYVOICE_STREAM_SCALE_FACTOR=1
+</span></code></pre></div>
+<p><code>start_local_cosyvoice.sh</code> 会自动把 sidecar venv 里的 <code>site-packages/tensorrt_libs</code> 加入 <code>LD_LIBRARY_PATH</code>。首次启动 <code>FP16 + LOAD_TRT=1</code> 时，如果模型目录里存在 <code>flow.decoder.estimator.autocast_fp16.onnx</code>，OpenTalking 会从它生成当前 GPU 对应的 <code>flow.decoder.estimator.autocast_fp16.mygpu.plan</code>；这个步骤可能比普通启动更久。SenseVoice 仍然运行在 OpenTalking 主 <code>.venv</code>，不需要也不应该跟随 CosyVoice TRT 配置。</p>
+<p>启动后先检查 sidecar 健康信息，确认 <code>runtime_flags.load_trt</code>、<code>runtime.trt_autocast_fp16</code>、<code>streaming</code>、<code>llm_token_ratio</code> 和 <code>llm_stop_token_patch</code> 符合预期：</p>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:19090/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span></code></pre></div>
+<p>在 NVIDIA RTX 3090 Linux 服务器上实测，CosyVoice3 使用独立 sidecar venv，已加载
+<code>FP16 + LOAD_TRT=1</code> 和 autocast fp16 TensorRT plan。测试直接请求 sidecar 的
+<code>/synthesize</code>，TTFB 按第一批 PCM 字节到达时间计算：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">文本长度</th>
+<th style="text-align: right;">TTFB</th>
+<th style="text-align: right;">总耗时</th>
+<th style="text-align: right;">音频时长</th>
+<th style="text-align: right;">RTF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">43 字</td>
+<td style="text-align: right;">0.683 s</td>
+<td style="text-align: right;">6.215 s</td>
+<td style="text-align: right;">7.200 s</td>
+<td style="text-align: right;">0.863</td>
+</tr>
+<tr>
+<td style="text-align: right;">42 字</td>
+<td style="text-align: right;">0.642 s</td>
+<td style="text-align: right;">5.858 s</td>
+<td style="text-align: right;">6.960 s</td>
+<td style="text-align: right;">0.842</td>
+</tr>
+<tr>
+<td style="text-align: right;">29 字</td>
+<td style="text-align: right;">0.639 s</td>
+<td style="text-align: right;">5.771 s</td>
+<td style="text-align: right;">6.520 s</td>
+<td style="text-align: right;">0.885</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>平均</strong></td>
+<td style="text-align: right;"><strong>0.655 s</strong></td>
+<td style="text-align: right;"><strong>5.948 s</strong></td>
+<td style="text-align: right;"><strong>6.893 s</strong></td>
+<td style="text-align: right;"><strong>0.863</strong></td>
+</tr>
+</tbody>
+</table>
 <p>完整本地语音输入、语音合成和 QuickTalk 视频链路见 <a href="../recipes/local-quicktalk-audio/">本地 STT/TTS + QuickTalk</a>。</p>
 <h2 id="indextts-provider-indextts">IndexTTS 部署（provider = indextts）<a class="headerlink" href="#indextts-provider-indextts" title="Permanent link">&para;</a></h2>
 <p>IndexTTS 在 OpenTalking 侧始终使用 <code>provider=indextts</code>。<code>OPENTALKING_TTS_INDEXTTS_BACKEND</code> 只决定运行拓扑：<code>local</code> 表示同机 HTTP sidecar，<code>omnirt</code> 表示 OmniRT 常驻服务。前端、API payload 和复刻音色元数据都不需要拆成两个 provider。</p>
 <h3 id="a-http-sidecarbackend-local">方式 A：同机 HTTP sidecar（backend = local）<a class="headerlink" href="#a-http-sidecarbackend-local" title="Permanent link">&para;</a></h3>
 <p>local backend 采用独立的同机 HTTP sidecar：IndexTTS2 在单独 venv 里加载，OpenTalking API 进程只通过 <code>OPENTALKING_TTS_LOCAL_INDEXTTS_SERVICE_URL</code> 消费 <code>audio/L16</code> PCM。不要把 <code>index-tts</code> 直接安装到 OpenTalking 主 <code>.venv</code>；IndexTTS 官方依赖会固定 <code>torch</code>、<code>transformers</code>、<code>protobuf</code> 等版本，容易破坏 QuickTalk / STT 依赖。</p>
 <p>先安装 OpenTalking 主环境和本地音频下载依赖。这个环境不要安装 <code>index-tts</code>：</p>
-<p><div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PIP_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PIP_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_LINK_MODE</span><span class="o">=</span>copy
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_ENDPOINT</span><span class="k">:-</span><span class="nv">https</span><span class="p">://hf-mirror.com</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--extra<span class="w"> </span>models<span class="w"> </span>--extra<span class="w"> </span>local-audio<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>.venv/bin/python<span class="w"> </span>scripts/download_local_audio_models.py<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span>--root<span class="w"> </span>./models/local-audio<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span>--model<span class="w"> </span>indextts2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-w2v-bert<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-maskgct<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-campplus<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-bigvgan
+<p><div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PIP_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PIP_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_LINK_MODE</span><span class="o">=</span>copy
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_ENDPOINT</span><span class="k">:-</span><span class="nv">https</span><span class="p">://hf-mirror.com</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--extra<span class="w"> </span>models<span class="w"> </span>--extra<span class="w"> </span>local-audio<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>.venv/bin/python<span class="w"> </span>scripts/download_local_audio_models.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span>--root<span class="w"> </span>./models/local-audio<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span>--model<span class="w"> </span>indextts2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-w2v-bert<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-maskgct<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-campplus<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span>--model<span class="w"> </span>indextts2-bigvgan
 </span></code></pre></div>
 Hugging Face/Xet 大文件下载偶尔会出现 <code>Read timed out</code>、<code>SSL record layer failure</code> 等日志；脚本会尝试断点续传。只要命令最终退出码为 0 即可继续。如果命令失败，保持已下载目录不变，重新执行同一条命令即可复用缓存并继续下载。</p>
 <p>如果机器上已经有同样结构的权重目录，也可以不重复下载，只把 <code>OPENTALKING_LOCAL_AUDIO_MODEL_ROOT</code> 指向已有目录。该目录至少需要包含 <code>IndexTeam__IndexTTS-2/config.yaml</code>、<code>facebook__w2v-bert-2.0</code>、<code>funasr__campplus</code>、<code>nvidia__bigvgan_v2_22khz_80band_256x</code>。MaskGCT 目录优先使用 <code>amphion__MaskGCT</code>；如果已有资产目录叫 <code>amphion__MaskGCT-ms</code>，只要其中存在 <code>semantic_codec/model.safetensors</code>，sidecar 也会自动兼容。</p>
 <p>再创建 IndexTTS sidecar 运行时。官方仓包含 LFS 示例音频，部分环境会遇到 LFS quota，因此建议跳过 smudge；实际 prompt 音频使用你自己的 3-15 秒清晰人声。</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./models/local-audio/runtime
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">INDEXTTS_RUNTIME_REPO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">INDEXTTS_RUNTIME_REPO</span><span class="k">:-</span><span class="nv">https</span><span class="p">://github.com/index-tts/index-tts.git</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span>./models/local-audio/runtime/index-tts/.git<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nv">GIT_LFS_SKIP_SMUDGE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INDEXTTS_RUNTIME_REPO</span><span class="s2">&quot;</span><span class="w"> </span>./models/local-audio/runtime/index-tts<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span>./models/local-audio/runtime/index-tts
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>sleep<span class="w"> </span><span class="m">3</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="k">done</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">fi</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span>./models/local-audio/runtime/index-tts/.git
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">cd</span><span class="w"> </span>./models/local-audio/runtime/index-tts
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PIP_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PIP_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_LINK_MODE</span><span class="o">=</span>copy
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>uv<span class="w"> </span>sync<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
-</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>fastapi<span class="w"> </span><span class="s2">&quot;uvicorn[standard]&quot;</span><span class="w"> </span>soundfile
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./models/local-audio/runtime
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nv">INDEXTTS_RUNTIME_REPO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">INDEXTTS_RUNTIME_REPO</span><span class="k">:-</span><span class="nv">https</span><span class="p">://github.com/index-tts/index-tts.git</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span>./models/local-audio/runtime/index-tts/.git<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nv">GIT_LFS_SKIP_SMUDGE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$INDEXTTS_RUNTIME_REPO</span><span class="s2">&quot;</span><span class="w"> </span>./models/local-audio/runtime/index-tts<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">break</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span>./models/local-audio/runtime/index-tts
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span>sleep<span class="w"> </span><span class="m">3</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span><span class="k">done</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="k">fi</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span>./models/local-audio/runtime/index-tts/.git
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="nb">cd</span><span class="w"> </span>./models/local-audio/runtime/index-tts
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PIP_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PIP_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_LINK_MODE</span><span class="o">=</span>copy
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>uv<span class="w"> </span>sync<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>fastapi<span class="w"> </span><span class="s2">&quot;uvicorn[standard]&quot;</span><span class="w"> </span>soundfile
 </span></code></pre></div>
 <p>IndexTTS 需要一段 3-15 秒清晰人声作为 prompt。可以先准备系统默认音色，也可以在 WebUI 的“音色复刻”里上传参考音频。</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./models/local-audio/voices/system/indextts-default
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>cp<span class="w"> </span>/path/to/reference.wav<span class="w"> </span>./models/local-audio/voices/system/indextts-default/prompt.wav
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>./models/local-audio/voices/system/indextts-default/meta.json<span class="w"> </span><span class="s">&lt;&lt;&#39;JSON&#39;</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="s">{&quot;voice_id&quot;:&quot;indextts-default&quot;,&quot;display_label&quot;:&quot;IndexTTS 默认音色&quot;,&quot;provider&quot;:&quot;indextts&quot;,&quot;target_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;,&quot;source&quot;:&quot;system&quot;}</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="s">JSON</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./models/local-audio/voices/system/indextts-default
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>cp<span class="w"> </span>/path/to/reference.wav<span class="w"> </span>./models/local-audio/voices/system/indextts-default/prompt.wav
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>./models/local-audio/voices/system/indextts-default/meta.json<span class="w"> </span><span class="s">&lt;&lt;&#39;JSON&#39;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="s">{&quot;voice_id&quot;:&quot;indextts-default&quot;,&quot;display_label&quot;:&quot;IndexTTS 默认音色&quot;,&quot;provider&quot;:&quot;indextts&quot;,&quot;target_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;,&quot;source&quot;:&quot;system&quot;}</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="s">JSON</span>
 </span></code></pre></div>
 <p>启动 sidecar 服务：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nv">OPENTALKING_LOCAL_AUDIO_MODEL_ROOT</span><span class="o">=</span>./models/local-audio<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL_DIR</span><span class="o">=</span>./models/local-audio/IndexTeam__IndexTTS-2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_CFG_PATH</span><span class="o">=</span>./models/local-audio/IndexTeam__IndexTTS-2/config.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_PROMPT_AUDIO</span><span class="o">=</span>./models/local-audio/voices/system/indextts-default/prompt.wav<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_W2V_BERT_DIR</span><span class="o">=</span>./models/local-audio/facebook__w2v-bert-2.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_MASKGCT_DIR</span><span class="o">=</span>./models/local-audio/amphion__MaskGCT<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_CAMPPLUS_DIR</span><span class="o">=</span>./models/local-audio/funasr__campplus<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_BIGVGAN_DIR</span><span class="o">=</span>./models/local-audio/nvidia__bigvgan_v2_22khz_80band_256x<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_DEVICE</span><span class="o">=</span>cuda:0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>./models/local-audio/runtime/index-tts/.venv/bin/python<span class="w"> </span>scripts/local_indextts_service.py<span class="w"> </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">19092</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nv">OPENTALKING_LOCAL_AUDIO_MODEL_ROOT</span><span class="o">=</span>./models/local-audio<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL_DIR</span><span class="o">=</span>./models/local-audio/IndexTeam__IndexTTS-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_CFG_PATH</span><span class="o">=</span>./models/local-audio/IndexTeam__IndexTTS-2/config.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_PROMPT_AUDIO</span><span class="o">=</span>./models/local-audio/voices/system/indextts-default/prompt.wav<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_W2V_BERT_DIR</span><span class="o">=</span>./models/local-audio/facebook__w2v-bert-2.0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_MASKGCT_DIR</span><span class="o">=</span>./models/local-audio/amphion__MaskGCT<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_CAMPPLUS_DIR</span><span class="o">=</span>./models/local-audio/funasr__campplus<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_BIGVGAN_DIR</span><span class="o">=</span>./models/local-audio/nvidia__bigvgan_v2_22khz_80band_256x<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="nv">OPENTALKING_TTS_LOCAL_INDEXTTS_DEVICE</span><span class="o">=</span>cuda:0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>./models/local-audio/runtime/index-tts/.venv/bin/python<span class="w"> </span>scripts/local_indextts_service.py<span class="w"> </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">19092</span>
 </span></code></pre></div>
 <p>OpenTalking <code>.env</code> 中选择 <code>indextts</code>，并把 backend 设置为 <code>local</code>：</p>
-<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=indextts
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>OPENTALKING_TTS_ENABLED_PROVIDERS=edge,dashscope,local_cosyvoice,indextts
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>OPENTALKING_TTS_INDEXTTS_BACKEND=local
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>OPENTALKING_LOCAL_AUDIO_MODEL_ROOT=./models/local-audio
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL=IndexTeam/IndexTTS-2
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL_DIR=./models/local-audio/IndexTeam__IndexTTS-2
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_CFG_PATH=./models/local-audio/IndexTeam__IndexTTS-2/config.yaml
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_SERVICE_URL=http://127.0.0.1:19092/synthesize
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_PROMPT_AUDIO=./models/local-audio/voices/system/indextts-default/prompt.wav
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_W2V_BERT_DIR=./models/local-audio/facebook__w2v-bert-2.0
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MASKGCT_DIR=./models/local-audio/amphion__MaskGCT
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_CAMPPLUS_DIR=./models/local-audio/funasr__campplus
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_BIGVGAN_DIR=./models/local-audio/nvidia__bigvgan_v2_22khz_80band_256x
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_DEVICE=auto
+<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=indextts
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>OPENTALKING_TTS_ENABLED_PROVIDERS=edge,dashscope,local_cosyvoice,indextts
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>OPENTALKING_TTS_INDEXTTS_BACKEND=local
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>OPENTALKING_LOCAL_AUDIO_MODEL_ROOT=./models/local-audio
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL=IndexTeam/IndexTTS-2
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MODEL_DIR=./models/local-audio/IndexTeam__IndexTTS-2
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_CFG_PATH=./models/local-audio/IndexTeam__IndexTTS-2/config.yaml
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_SERVICE_URL=http://127.0.0.1:19092/synthesize
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_PROMPT_AUDIO=./models/local-audio/voices/system/indextts-default/prompt.wav
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_W2V_BERT_DIR=./models/local-audio/facebook__w2v-bert-2.0
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_MASKGCT_DIR=./models/local-audio/amphion__MaskGCT
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_CAMPPLUS_DIR=./models/local-audio/funasr__campplus
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_BIGVGAN_DIR=./models/local-audio/nvidia__bigvgan_v2_22khz_80band_256x
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>OPENTALKING_TTS_LOCAL_INDEXTTS_DEVICE=auto
 </span></code></pre></div>
 <p>这些 <code>LOCAL_INDEXTTS_*_DIR</code> 变量既可以写在 OpenTalking <code>.env</code> 中，也可以在启动 sidecar 时作为环境变量传入。OpenTalking 主进程需要 <code>SERVICE_URL</code> 和音色 prompt 路径；sidecar 需要模型目录、prompt、w2v / MaskGCT / campplus / BigVGAN 等本地资产目录，避免运行时再次访问 Hugging Face。</p>
 <p>启动 OpenTalking API 和 WebUI。这里用 QuickTalk local 作为示例 video backend；如果你只想验证 TTS preview，也可以先用 <code>--mock</code> 启动。</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span>--backend<span class="w"> </span><span class="nb">local</span><span class="w"> </span>--model<span class="w"> </span>quicktalk<span class="w"> </span>--api-port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--web-port<span class="w"> </span><span class="m">5173</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span>--backend<span class="w"> </span><span class="nb">local</span><span class="w"> </span>--model<span class="w"> </span>quicktalk<span class="w"> </span>--api-port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--web-port<span class="w"> </span><span class="m">5173</span>
 </span></code></pre></div>
 <p>如果 <code>8000</code> 或 <code>5173</code> 已被其他服务占用，可以把 <code>--api-port</code> / <code>--web-port</code> 换成空闲端口；下面的 <code>curl</code> 地址也要同步替换对应 API 端口。</p>
 <p>先验证 sidecar，再验证 OpenTalking API：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:19092/health
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:19092/synthesize<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 IndexTTS 本地服务测试。&quot;,&quot;sample_rate&quot;:16000}&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span>--output<span class="w"> </span>/tmp/indextts-local.pcm
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>.venv/bin/python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;PY&#39;</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s">from pathlib import Path</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="s">pcm = Path(&quot;/tmp/indextts-local.pcm&quot;).read_bytes()</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="s">assert len(pcm) &gt; 0 and len(pcm) % 2 == 0, len(pcm)</span>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="s">print(&quot;pcm_bytes&quot;, len(pcm), &quot;sample_rate&quot;, 16000, &quot;channels&quot;, 1)</span>
-</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="s">PY</span>
-</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/tts/preview<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span>--max-time<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 OpenTalking IndexTTS 测试。&quot;,&quot;tts_provider&quot;:&quot;indextts&quot;,&quot;tts_voice&quot;:&quot;indextts-default&quot;,&quot;tts_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">  </span>--output<span class="w"> </span>/tmp/opentalking-indextts-preview.wav
-</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>
-</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>.venv/bin/python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;PY&#39;</span>
-</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="s">import wave</span>
-</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="s">with wave.open(&quot;/tmp/opentalking-indextts-preview.wav&quot;, &quot;rb&quot;) as wf:</span>
-</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="s">    print(&quot;wav&quot;, wf.getframerate(), wf.getnchannels(), wf.getsampwidth(), wf.getnframes())</span>
-</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="s">PY</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:19092/health
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:19092/synthesize<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 IndexTTS 本地服务测试。&quot;,&quot;sample_rate&quot;:16000}&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span>--output<span class="w"> </span>/tmp/indextts-local.pcm
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>.venv/bin/python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;PY&#39;</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="s">from pathlib import Path</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="s">pcm = Path(&quot;/tmp/indextts-local.pcm&quot;).read_bytes()</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="s">assert len(pcm) &gt; 0 and len(pcm) % 2 == 0, len(pcm)</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="s">print(&quot;pcm_bytes&quot;, len(pcm), &quot;sample_rate&quot;, 16000, &quot;channels&quot;, 1)</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="s">PY</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/tts/preview<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">  </span>--max-time<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 OpenTalking IndexTTS 测试。&quot;,&quot;tts_provider&quot;:&quot;indextts&quot;,&quot;tts_voice&quot;:&quot;indextts-default&quot;,&quot;tts_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;}&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">  </span>--output<span class="w"> </span>/tmp/opentalking-indextts-preview.wav
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>.venv/bin/python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;PY&#39;</span>
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a><span class="s">import wave</span>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="s">with wave.open(&quot;/tmp/opentalking-indextts-preview.wav&quot;, &quot;rb&quot;) as wf:</span>
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="s">    print(&quot;wav&quot;, wf.getframerate(), wf.getnchannels(), wf.getsampwidth(), wf.getnframes())</span>
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="s">PY</span>
 </span></code></pre></div>
 <p>也可以检查运行状态，确认 OpenTalking 对外仍是 <code>indextts</code>，同时 backend 解析为 <code>local</code>：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8000/runtime/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8000/runtime/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
 </span></code></pre></div>
 <p>期望 <code>tts_provider</code> 为 <code>indextts</code>，<code>tts_providers.indextts.backend</code> 为 <code>local</code>，<code>tts_providers.indextts.resolved_provider</code> 为 <code>local_indextts</code>，并且 <code>service_url_set=true</code>。</p>
 <h3 id="bomnirt-backend-omnirt">方式 B：OmniRT 常驻服务（backend = omnirt）<a class="headerlink" href="#bomnirt-backend-omnirt" title="Permanent link">&para;</a></h3>
 <p>OmniRT backend 适合把 IndexTTS 常驻在独立服务里，OpenTalking 只通过 HTTP stream 消费 <code>audio/L16</code> PCM。OpenTalking 侧 provider 仍然是 <code>indextts</code>，只把 backend 切到 <code>omnirt</code>。</p>
 <p>先在 OmniRT 仓启动 text2audio 服务：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">OMNIRT_INDEXTTS_RUNTIME</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nv">OMNIRT_INDEXTTS_MODEL_DIR</span><span class="o">=</span>/data2/zhongyi/model/local-audio/IndexTeam__IndexTTS-2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nv">OMNIRT_INDEXTTS_CFG_PATH</span><span class="o">=</span>/data2/zhongyi/model/local-audio/IndexTeam__IndexTTS-2/config.yaml<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nv">OMNIRT_INDEXTTS_PROMPT_AUDIO</span><span class="o">=</span>/data2/zhongyi/model/local-audio/voices/system/indextts-default/prompt.wav<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nv">OMNIRT_INDEXTTS_DEVICE</span><span class="o">=</span>cuda:0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>uv<span class="w"> </span>run<span class="w"> </span>omnirt<span class="w"> </span>serve-text2audio<span class="w"> </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">9012</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nv">OMNIRT_INDEXTTS_RUNTIME</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="nv">OMNIRT_INDEXTTS_MODEL_DIR</span><span class="o">=</span>/data2/zhongyi/model/local-audio/IndexTeam__IndexTTS-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="nv">OMNIRT_INDEXTTS_CFG_PATH</span><span class="o">=</span>/data2/zhongyi/model/local-audio/IndexTeam__IndexTTS-2/config.yaml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nv">OMNIRT_INDEXTTS_PROMPT_AUDIO</span><span class="o">=</span>/data2/zhongyi/model/local-audio/voices/system/indextts-default/prompt.wav<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="nv">OMNIRT_INDEXTTS_DEVICE</span><span class="o">=</span>cuda:0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>uv<span class="w"> </span>run<span class="w"> </span>omnirt<span class="w"> </span>serve-text2audio<span class="w"> </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">9012</span>
 </span></code></pre></div>
 <p>再在 OpenTalking <code>.env</code> 中选择 provider 和 backend：</p>
-<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=indextts
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>OPENTALKING_TTS_ENABLED_PROVIDERS=edge,dashscope,local_cosyvoice,indextts
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>OPENTALKING_TTS_INDEXTTS_BACKEND=omnirt
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_SERVICE_URL=http://127.0.0.1:9012/v1/text2audio/indextts
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_MODEL=IndexTeam/IndexTTS-2
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_STREAMING=1
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_STREAMING_MODE=token_window
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_MAX_TEXT_TOKENS_PER_SEGMENT=80
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_QUICK_STREAMING_TOKENS=4
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_INTERVAL_SILENCE_MS=0
-</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_SIZE=40
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_HOP=96
-</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_CONTEXT=8
-</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_OVERLAP_MS=60
+<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=indextts
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>OPENTALKING_TTS_ENABLED_PROVIDERS=edge,dashscope,local_cosyvoice,indextts
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>OPENTALKING_TTS_INDEXTTS_BACKEND=omnirt
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_SERVICE_URL=http://127.0.0.1:9012/v1/text2audio/indextts
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_MODEL=IndexTeam/IndexTTS-2
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_STREAMING=1
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_STREAMING_MODE=token_window
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_MAX_TEXT_TOKENS_PER_SEGMENT=80
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_QUICK_STREAMING_TOKENS=4
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_INTERVAL_SILENCE_MS=0
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_SIZE=40
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_HOP=96
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_CONTEXT=8
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>OPENTALKING_TTS_OMNIRT_INDEXTTS_TOKEN_WINDOW_OVERLAP_MS=60
 </span></code></pre></div>
 <p><code>token_window</code> 是模型 token 级的分窗流式：OmniRT 会在语音 token 累积到窗口后先解码并返回 PCM，不必等待整段文本完成；它不是 20ms 波形级真流式，短句首包延迟仍取决于 IndexTTS GPT 首批语音 token 和 vocoder 解码耗时。</p>
 <h2 id="elevenlabs">ElevenLabs<a class="headerlink" href="#elevenlabs" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=elevenlabs
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>OPENTALKING_TTS_ELEVENLABS_API_KEY=&lt;elevenlabs-api-key&gt;
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>OPENTALKING_TTS_ELEVENLABS_VOICE_ID=&lt;voice-id&gt;
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>OPENTALKING_TTS_ELEVENLABS_MODEL_ID=eleven_flash_v2_5
+<div class="language-text highlight"><span class="filename">.env</span><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>OPENTALKING_TTS_DEFAULT_PROVIDER=elevenlabs
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>OPENTALKING_TTS_ELEVENLABS_API_KEY=&lt;elevenlabs-api-key&gt;
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>OPENTALKING_TTS_ELEVENLABS_VOICE_ID=&lt;voice-id&gt;
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>OPENTALKING_TTS_ELEVENLABS_MODEL_ID=eleven_flash_v2_5
 </span></code></pre></div>
 <h2 id="_2">验证<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>先创建 <code>mock</code> 会话，再调用 <code>/speak</code>。这样可以验证 TTS，不依赖真实 talking-head 模型。</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nv">SID</span><span class="o">=</span>&lt;session-id&gt;
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/sessions/</span><span class="nv">$SID</span><span class="s2">/speak&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 OpenTalking 语音合成测试。&quot;,&quot;tts_provider&quot;:&quot;indextts&quot;,&quot;tts_voice&quot;:&quot;indextts-default&quot;,&quot;tts_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;}&#39;</span>
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nv">SID</span><span class="o">=</span>&lt;session-id&gt;
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/sessions/</span><span class="nv">$SID</span><span class="s2">/speak&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">&#39;content-type: application/json&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;:&quot;你好，这是一次 OpenTalking 语音合成测试。&quot;,&quot;tts_provider&quot;:&quot;indextts&quot;,&quot;tts_voice&quot;:&quot;indextts-default&quot;,&quot;tts_model&quot;:&quot;IndexTeam/IndexTTS-2&quot;}&#39;</span>
 </span></code></pre></div>
 <h2 id="_3">前端入口<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>模型或后端服务启动后，统一用 OpenTalking WebUI 访问：</p>
-<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>bash<span class="w"> </span>scripts/quickstart/start_frontend.sh<span class="w"> </span>--api-port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--web-port<span class="w"> </span><span class="m">5173</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+<div class="language-bash highlight"><span class="filename">终端</span><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>bash<span class="w"> </span>scripts/quickstart/start_frontend.sh<span class="w"> </span>--api-port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--web-port<span class="w"> </span><span class="m">5173</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
 </span></code></pre></div>
 <p>远程服务器部署时，把本地浏览器端口映射到服务器 <code>5173</code>，再打开 <code>http://127.0.0.1:5173</code>。</p>
 

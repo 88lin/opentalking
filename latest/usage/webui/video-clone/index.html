@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://datascale-ai.github.io/opentalking/latest/usage/webui/video-clone/">
       
       
-        <link rel="prev" href="../video-creation/">
+        <link rel="prev" href="../voice-and-tts/">
       
       
-        <link rel="next" href="../custom-avatar/">
+        <link rel="next" href="../../../examples/">
       
       
       <link rel="icon" href="../../../assets/images/logo.png">
@@ -86,10 +86,6 @@
     <div data-md-component="announce">
       
     </div>
-    
-      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
-        
-      </div>
     
     
       
@@ -349,14 +345,8 @@
   
     
     
-      
-  
-  
-  
-    
-    
       <li class="md-tabs__item">
-        <a href="../../../model-deployment/" class="md-tabs__link">
+        <a href="../../../deployment/" class="md-tabs__link">
           
   
     
@@ -365,9 +355,6 @@
 
         </a>
       </li>
-    
-  
-
     
   
 
@@ -501,7 +488,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
@@ -551,8 +540,6 @@
       
         
       
-        
-      
     
     
       
@@ -565,7 +552,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
         
           
           
@@ -608,27 +597,6 @@
   
   <span class="md-ellipsis">
     平台说明
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    优云智算镜像快速体验
   </span>
   
 
@@ -717,7 +685,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3" >
         
           
           
@@ -773,7 +743,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_2" >
         
           
           <label class="md-nav__link" for="__nav_1_3_2" id="__nav_1_3_2_label" tabindex="0">
@@ -861,8 +833,6 @@
       
         
       
-        
-      
     
     
       
@@ -875,7 +845,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_3" >
         
           
           <label class="md-nav__link" for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
@@ -924,11 +896,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../video-creation/" class="md-nav__link">
+      <a href="../custom-avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    视频创作
+    自定义 Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    音色与 TTS
   </span>
   
 
@@ -993,16 +986,7 @@
         <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
-      前置条件
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#source-driving" class="md-nav__link">
-    <span class="md-ellipsis">
-      Source 和 Driving
+      适用场景
     </span>
   </a>
   
@@ -1010,6 +994,15 @@
       
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      前置条件
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       页面组成
     </span>
@@ -1021,16 +1014,16 @@
           <li class="md-nav__item">
   <a href="#source" class="md-nav__link">
     <span class="md-ellipsis">
-      左侧 Source
+      Source 形象
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
-      中间 Output
+      克隆输出
     </span>
   </a>
   
@@ -1039,7 +1032,7 @@
           <li class="md-nav__item">
   <a href="#driving" class="md-nav__link">
     <span class="md-ellipsis">
-      右侧 Driving
+      Driving 输入
     </span>
   </a>
   
@@ -1051,62 +1044,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      操作步骤
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      参数建议
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="参数建议">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
-      拼回原图
+      摄像头实时驱动
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#driving_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      裁剪 driving 人脸
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      驱动区域
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      嘴部参数
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1120,7 +1062,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      参数建议
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       常见问题
     </span>
@@ -1130,9 +1081,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      无法启动摄像头或视频克隆服务
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
-      摄像头打不开
+      上传视频嘴部发鼓或张不开
     </span>
   </a>
   
@@ -1141,7 +1101,7 @@
           <li class="md-nav__item">
   <a href="#_11" class="md-nav__link">
     <span class="md-ellipsis">
-      视频克隆服务连接失败
+      唇形重定向后只剩上下张嘴
     </span>
   </a>
   
@@ -1150,16 +1110,7 @@
           <li class="md-nav__item">
   <a href="#_12" class="md-nav__link">
     <span class="md-ellipsis">
-      嘴形只会上下张嘴
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    <span class="md-ellipsis">
-      头部被放大
+      资产点击后比例不对
     </span>
   </a>
   
@@ -1174,48 +1125,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom-avatar/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    自定义 Avatar
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../voice-and-tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    音色与 TTS
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1260,10 +1169,6 @@
       
         
       
-        
-      
-        
-      
     
     
       
@@ -1276,7 +1181,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_4" >
         
           
           
@@ -1412,48 +1319,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/huangshan-digital-human-guide/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    黄山景区数字人
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/Wechat_import/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    微信聊天记录导入
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1481,6 +1346,8 @@
       
         
       
+        
+      
     
     
       
@@ -1493,7 +1360,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5" >
         
           
           
@@ -1551,6 +1420,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../model-support/local-audio-quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    本地语音 + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -1574,10 +1464,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_1_5_3" id="__nav_1_5_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1588,8 +1480,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_5_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_4">
             <span class="md-nav__icon md-icon"></span>
             推理后端
           </label>
@@ -1706,8 +1598,6 @@
       
         
       
-        
-      
     
     
       
@@ -1720,10 +1610,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_5_5" id="__nav_1_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1734,8 +1626,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_5_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_5">
             <span class="md-nav__icon md-icon"></span>
             支持的模型
           </label>
@@ -1846,27 +1738,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1893,9 +1764,7 @@
     
       
         
-      
-        
-      
+          
         
       
         
@@ -1920,19 +1789,29 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
         
           
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../deployment/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     部署指南
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_6">
@@ -1942,64 +1821,6 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    部署基础
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_1_6_1" id="__nav_1_6_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_1">
-            <span class="md-nav__icon md-icon"></span>
-            部署基础
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
             
               
                 
@@ -2008,11 +1829,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+      <a href="../../../deployment/support-matrix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    部署拓扑
+    支持矩阵
   </span>
   
 
@@ -2029,7 +1850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+      <a href="../../../avatar_models/avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2043,14 +1864,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -2080,32 +1893,34 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+            <a href="../../../speech_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
-    后端模式
+    语音模型
   </span>
   
 
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_6_2" id="__nav_1_6_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4">
             <span class="md-nav__icon md-icon"></span>
-            后端模式
+            语音模型
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2117,12 +1932,60 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4_2" id="__nav_1_6_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    语音识别模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            语音识别模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+      <a href="../../../speech_models/stt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Local Adapter
+    概览
   </span>
   
 
@@ -2139,15 +2002,167 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+      <a href="../../../speech_models/stt/sensevoice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OmniRT
+    SenseVoice
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4_3" id="__nav_1_6_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    语音生成模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            语音生成模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/cosyvoice/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CosyVoice
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/indextts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IndexTTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/qwen3-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Qwen3-TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2200,12 +2215,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+            <a href="../../../avatar_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2216,14 +2233,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_6_5" id="__nav_1_6_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5">
             <span class="md-nav__icon md-icon"></span>
             数字人模型部署
           </label>
@@ -2238,7 +2255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/mock/" class="md-nav__link">
+      <a href="../../../avatar_models/mock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2281,10 +2298,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_3" id="__nav_1_6_3_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_3" id="__nav_1_6_5_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2295,8 +2314,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_3">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_3">
             <span class="md-nav__icon md-icon"></span>
             QuickTalk
           </label>
@@ -2309,7 +2328,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+      <a href="../../../avatar_models/quicktalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2330,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2351,7 +2370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-apple-silicon/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2372,7 +2391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2421,10 +2440,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_4" id="__nav_1_6_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_4" id="__nav_1_6_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2435,8 +2456,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_4">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_4">
             <span class="md-nav__icon md-icon"></span>
             Wav2Lip
           </label>
@@ -2449,7 +2470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+      <a href="../../../avatar_models/wav2lip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2470,7 +2491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2491,7 +2512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2540,10 +2561,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_5" id="__nav_1_6_3_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_5" id="__nav_1_6_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2554,8 +2577,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_5">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_5">
             <span class="md-nav__icon md-icon"></span>
             MuseTalk
           </label>
@@ -2568,7 +2591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+      <a href="../../../avatar_models/musetalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2589,7 +2612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2610,7 +2633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2639,7 +2662,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+      <a href="../../../avatar_models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../avatar_models/flashtalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2660,7 +2704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+      <a href="../../../avatar_models/flashhead/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2674,27 +2718,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -2713,6 +2736,8 @@
     
       
         
+          
+        
       
         
       
@@ -2728,26 +2753,38 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_6" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     部署配方
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_6" id="__nav_1_6_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_6">
             <span class="md-nav__icon md-icon"></span>
             部署配方
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -2756,7 +2793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+      <a href="../../../recipes/local-quicktalk-audio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2770,114 +2807,9 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    V100 + FasterLivePortrait + FlashHead
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    LLM 与 STT
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mem0 记忆引擎
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TTS
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    支持矩阵
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -2908,8 +2840,6 @@
       
         
       
-        
-      
     
     
       
@@ -2922,7 +2852,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_7" >
         
           
           
@@ -2951,27 +2883,6 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../community/publishing-docs/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    文档发布
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -3047,7 +2958,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_8" >
         
           
           <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
@@ -3123,8 +3036,6 @@
       
         
       
-        
-      
     
     
       
@@ -3137,7 +3048,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           
@@ -3180,27 +3093,6 @@
   
   <span class="md-ellipsis">
     平台说明
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    优云智算镜像快速体验
   </span>
   
 
@@ -3352,7 +3244,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
@@ -3442,8 +3336,6 @@
       
         
       
-        
-      
     
     
       
@@ -3508,11 +3400,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../video-creation/" class="md-nav__link">
+      <a href="../custom-avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    视频创作
+    自定义 Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    音色与 TTS
   </span>
   
 
@@ -3577,16 +3490,7 @@
         <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
-      前置条件
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#source-driving" class="md-nav__link">
-    <span class="md-ellipsis">
-      Source 和 Driving
+      适用场景
     </span>
   </a>
   
@@ -3594,6 +3498,15 @@
       
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      前置条件
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       页面组成
     </span>
@@ -3605,16 +3518,16 @@
           <li class="md-nav__item">
   <a href="#source" class="md-nav__link">
     <span class="md-ellipsis">
-      左侧 Source
+      Source 形象
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
-      中间 Output
+      克隆输出
     </span>
   </a>
   
@@ -3623,7 +3536,7 @@
           <li class="md-nav__item">
   <a href="#driving" class="md-nav__link">
     <span class="md-ellipsis">
-      右侧 Driving
+      Driving 输入
     </span>
   </a>
   
@@ -3635,62 +3548,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      操作步骤
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      参数建议
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="参数建议">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
-      拼回原图
+      摄像头实时驱动
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#driving_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      裁剪 driving 人脸
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      驱动区域
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      嘴部参数
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3704,7 +3566,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      参数建议
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       常见问题
     </span>
@@ -3714,9 +3585,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      无法启动摄像头或视频克隆服务
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
-      摄像头打不开
+      上传视频嘴部发鼓或张不开
     </span>
   </a>
   
@@ -3725,7 +3605,7 @@
           <li class="md-nav__item">
   <a href="#_11" class="md-nav__link">
     <span class="md-ellipsis">
-      视频克隆服务连接失败
+      唇形重定向后只剩上下张嘴
     </span>
   </a>
   
@@ -3734,16 +3614,7 @@
           <li class="md-nav__item">
   <a href="#_12" class="md-nav__link">
     <span class="md-ellipsis">
-      嘴形只会上下张嘴
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    <span class="md-ellipsis">
-      头部被放大
+      资产点击后比例不对
     </span>
   </a>
   
@@ -3758,48 +3629,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom-avatar/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    自定义 Avatar
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../voice-and-tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    音色与 TTS
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -3843,10 +3672,6 @@
       
         
       
-        
-      
-        
-      
     
     
       
@@ -3859,7 +3684,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
         
           
           
@@ -3995,48 +3822,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/huangshan-digital-human-guide/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    黄山景区数字人
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/Wechat_import/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    微信聊天记录导入
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -4063,6 +3848,8 @@
       
         
       
+        
+      
     
     
       
@@ -4075,7 +3862,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
         
           
           
@@ -4133,6 +3922,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../model-support/local-audio-quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    本地语音 + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -4156,10 +3966,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4170,8 +3982,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
             推理后端
           </label>
@@ -4288,8 +4100,6 @@
       
         
       
-        
-      
     
     
       
@@ -4302,10 +4112,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4316,8 +4128,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
             <span class="md-nav__icon md-icon"></span>
             支持的模型
           </label>
@@ -4428,27 +4240,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -4474,9 +4265,7 @@
     
       
         
-      
-        
-      
+          
         
       
         
@@ -4501,19 +4290,29 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../deployment/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     部署指南
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
@@ -4523,64 +4322,6 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    部署基础
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1">
-            <span class="md-nav__icon md-icon"></span>
-            部署基础
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
             
               
                 
@@ -4589,11 +4330,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+      <a href="../../../deployment/support-matrix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    部署拓扑
+    支持矩阵
   </span>
   
 
@@ -4610,7 +4351,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+      <a href="../../../avatar_models/avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4624,14 +4365,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -4661,32 +4394,34 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+            <a href="../../../speech_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
-    后端模式
+    语音模型
   </span>
   
 
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
             <span class="md-nav__icon md-icon"></span>
-            后端模式
+            语音模型
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -4698,12 +4433,60 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    语音识别模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            语音识别模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+      <a href="../../../speech_models/stt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Local Adapter
+    概览
   </span>
   
 
@@ -4720,15 +4503,167 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+      <a href="../../../speech_models/stt/sensevoice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OmniRT
+    SenseVoice
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    语音生成模型
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            语音生成模型
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    概览
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/cosyvoice/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CosyVoice
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/indextts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IndexTTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/qwen3-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Qwen3-TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -4781,12 +4716,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+            <a href="../../../avatar_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -4797,14 +4734,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
             <span class="md-nav__icon md-icon"></span>
             数字人模型部署
           </label>
@@ -4819,7 +4756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/mock/" class="md-nav__link">
+      <a href="../../../avatar_models/mock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4862,10 +4799,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_3" id="__nav_6_3_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4876,8 +4815,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_3">
             <span class="md-nav__icon md-icon"></span>
             QuickTalk
           </label>
@@ -4890,7 +4829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+      <a href="../../../avatar_models/quicktalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4911,7 +4850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4932,7 +4871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-apple-silicon/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4953,7 +4892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5002,10 +4941,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_4" id="__nav_6_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -5016,8 +4957,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_4">
             <span class="md-nav__icon md-icon"></span>
             Wav2Lip
           </label>
@@ -5030,7 +4971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+      <a href="../../../avatar_models/wav2lip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5051,7 +4992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5072,7 +5013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5121,10 +5062,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_5" id="__nav_6_3_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_5" id="__nav_6_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -5135,8 +5078,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_5">
             <span class="md-nav__icon md-icon"></span>
             MuseTalk
           </label>
@@ -5149,7 +5092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+      <a href="../../../avatar_models/musetalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5170,7 +5113,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5191,7 +5134,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5220,7 +5163,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+      <a href="../../../avatar_models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../avatar_models/flashtalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5241,7 +5205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+      <a href="../../../avatar_models/flashhead/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5255,27 +5219,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -5294,6 +5237,8 @@
     
       
         
+          
+        
       
         
       
@@ -5309,26 +5254,38 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
         
           
-          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     部署配方
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
             <span class="md-nav__icon md-icon"></span>
             部署配方
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -5337,7 +5294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+      <a href="../../../recipes/local-quicktalk-audio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5351,114 +5308,9 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    V100 + FasterLivePortrait + FlashHead
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    LLM 与 STT
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mem0 记忆引擎
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TTS
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    支持矩阵
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -5500,7 +5352,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
           
@@ -5603,7 +5457,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -5681,16 +5537,7 @@
         <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
-      前置条件
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#source-driving" class="md-nav__link">
-    <span class="md-ellipsis">
-      Source 和 Driving
+      适用场景
     </span>
   </a>
   
@@ -5698,6 +5545,15 @@
       
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      前置条件
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       页面组成
     </span>
@@ -5709,16 +5565,16 @@
           <li class="md-nav__item">
   <a href="#source" class="md-nav__link">
     <span class="md-ellipsis">
-      左侧 Source
+      Source 形象
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
-      中间 Output
+      克隆输出
     </span>
   </a>
   
@@ -5727,7 +5583,7 @@
           <li class="md-nav__item">
   <a href="#driving" class="md-nav__link">
     <span class="md-ellipsis">
-      右侧 Driving
+      Driving 输入
     </span>
   </a>
   
@@ -5739,62 +5595,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      操作步骤
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      参数建议
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="参数建议">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
-      拼回原图
+      摄像头实时驱动
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#driving_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      裁剪 driving 人脸
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
-    <span class="md-ellipsis">
-      驱动区域
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
-    <span class="md-ellipsis">
-      嘴部参数
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -5808,7 +5613,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      参数建议
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       常见问题
     </span>
@@ -5818,9 +5632,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      无法启动摄像头或视频克隆服务
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
-      摄像头打不开
+      上传视频嘴部发鼓或张不开
     </span>
   </a>
   
@@ -5829,7 +5652,7 @@
           <li class="md-nav__item">
   <a href="#_11" class="md-nav__link">
     <span class="md-ellipsis">
-      视频克隆服务连接失败
+      唇形重定向后只剩上下张嘴
     </span>
   </a>
   
@@ -5838,16 +5661,7 @@
           <li class="md-nav__item">
   <a href="#_12" class="md-nav__link">
     <span class="md-ellipsis">
-      嘴形只会上下张嘴
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
-    <span class="md-ellipsis">
-      头部被放大
+      资产点击后比例不对
     </span>
   </a>
   
@@ -5882,96 +5696,128 @@
 
 
 <h1 id="_1">视频克隆<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>“视频克隆”用于把一个固定数字人形象作为 source，再用摄像头或上传视频作为 driving input，实时驱动 source 的表情、头动和嘴部动作。</p>
-<p>它不进入 LLM / STT / TTS 对话链路，也不会复用“实时对话”的 <code>speak</code> 队列。第一版主路径是 live camera driving；上传 driving video 用于验证一段自拍视频的驱动效果。</p>
-<p><img alt="视频克隆页面：source、克隆输出和 driving 设置。" src="../../../assets/images/usage/webui/video-clone.png" /></p>
-<p><em>视频克隆页面：左侧固定 source，中间显示克隆输出，右侧配置摄像头或上传 driving video。</em></p>
-<h2 id="_2">前置条件<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>视频克隆依赖 FasterLivePortrait runtime。先按<a href="../../../model-support/models/fasterliveportrait/">FasterLivePortrait 部署文档</a>启动 OmniRT，并确认 OpenTalking 能看到视频克隆状态。</p>
-<p>常见检查：</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://127.0.0.1:8000/video-clone/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
-</span></code></pre></div>
-<p>如果状态显示未连接，先检查 OmniRT endpoint、FasterLivePortrait 源码依赖和模型权重路径。</p>
-<h2 id="source-driving">Source 和 Driving<a class="headerlink" href="#source-driving" title="Permanent link">&para;</a></h2>
-<p>视频克隆里有两个容易混淆的概念：</p>
+<p>“视频克隆”是 WebUI 中和“实时对话”并列的工作流。它固定 OpenTalking 形象库中的数字人作为 source，用摄像头实时帧或上传视频作为 driving video，让数字人模仿用户的表情、嘴型和头动。</p>
+<p><img alt="视频克隆工作台" src="../../../assets/images/usage/video-clone-workspace.png" /></p>
+<h2 id="_2">适用场景<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>source</code>：最终显示出来的数字人形象。它来自 OpenTalking 形象库，或来自你上传的 source 图片。</li>
-<li><code>driving</code>：提供表情、头动和嘴部动作的人脸输入。它可以来自摄像头，也可以来自上传的 driving video。</li>
+<li>验证 FasterLivePortrait 视频驱动效果。</li>
+<li>用摄像头实时测试数字人的表情和头动跟随。</li>
+<li>上传一段自拍视频，检查 driving video 的口型、裁剪和贴回效果。</li>
 </ul>
-<p>摄像头本人不会变成新的数字人身份。摄像头只提供 motion signal，最终输出仍是 source 数字人。</p>
-<h2 id="_3">页面组成<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<h3 id="source">左侧 Source<a class="headerlink" href="#source" title="Permanent link">&para;</a></h3>
-<p>左侧用于固定 source 形象：</p>
-<ul>
-<li>点击已有 Avatar，可以切换被驱动的数字人。</li>
-<li>点击“上传 source 形象”，可以上传本地图片作为新的 source。</li>
-<li>上传 source 后，OpenTalking 会把它加入当前形象库并自动选中。</li>
-</ul>
-<p>建议使用清晰正脸或半身图，避免严重遮挡、极端侧脸和过暗画面。</p>
-<h3 id="output">中间 Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h3>
-<p>中间显示克隆输出。顶部提供：</p>
-<ul>
-<li>“录制输出”：把当前输出录制并保存到导出视频资产库。</li>
-<li>“更换形象”：返回 source 选择。</li>
-<li>状态按钮：显示当前是否已停止、连接中或运行中。</li>
-</ul>
-<p>底部状态会显示发送帧、接收帧、丢帧和延迟，用于判断推理是否跟得上前端采样。</p>
-<h3 id="driving">右侧 Driving<a class="headerlink" href="#driving" title="Permanent link">&para;</a></h3>
-<p>右侧配置 driving 输入：</p>
-<ul>
-<li>“摄像头”：选择本机摄像头。</li>
-<li>“FPS”：控制前端采样频率。</li>
-<li>“分辨率”：控制发送到 runtime 的帧尺寸。</li>
-<li>“镜像预览”：只影响摄像头预览和发送帧方向，适合自拍视频习惯。</li>
-<li>“上传 driving video”：用本地视频循环作为 driving input。</li>
-</ul>
-<p>如果浏览器无法打开摄像头，可以先上传 driving video 验证后端视频克隆服务。</p>
-<h2 id="_4">操作步骤<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>视频克隆不会发起 LLM 对话，也不会调用 TTS 或 STT。它和“实时对话”的音频驱动链路是两条独立工作流。</p>
+<h2 id="_3">前置条件<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <ol>
-<li>启动 FasterLivePortrait OmniRT runtime。</li>
-<li>启动 OpenTalking，并打开 WebUI。</li>
-<li>顶部切到“视频克隆”。</li>
-<li>左侧选择 source 数字人，或上传新的 source 图片。</li>
-<li>右侧选择摄像头，或上传 driving video。</li>
-<li>根据需要调整 FPS、分辨率、驱动区域和嘴部参数。</li>
-<li>点击“开始”。</li>
-<li>观察中间输出；需要保存时点击“录制输出”。</li>
-<li>点击“停止”或切换工作流，释放摄像头、WebSocket 和当前 clone session。</li>
+<li>OmniRT 已启动 FasterLivePortrait runtime。</li>
+<li>OpenTalking API 能访问 OmniRT。</li>
+<li>WebUI 的模型状态里 <code>fasterliveportrait</code> 为已连接。</li>
+<li>浏览器可以访问摄像头。建议通过 <code>localhost</code>、<code>127.0.0.1</code> 或 HTTPS 打开页面。</li>
 </ol>
-<h2 id="_5">参数建议<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="_6">拼回原图<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
-<p>建议默认开启。开启后会尽量把生成的人脸贴回 source 原图，保留原始构图，避免只看到放大的头部。</p>
-<h3 id="driving_1">裁剪 driving 人脸<a class="headerlink" href="#driving_1" title="Permanent link">&para;</a></h3>
-<p>建议默认关闭。上传 driving video 时，如果画面被过度裁剪，嘴形和头部位置可能变得不自然。只有当 driving 画面里人脸太小、检测不稳定时，再尝试开启。</p>
-<h3 id="_7">驱动区域<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
-<ul>
-<li>“全表情”：适合完整头动和表情演示。</li>
-<li>“表情”：更侧重表情变化。</li>
-<li>“姿态”：更侧重头部姿态。</li>
-<li>“嘴部”：适合单独检查口型。</li>
-<li>“眼睛”：适合检查眨眼和眼部动作。</li>
-</ul>
-<h3 id="_8">嘴部参数<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
-<p>“张嘴开合”可以增强或减弱嘴部幅度。“唇形重定向”可能改善嘴形闭合，但过强时容易变成单纯上下张嘴。建议小步调整，每次只改一个参数。</p>
+<p>如果还没有启动服务，先按 <a href="../../../avatar_models/fasterliveportrait/">FasterLivePortrait 模型页</a> 完成“启动 OmniRT”和“启动 OpenTalking WebUI”两步。</p>
+<h2 id="_4">页面组成<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="source">Source 形象<a class="headerlink" href="#source" title="Permanent link">&para;</a></h3>
+<p>左侧 source 区展示当前形象库中的数字人资产。点击任意资产后，它会作为最终输出的数字人形象。摄像头或上传视频不会变成 source，只提供动作。</p>
+<p>如果输出被放大成头像，先确认 <code>拼回原图</code> 已开启。这个开关会把驱动后的人脸贴回 source 原始图，保留半身构图和背景。</p>
+<h3 id="_5">克隆输出<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>中间区域显示当前 source 和克隆后的输出画面。状态条会展示发送帧数、接收帧数、丢帧和延迟。</p>
+<p>停止后可以点击“更换形象”回到形象选择状态，重新选择 source。</p>
+<h3 id="driving">Driving 输入<a class="headerlink" href="#driving" title="Permanent link">&para;</a></h3>
+<p>右侧区域用于选择摄像头、FPS、分辨率和本地预览。点击“开始”后，浏览器通过 canvas 定时采样摄像头帧并发送到后端。</p>
+<p>上传 driving video 是辅助测试路径，适合对比同一段自拍视频在不同参数下的效果。</p>
+<h2 id="_6">摄像头实时驱动<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<ol>
+<li>打开 WebUI，切换到“视频克隆”。</li>
+<li>在左侧选择一个数字人 source。</li>
+<li>右侧选择摄像头、FPS 和分辨率。</li>
+<li>点击“开始”，允许浏览器摄像头权限。</li>
+<li>观察中间输出画面和状态条。</li>
+<li>点击“停止”或切换页面前，确认摄像头预览关闭。</li>
+</ol>
+<p>推荐从 <code>12fps</code>、<code>448px</code> 开始。输出稳定后再提高 FPS 或分辨率。</p>
 <h2 id="driving-video">上传 driving video<a class="headerlink" href="#driving-video" title="Permanent link">&para;</a></h2>
-<p>上传 driving video 不会改变 source 身份。它只把视频里的脸作为 motion input。</p>
-<p>建议 driving video：</p>
+<p>上传视频用于验证 driving video 的表情、口型和裁剪效果。建议使用清晰正脸或半身自拍视频，避免脸太小、强遮挡、剧烈转头或画面比例过窄。</p>
+<p>如果上传视频效果不如摄像头：</p>
 <ul>
-<li>人脸清晰、无遮挡。</li>
-<li>不要离镜头太远。</li>
-<li>不要大幅出画。</li>
-<li>先使用短视频测试参数。</li>
+<li>关闭 <code>裁剪 driving 人脸</code>，避免 driving 脸部被裁得太紧。</li>
+<li>打开 <code>拼回原图</code>，确认输出不是只显示裁剪头部。</li>
+<li>打开 <code>唇形重定向</code>，同时关闭 <code>相对运动</code>。</li>
+<li>将驱动区域从 <code>嘴部</code> 改为 <code>表情</code> 或 <code>全表情</code>，观察嘴角和脸颊是否恢复。</li>
 </ul>
-<p>如果上传视频感觉嘴鼓、嘴张不开，先关闭“裁剪 driving 人脸”，再检查 driving 画面里人脸位置和尺度。</p>
-<h2 id="_9">常见问题<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
-<h3 id="_10">摄像头打不开<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
-<p>确认页面通过 <code>localhost</code> 或 <code>127.0.0.1</code> 打开，浏览器已允许摄像头权限，且摄像头没有被其它应用占用。</p>
-<h3 id="_11">视频克隆服务连接失败<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
-<p>检查 <code>/video-clone/status</code>，确认 FasterLivePortrait runtime 已启动，OpenTalking 的 OmniRT endpoint 指向正确服务。</p>
-<h3 id="_12">嘴形只会上下张嘴<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
-<p>降低唇形重定向强度，或切回更完整的驱动区域。只看嘴部时可以使用“嘴部”区域，但完整演示建议使用“全表情”。</p>
-<h3 id="_13">头部被放大<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
-<p>开启“拼回原图”。如果 source 图片本身脸部占比过大，可以换一张半身或构图更完整的 source。</p>
+<h2 id="_7">参数建议<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动作幅度</td>
+<td>整体 driving 强度</td>
+<td>从 <code>1.0</code> 开始</td>
+</tr>
+<tr>
+<td>表情幅度</td>
+<td>表情和口型强度</td>
+<td>从 <code>1.0</code> 开始</td>
+</tr>
+<tr>
+<td>头动幅度</td>
+<td>头部整体运动</td>
+<td>从 <code>0.3</code> 开始</td>
+</tr>
+<tr>
+<td>张嘴开合</td>
+<td>嘴部开合幅度</td>
+<td><code>0.8-1.3</code></td>
+</tr>
+<tr>
+<td>左右摇头 / 上下点头 / 左右歪头</td>
+<td>姿态分量</td>
+<td>头动过大时先降低对应分量</td>
+</tr>
+<tr>
+<td>拼回原图</td>
+<td>保留 source 原始构图</td>
+<td>建议开启</td>
+</tr>
+<tr>
+<td>Stitching</td>
+<td>稳定脸部边界</td>
+<td>建议开启</td>
+</tr>
+<tr>
+<td>相对运动</td>
+<td>保留 source 基础姿态</td>
+<td>开启唇形重定向后通常关闭</td>
+</tr>
+<tr>
+<td>唇形归一</td>
+<td>减少初始嘴型偏差</td>
+<td>建议开启</td>
+</tr>
+<tr>
+<td>唇形重定向</td>
+<td>增强嘴部跟随</td>
+<td>嘴型张不开或发鼓时尝试开启</td>
+</tr>
+<tr>
+<td>裁剪 driving 人脸</td>
+<td>裁剪输入视频人脸</td>
+<td>上传视频比例异常时关闭</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_8">常见问题<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h3 id="_9">无法启动摄像头或视频克隆服务<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p>检查浏览器权限、页面来源是否为 <code>localhost</code> / <code>127.0.0.1</code> / HTTPS，以及 <code>/models</code> 中 FasterLivePortrait 是否已连接。</p>
+<h3 id="_10">上传视频嘴部发鼓或张不开<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p>通常和 driving 视频裁剪、脸部位置、缩放或唇形参数有关。先关闭 <code>裁剪 driving 人脸</code>，再试 <code>唇形重定向 + 关闭相对运动</code>。</p>
+<h3 id="_11">唇形重定向后只剩上下张嘴<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<p>唇形重定向会强化嘴部开合。如果同时保留相对运动，可能把嘴角和脸颊运动压弱。关闭 <code>相对运动</code>，并把驱动区域切到 <code>表情</code> 或 <code>全表情</code>。</p>
+<h3 id="_12">资产点击后比例不对<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
+<p>打开 <code>拼回原图</code>，并选择 source 原图构图合适的资产。视频克隆应以 source 原始图为输出构图，driving 视频只提供动作。</p>
 
 
 
@@ -6039,7 +5885,7 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>

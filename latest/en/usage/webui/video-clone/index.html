@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://datascale-ai.github.io/opentalking/latest/en/usage/webui/video-clone/">
       
       
-        <link rel="prev" href="../video-creation/">
+        <link rel="prev" href="../voice-and-tts/">
       
       
-        <link rel="next" href="../custom-avatar/">
+        <link rel="next" href="../../../examples/">
       
       
       <link rel="icon" href="../../../../assets/images/logo.png">
@@ -86,10 +86,6 @@
     <div data-md-component="announce">
       
     </div>
-    
-      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
-        
-      </div>
     
     
       
@@ -349,14 +345,8 @@
   
     
     
-      
-  
-  
-  
-    
-    
       <li class="md-tabs__item">
-        <a href="../../../model-deployment/" class="md-tabs__link">
+        <a href="../../../deployment/" class="md-tabs__link">
           
   
     
@@ -365,9 +355,6 @@
 
         </a>
       </li>
-    
-  
-
     
   
 
@@ -501,7 +488,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
@@ -551,8 +540,6 @@
       
         
       
-        
-      
     
     
       
@@ -565,7 +552,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
         
           
           
@@ -608,27 +597,6 @@
   
   <span class="md-ellipsis">
     Platform Notes
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Compshare Image Quick Experience
   </span>
   
 
@@ -717,7 +685,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3" >
         
           
           
@@ -773,7 +743,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_2" >
         
           
           <label class="md-nav__link" for="__nav_1_3_2" id="__nav_1_3_2_label" tabindex="0">
@@ -861,8 +833,6 @@
       
         
       
-        
-      
     
     
       
@@ -875,7 +845,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_3" >
         
           
           <label class="md-nav__link" for="__nav_1_3_3" id="__nav_1_3_3_label" tabindex="0">
@@ -924,11 +896,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../video-creation/" class="md-nav__link">
+      <a href="../custom-avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Video Creation
+    Custom Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Voice and TTS
   </span>
   
 
@@ -991,18 +984,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#when-to-use-it" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      When to Use It
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#source-and-driving" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Source and Driving
+      Prerequisites
     </span>
   </a>
   
@@ -1019,27 +1012,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#left-source" class="md-nav__link">
+  <a href="#source-avatar" class="md-nav__link">
     <span class="md-ellipsis">
-      Left Source
+      Source Avatar
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#center-output" class="md-nav__link">
+  <a href="#clone-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Center Output
+      Clone Output
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#right-driving" class="md-nav__link">
+  <a href="#driving-input" class="md-nav__link">
     <span class="md-ellipsis">
-      Right Driving
+      Driving Input
     </span>
   </a>
   
@@ -1051,62 +1044,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
+  <a href="#live-camera-driving" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      Live Camera Driving
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameter-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameter Tips
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameter Tips">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pasteback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pasteback
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#crop-driving-face" class="md-nav__link">
-    <span class="md-ellipsis">
-      Crop Driving Face
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#animation-region" class="md-nav__link">
-    <span class="md-ellipsis">
-      Animation Region
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mouth-controls" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mouth Controls
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1114,6 +1056,15 @@
   <a href="#uploaded-driving-video" class="md-nav__link">
     <span class="md-ellipsis">
       Uploaded Driving Video
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Suggestions
     </span>
   </a>
   
@@ -1130,36 +1081,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#camera-does-not-open" class="md-nav__link">
+  <a href="#cannot-start-camera-or-video-clone-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Camera Does Not Open
+      Cannot Start Camera or Video Clone Service
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#video-clone-service-fails-to-connect" class="md-nav__link">
+  <a href="#uploaded-video-mouth-looks-puffy-or-too-closed" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Clone Service Fails to Connect
+      Uploaded Video Mouth Looks Puffy or Too Closed
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mouth-only-opens-vertically" class="md-nav__link">
+  <a href="#lip-retargeting-turns-into-mostly-vertical-mouth-opening" class="md-nav__link">
     <span class="md-ellipsis">
-      Mouth Only Opens Vertically
+      Lip Retargeting Turns into Mostly Vertical Mouth Opening
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#head-is-zoomed-in" class="md-nav__link">
+  <a href="#avatar-aspect-ratio-looks-wrong-after-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      Head Is Zoomed In
+      Avatar Aspect Ratio Looks Wrong After Selection
     </span>
   </a>
   
@@ -1174,48 +1125,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom-avatar/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Custom Avatar
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../voice-and-tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Voice and TTS
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1260,10 +1169,6 @@
       
         
       
-        
-      
-        
-      
     
     
       
@@ -1276,7 +1181,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_4" >
         
           
           
@@ -1412,48 +1319,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/huangshan-digital-human-guide/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Huangshan Scenic Area Digital Human
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/Wechat_import/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    WeChat Chat History Import
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1481,6 +1346,8 @@
       
         
       
+        
+      
     
     
       
@@ -1493,7 +1360,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5" >
         
           
           
@@ -1551,6 +1420,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../model-support/local-audio-quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Audio + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -1574,10 +1464,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_1_5_3" id="__nav_1_5_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1588,8 +1480,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_5_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_4">
             <span class="md-nav__icon md-icon"></span>
             Runtime Backends
           </label>
@@ -1706,8 +1598,6 @@
       
         
       
-        
-      
     
     
       
@@ -1720,10 +1610,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_1_5_4" id="__nav_1_5_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_5_5" id="__nav_1_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1734,8 +1626,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_5_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_5">
             <span class="md-nav__icon md-icon"></span>
             Supported Models
           </label>
@@ -1846,27 +1738,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1893,9 +1764,7 @@
     
       
         
-      
-        
-      
+          
         
       
         
@@ -1920,19 +1789,29 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6" >
         
           
-          <label class="md-nav__link" for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../deployment/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Deployment Guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6" id="__nav_1_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_6">
@@ -1942,64 +1821,6 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    Deployment Basics
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_1_6_1" id="__nav_1_6_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_1">
-            <span class="md-nav__icon md-icon"></span>
-            Deployment Basics
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
             
               
                 
@@ -2008,11 +1829,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+      <a href="../../../deployment/support-matrix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Deployment Topology
+    Support Matrix
   </span>
   
 
@@ -2029,7 +1850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+      <a href="../../../avatar_models/avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2043,14 +1864,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -2080,32 +1893,34 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+            <a href="../../../speech_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
-    Backend Modes
+    Speech Models
   </span>
   
 
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_6_2" id="__nav_1_6_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4">
             <span class="md-nav__icon md-icon"></span>
-            Backend Modes
+            Speech Models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -2117,12 +1932,60 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4_2" id="__nav_1_6_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Speech Recognition Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Speech Recognition Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+      <a href="../../../speech_models/stt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Local Adapter
+    Overview
   </span>
   
 
@@ -2139,15 +2002,167 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+      <a href="../../../speech_models/stt/sensevoice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OmniRT
+    SenseVoice
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_6_4_3" id="__nav_1_6_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Speech Generation Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Speech Generation Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/cosyvoice/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CosyVoice
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/indextts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IndexTTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/qwen3-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Qwen3-TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2200,12 +2215,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+            <a href="../../../avatar_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2216,14 +2233,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_6_3" id="__nav_1_6_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_1_6_5" id="__nav_1_6_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5">
             <span class="md-nav__icon md-icon"></span>
             Talking-Head Model Deployment
           </label>
@@ -2238,7 +2255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/mock/" class="md-nav__link">
+      <a href="../../../avatar_models/mock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2281,10 +2298,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_3" id="__nav_1_6_3_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_3" id="__nav_1_6_5_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2295,8 +2314,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_3">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_3">
             <span class="md-nav__icon md-icon"></span>
             QuickTalk
           </label>
@@ -2309,7 +2328,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+      <a href="../../../avatar_models/quicktalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2330,7 +2349,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2351,7 +2370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-apple-silicon/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2372,7 +2391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2421,10 +2440,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_4" id="__nav_1_6_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_4" id="__nav_1_6_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2435,8 +2456,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_4">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_4">
             <span class="md-nav__icon md-icon"></span>
             Wav2Lip
           </label>
@@ -2449,7 +2470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+      <a href="../../../avatar_models/wav2lip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2470,7 +2491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2491,7 +2512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2540,10 +2561,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_3_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_3_5" id="__nav_1_6_3_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_6_5_5" id="__nav_1_6_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -2554,8 +2577,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_3_5">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_1_6_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_5_5">
             <span class="md-nav__icon md-icon"></span>
             MuseTalk
           </label>
@@ -2568,7 +2591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+      <a href="../../../avatar_models/musetalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2589,7 +2612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2610,7 +2633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2639,7 +2662,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+      <a href="../../../avatar_models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../avatar_models/flashtalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2660,7 +2704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+      <a href="../../../avatar_models/flashhead/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2674,27 +2718,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -2713,6 +2736,8 @@
     
       
         
+          
+        
       
         
       
@@ -2728,26 +2753,38 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_6_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_6_6" >
         
           
-          <label class="md-nav__link" for="__nav_1_6_4" id="__nav_1_6_4_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Recipes
+    Deployment Recipes
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_6_6" id="__nav_1_6_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_6_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_6_6">
             <span class="md-nav__icon md-icon"></span>
-            Recipes
+            Deployment Recipes
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -2756,7 +2793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+      <a href="../../../recipes/local-quicktalk-audio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2770,114 +2807,9 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    V100 + FasterLivePortrait + FlashHead
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    LLM and STT
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mem0 Memory Engine
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TTS
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Support Matrix
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -2908,8 +2840,6 @@
       
         
       
-        
-      
     
     
       
@@ -2922,7 +2852,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_7" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_7" >
         
           
           
@@ -2951,27 +2883,6 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../community/publishing-docs/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Docs Publishing
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -3047,7 +2958,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_8" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_8" >
         
           
           <label class="md-nav__link" for="__nav_1_8" id="__nav_1_8_label" tabindex="0">
@@ -3123,8 +3036,6 @@
       
         
       
-        
-      
     
     
       
@@ -3137,7 +3048,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           
@@ -3180,27 +3093,6 @@
   
   <span class="md-ellipsis">
     Platform Notes
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../quick-start/compshare-image/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Compshare Image Quick Experience
   </span>
   
 
@@ -3352,7 +3244,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
@@ -3442,8 +3336,6 @@
       
         
       
-        
-      
     
     
       
@@ -3508,11 +3400,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../video-creation/" class="md-nav__link">
+      <a href="../custom-avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Video Creation
+    Custom Avatar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../voice-and-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Voice and TTS
   </span>
   
 
@@ -3575,18 +3488,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#when-to-use-it" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      When to Use It
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#source-and-driving" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Source and Driving
+      Prerequisites
     </span>
   </a>
   
@@ -3603,27 +3516,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#left-source" class="md-nav__link">
+  <a href="#source-avatar" class="md-nav__link">
     <span class="md-ellipsis">
-      Left Source
+      Source Avatar
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#center-output" class="md-nav__link">
+  <a href="#clone-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Center Output
+      Clone Output
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#right-driving" class="md-nav__link">
+  <a href="#driving-input" class="md-nav__link">
     <span class="md-ellipsis">
-      Right Driving
+      Driving Input
     </span>
   </a>
   
@@ -3635,62 +3548,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
+  <a href="#live-camera-driving" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      Live Camera Driving
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameter-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameter Tips
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameter Tips">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pasteback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pasteback
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#crop-driving-face" class="md-nav__link">
-    <span class="md-ellipsis">
-      Crop Driving Face
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#animation-region" class="md-nav__link">
-    <span class="md-ellipsis">
-      Animation Region
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mouth-controls" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mouth Controls
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3698,6 +3560,15 @@
   <a href="#uploaded-driving-video" class="md-nav__link">
     <span class="md-ellipsis">
       Uploaded Driving Video
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Suggestions
     </span>
   </a>
   
@@ -3714,36 +3585,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#camera-does-not-open" class="md-nav__link">
+  <a href="#cannot-start-camera-or-video-clone-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Camera Does Not Open
+      Cannot Start Camera or Video Clone Service
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#video-clone-service-fails-to-connect" class="md-nav__link">
+  <a href="#uploaded-video-mouth-looks-puffy-or-too-closed" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Clone Service Fails to Connect
+      Uploaded Video Mouth Looks Puffy or Too Closed
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mouth-only-opens-vertically" class="md-nav__link">
+  <a href="#lip-retargeting-turns-into-mostly-vertical-mouth-opening" class="md-nav__link">
     <span class="md-ellipsis">
-      Mouth Only Opens Vertically
+      Lip Retargeting Turns into Mostly Vertical Mouth Opening
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#head-is-zoomed-in" class="md-nav__link">
+  <a href="#avatar-aspect-ratio-looks-wrong-after-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      Head Is Zoomed In
+      Avatar Aspect Ratio Looks Wrong After Selection
     </span>
   </a>
   
@@ -3758,48 +3629,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom-avatar/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Custom Avatar
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../voice-and-tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Voice and TTS
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -3843,10 +3672,6 @@
       
         
       
-        
-      
-        
-      
     
     
       
@@ -3859,7 +3684,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
         
           
           
@@ -3995,48 +3822,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/huangshan-digital-human-guide/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Huangshan Scenic Area Digital Human
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../examples/Wechat_import/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    WeChat Chat History Import
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -4063,6 +3848,8 @@
       
         
       
+        
+      
     
     
       
@@ -4075,7 +3862,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
         
           
           
@@ -4133,6 +3922,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../../model-support/local-audio-quicktalk/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Audio + QuickTalk
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
@@ -4156,10 +3966,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4170,8 +3982,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
             <span class="md-nav__icon md-icon"></span>
             Runtime Backends
           </label>
@@ -4288,8 +4100,6 @@
       
         
       
-        
-      
     
     
       
@@ -4302,10 +4112,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4316,8 +4128,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
             <span class="md-nav__icon md-icon"></span>
             Supported Models
           </label>
@@ -4428,27 +4240,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-support/models/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -4474,9 +4265,7 @@
     
       
         
-      
-        
-      
+          
         
       
         
@@ -4501,19 +4290,29 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../deployment/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Deployment Guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
@@ -4523,64 +4322,6 @@
           <ul class="md-nav__list" data-md-scrollfix>
             
               
-                
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    Deployment Basics
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_1">
-            <span class="md-nav__icon md-icon"></span>
-            Deployment Basics
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
             
               
                 
@@ -4589,11 +4330,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/deployment/" class="md-nav__link">
+      <a href="../../../deployment/support-matrix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Deployment Topology
+    Support Matrix
   </span>
   
 
@@ -4610,7 +4351,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/avatar/" class="md-nav__link">
+      <a href="../../../avatar_models/avatar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4624,14 +4365,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -4661,32 +4394,34 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/backends/" class="md-nav__link ">
+            <a href="../../../speech_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
-    Backend Modes
+    Speech Models
   </span>
   
 
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
             <span class="md-nav__icon md-icon"></span>
-            Backend Modes
+            Speech Models
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -4698,12 +4433,60 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Speech Recognition Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Speech Recognition Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/local/" class="md-nav__link">
+      <a href="../../../speech_models/stt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Local Adapter
+    Overview
   </span>
   
 
@@ -4720,15 +4503,167 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/backends/omnirt/" class="md-nav__link">
+      <a href="../../../speech_models/stt/sensevoice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OmniRT
+    SenseVoice
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4_3" id="__nav_6_4_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Speech Generation Models
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Speech Generation Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/cosyvoice/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CosyVoice
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/indextts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IndexTTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../speech_models/tts/qwen3-tts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Qwen3-TTS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -4781,12 +4716,14 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../model-deployment/talking-head/" class="md-nav__link ">
+            <a href="../../../avatar_models/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -4797,14 +4734,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
             <span class="md-nav__icon md-icon"></span>
             Talking-Head Model Deployment
           </label>
@@ -4819,7 +4756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/mock/" class="md-nav__link">
+      <a href="../../../avatar_models/mock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4862,10 +4799,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_3" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_3" id="__nav_6_3_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_3" id="__nav_6_5_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -4876,8 +4815,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_3">
             <span class="md-nav__icon md-icon"></span>
             QuickTalk
           </label>
@@ -4890,7 +4829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/" class="md-nav__link">
+      <a href="../../../avatar_models/quicktalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4911,7 +4850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4932,7 +4871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/apple-silicon/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-apple-silicon/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4953,7 +4892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/quicktalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/quicktalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5002,10 +4941,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_4" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_4" id="__nav_6_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_4" id="__nav_6_5_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -5016,8 +4957,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_4">
             <span class="md-nav__icon md-icon"></span>
             Wav2Lip
           </label>
@@ -5030,7 +4971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/" class="md-nav__link">
+      <a href="../../../avatar_models/wav2lip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5051,7 +4992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5072,7 +5013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/wav2lip/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/wav2lip-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5121,10 +5062,12 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3_5" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5_5" >
         
           
-          <label class="md-nav__link" for="__nav_6_3_5" id="__nav_6_3_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_5_5" id="__nav_6_5_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -5135,8 +5078,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_3_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_3_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5_5">
             <span class="md-nav__icon md-icon"></span>
             MuseTalk
           </label>
@@ -5149,7 +5092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/" class="md-nav__link">
+      <a href="../../../avatar_models/musetalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5170,7 +5113,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/local/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-local/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5191,7 +5134,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/musetalk/omnirt/" class="md-nav__link">
+      <a href="../../../avatar_models/deployment/musetalk-omnirt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5220,7 +5163,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashtalk/" class="md-nav__link">
+      <a href="../../../avatar_models/fasterliveportrait/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FasterLivePortrait
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../avatar_models/flashtalk/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5241,7 +5205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/flashhead/" class="md-nav__link">
+      <a href="../../../avatar_models/flashhead/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5255,27 +5219,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/fasterliveportrait/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    FasterLivePortrait
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -5294,6 +5237,8 @@
     
       
         
+          
+        
       
         
       
@@ -5309,26 +5254,38 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
         
           
-          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Recipes
+    Deployment Recipes
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
             <span class="md-nav__icon md-icon"></span>
-            Recipes
+            Deployment Recipes
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -5337,7 +5294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/local-quicktalk-audio/" class="md-nav__link">
+      <a href="../../../recipes/local-quicktalk-audio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5351,114 +5308,9 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/recipes/v100-fasterliveportrait-flashhead/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    V100 + FasterLivePortrait + FlashHead
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/llm-stt/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    LLM and STT
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/mem0-memory/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Mem0 Memory Engine
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/tts/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TTS
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../model-deployment/support-matrix/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Support Matrix
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -5500,7 +5352,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
           
@@ -5603,7 +5457,9 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -5679,18 +5535,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#when-to-use-it" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      When to Use It
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#source-and-driving" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Source and Driving
+      Prerequisites
     </span>
   </a>
   
@@ -5707,27 +5563,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#left-source" class="md-nav__link">
+  <a href="#source-avatar" class="md-nav__link">
     <span class="md-ellipsis">
-      Left Source
+      Source Avatar
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#center-output" class="md-nav__link">
+  <a href="#clone-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Center Output
+      Clone Output
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#right-driving" class="md-nav__link">
+  <a href="#driving-input" class="md-nav__link">
     <span class="md-ellipsis">
-      Right Driving
+      Driving Input
     </span>
   </a>
   
@@ -5739,62 +5595,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steps" class="md-nav__link">
+  <a href="#live-camera-driving" class="md-nav__link">
     <span class="md-ellipsis">
-      Steps
+      Live Camera Driving
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameter-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameter Tips
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameter Tips">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pasteback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pasteback
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#crop-driving-face" class="md-nav__link">
-    <span class="md-ellipsis">
-      Crop Driving Face
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#animation-region" class="md-nav__link">
-    <span class="md-ellipsis">
-      Animation Region
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#mouth-controls" class="md-nav__link">
-    <span class="md-ellipsis">
-      Mouth Controls
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -5802,6 +5607,15 @@
   <a href="#uploaded-driving-video" class="md-nav__link">
     <span class="md-ellipsis">
       Uploaded Driving Video
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Suggestions
     </span>
   </a>
   
@@ -5818,36 +5632,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#camera-does-not-open" class="md-nav__link">
+  <a href="#cannot-start-camera-or-video-clone-service" class="md-nav__link">
     <span class="md-ellipsis">
-      Camera Does Not Open
+      Cannot Start Camera or Video Clone Service
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#video-clone-service-fails-to-connect" class="md-nav__link">
+  <a href="#uploaded-video-mouth-looks-puffy-or-too-closed" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Clone Service Fails to Connect
+      Uploaded Video Mouth Looks Puffy or Too Closed
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mouth-only-opens-vertically" class="md-nav__link">
+  <a href="#lip-retargeting-turns-into-mostly-vertical-mouth-opening" class="md-nav__link">
     <span class="md-ellipsis">
-      Mouth Only Opens Vertically
+      Lip Retargeting Turns into Mostly Vertical Mouth Opening
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#head-is-zoomed-in" class="md-nav__link">
+  <a href="#avatar-aspect-ratio-looks-wrong-after-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      Head Is Zoomed In
+      Avatar Aspect Ratio Looks Wrong After Selection
     </span>
   </a>
   
@@ -5882,96 +5696,128 @@
 
 
 <h1 id="video-clone">Video Clone<a class="headerlink" href="#video-clone" title="Permanent link">&para;</a></h1>
-<p>Video Clone keeps one digital-human avatar as the source and uses a camera or uploaded video as the driving input. The driving input controls expression, head motion, and mouth motion on the source avatar.</p>
-<p>It does not enter the LLM / STT / TTS conversation path and does not reuse the Realtime Conversation <code>speak</code> queue. The main v1 flow is live camera driving; uploaded driving video is available for testing a recorded selfie video.</p>
-<p><img alt="Video Clone page: source, clone output, and driving controls." src="../../../../assets/images/usage/webui/video-clone.png" /></p>
-<p><em>Video Clone page: source avatar on the left, clone output in the center, and camera or driving-video controls on the right.</em></p>
+<p>Video Clone is a WebUI workflow next to Realtime Conversation. It keeps an OpenTalking avatar-library asset as the source, then uses browser camera frames or an uploaded video as the driving video so the avatar follows the user's expression, mouth, and head motion.</p>
+<p><img alt="Video Clone workspace" src="../../../../assets/images/usage/video-clone-workspace.png" /></p>
+<h2 id="when-to-use-it">When to Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Validate FasterLivePortrait video-driven output.</li>
+<li>Use a camera to test realtime expression and head-motion following.</li>
+<li>Upload a selfie video to inspect driving-video mouth shape, crop, and pasteback behavior.</li>
+</ul>
+<p>Video Clone does not start an LLM conversation and does not call TTS or STT. It is separate from the audio-driven Realtime Conversation workflow.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>Video Clone depends on the FasterLivePortrait runtime. Start OmniRT according to the <a href="../../../model-support/models/fasterliveportrait/">FasterLivePortrait guide</a>, then confirm OpenTalking can see the video-clone status.</p>
-<p>Common check:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://127.0.0.1:8000/video-clone/status<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
-</span></code></pre></div>
-<p>If the status is disconnected, check the OmniRT endpoint, FasterLivePortrait source dependency, and model weight paths.</p>
-<h2 id="source-and-driving">Source and Driving<a class="headerlink" href="#source-and-driving" title="Permanent link">&para;</a></h2>
-<p>Two concepts matter:</p>
-<ul>
-<li><code>source</code>: the digital-human avatar shown in the final output. It comes from the OpenTalking avatar library or from an uploaded source image.</li>
-<li><code>driving</code>: the face input that provides expression, head motion, and mouth motion. It can come from a camera or uploaded driving video.</li>
-</ul>
-<p>The camera user does not become the digital-human identity. The camera only provides the motion signal; the output remains the selected source avatar.</p>
-<h2 id="page-layout">Page Layout<a class="headerlink" href="#page-layout" title="Permanent link">&para;</a></h2>
-<h3 id="left-source">Left Source<a class="headerlink" href="#left-source" title="Permanent link">&para;</a></h3>
-<p>Use the left column to fix the source avatar:</p>
-<ul>
-<li>Click an existing avatar to switch the source.</li>
-<li>Click Upload Source Image to upload a local image as a new source.</li>
-<li>After upload, OpenTalking adds the image to the avatar library and selects it.</li>
-</ul>
-<p>Use a clear frontal or half-body image. Avoid heavy occlusion, extreme side faces, or very dark images.</p>
-<h3 id="center-output">Center Output<a class="headerlink" href="#center-output" title="Permanent link">&para;</a></h3>
-<p>The center column shows clone output. The top controls include:</p>
-<ul>
-<li>“Record output”: record the current output and save it to the exported video asset library.</li>
-<li>“Change avatar”: return to source selection.</li>
-<li>Status button: shows stopped, connecting, or running state.</li>
-</ul>
-<p>The bottom status shows sent frames, received frames, dropped frames, and latency.</p>
-<h3 id="right-driving">Right Driving<a class="headerlink" href="#right-driving" title="Permanent link">&para;</a></h3>
-<p>The right column configures driving input:</p>
-<ul>
-<li>“Camera”: select the local camera.</li>
-<li>“FPS”: frontend frame sampling rate.</li>
-<li>“Resolution”: frame size sent to the runtime.</li>
-<li>“Mirror preview”: mirrors camera preview and sent frames for selfie use.</li>
-<li>“Upload driving video”: loop a local video as the driving input.</li>
-</ul>
-<p>If the browser cannot open the camera, upload a driving video first to validate the backend service.</p>
-<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Start the FasterLivePortrait OmniRT runtime.</li>
-<li>Start OpenTalking and open WebUI.</li>
-<li>Switch the top navigation to “Video Clone”.</li>
-<li>Select a source avatar on the left, or upload a new source image.</li>
-<li>Select a camera on the right, or upload a driving video.</li>
-<li>Adjust FPS, resolution, animation region, and mouth controls as needed.</li>
-<li>Click Start.</li>
-<li>Inspect the center output; click Record Output when you need to save it.</li>
-<li>Click Stop or switch workflows to release camera tracks, WebSocket, and the current clone session.</li>
+<li>OmniRT is running the FasterLivePortrait runtime.</li>
+<li>OpenTalking API can reach OmniRT.</li>
+<li>WebUI model status reports <code>fasterliveportrait</code> as connected.</li>
+<li>The browser can access the camera. Use <code>localhost</code>, <code>127.0.0.1</code>, or HTTPS.</li>
 </ol>
-<h2 id="parameter-tips">Parameter Tips<a class="headerlink" href="#parameter-tips" title="Permanent link">&para;</a></h2>
-<h3 id="pasteback">Pasteback<a class="headerlink" href="#pasteback" title="Permanent link">&para;</a></h3>
-<p>Keep it enabled by default. Pasteback preserves the original source composition and avoids showing only a zoomed face.</p>
-<h3 id="crop-driving-face">Crop Driving Face<a class="headerlink" href="#crop-driving-face" title="Permanent link">&para;</a></h3>
-<p>Keep it disabled by default. Over-cropping uploaded driving video can make mouth shape and head position feel unnatural. Enable it only when the driving face is too small or face detection is unstable.</p>
-<h3 id="animation-region">Animation Region<a class="headerlink" href="#animation-region" title="Permanent link">&para;</a></h3>
-<ul>
-<li>“Full expression”: full head motion and expression demo.</li>
-<li>“Expression”: expression-focused motion.</li>
-<li>“Pose”: head-pose-focused motion.</li>
-<li>“Mouth”: lip-only checks.</li>
-<li>“Eyes”: blink and eye-motion checks.</li>
-</ul>
-<h3 id="mouth-controls">Mouth Controls<a class="headerlink" href="#mouth-controls" title="Permanent link">&para;</a></h3>
-<p>Mouth opening increases or reduces mouth amplitude. Lip retargeting can improve mouth closure, but aggressive settings may collapse motion into simple vertical opening. Change one parameter at a time.</p>
+<p>If services are not running yet, first follow the <a href="../../../avatar_models/fasterliveportrait/">FasterLivePortrait model page</a> and complete both Start OmniRT and Start OpenTalking WebUI.</p>
+<h2 id="page-layout">Page Layout<a class="headerlink" href="#page-layout" title="Permanent link">&para;</a></h2>
+<h3 id="source-avatar">Source Avatar<a class="headerlink" href="#source-avatar" title="Permanent link">&para;</a></h3>
+<p>The source panel lists digital-human assets from the avatar library. Click an asset to make it the output character. Camera or uploaded video frames do not become the source; they only provide motion.</p>
+<p>If the output appears as an over-zoomed head, make sure <code>Pasteback</code> is enabled. It pastes the animated face back into the original source image so the body, background, and aspect ratio are preserved.</p>
+<h3 id="clone-output">Clone Output<a class="headerlink" href="#clone-output" title="Permanent link">&para;</a></h3>
+<p>The center panel shows the selected source and the cloned output. The status strip shows sent frames, received frames, dropped frames, and latency.</p>
+<p>After stopping, click the change-avatar control to return to source selection and choose another asset.</p>
+<h3 id="driving-input">Driving Input<a class="headerlink" href="#driving-input" title="Permanent link">&para;</a></h3>
+<p>The right panel selects camera, FPS, resolution, and local preview. After Start, the browser samples camera frames through a canvas timer and sends them to the backend.</p>
+<p>Uploaded driving video is a secondary testing path for comparing the same selfie video under different parameters.</p>
+<h2 id="live-camera-driving">Live Camera Driving<a class="headerlink" href="#live-camera-driving" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Open WebUI and switch to Video Clone.</li>
+<li>Select a digital-human source on the left.</li>
+<li>Select camera, FPS, and resolution on the right.</li>
+<li>Click Start and allow browser camera permission.</li>
+<li>Watch the center output and status strip.</li>
+<li>Click Stop or leave the page only after the camera preview closes.</li>
+</ol>
+<p>Start with <code>12fps</code> and <code>448px</code>. Increase FPS or resolution only after output is stable.</p>
 <h2 id="uploaded-driving-video">Uploaded Driving Video<a class="headerlink" href="#uploaded-driving-video" title="Permanent link">&para;</a></h2>
-<p>Uploaded driving video does not change the source identity. It only provides motion input.</p>
-<p>Recommended driving video:</p>
+<p>Uploaded video is for validating driving-video expression, mouth, and crop behavior. Use a clear frontal or half-body selfie video. Avoid a tiny face, heavy occlusion, extreme head turns, or very narrow aspect ratios.</p>
+<p>If uploaded-video output looks worse than camera output:</p>
 <ul>
-<li>Clear, unobstructed face.</li>
-<li>Face not too far from the camera.</li>
-<li>Face stays in frame.</li>
-<li>Short clips for initial tuning.</li>
+<li>Disable <code>Crop driving face</code> so the driving face is not cropped too tightly.</li>
+<li>Enable <code>Pasteback</code> so output is not a cropped head-only view.</li>
+<li>Enable <code>Lip retargeting</code> and disable <code>Relative motion</code>.</li>
+<li>Change the driving region from <code>Mouth</code> to <code>Expression</code> or <code>All</code> and check whether mouth corners and cheeks recover.</li>
 </ul>
-<p>If uploaded video makes the mouth look puffy or unable to open, disable Crop Driving Face first, then check face position and scale in the driving video.</p>
+<h2 id="parameter-suggestions">Parameter Suggestions<a class="headerlink" href="#parameter-suggestions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Effect</th>
+<th>Suggestion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motion amplitude</td>
+<td>Overall driving strength</td>
+<td>Start from <code>1.0</code></td>
+</tr>
+<tr>
+<td>Expression amplitude</td>
+<td>Expression and mouth strength</td>
+<td>Start from <code>1.0</code></td>
+</tr>
+<tr>
+<td>Head amplitude</td>
+<td>Overall head motion</td>
+<td>Start from <code>0.3</code></td>
+</tr>
+<tr>
+<td>Mouth opening</td>
+<td>Mouth open/close amplitude</td>
+<td><code>0.8-1.3</code></td>
+</tr>
+<tr>
+<td>Yaw / pitch / roll</td>
+<td>Pose components</td>
+<td>Lower the component that looks too strong</td>
+</tr>
+<tr>
+<td>Pasteback</td>
+<td>Preserve source composition</td>
+<td>Keep enabled</td>
+</tr>
+<tr>
+<td>Stitching</td>
+<td>Stabilize face boundary</td>
+<td>Keep enabled</td>
+</tr>
+<tr>
+<td>Relative motion</td>
+<td>Preserve source base pose</td>
+<td>Usually disable when lip retargeting is enabled</td>
+</tr>
+<tr>
+<td>Lip normalize</td>
+<td>Reduce initial mouth-shape offset</td>
+<td>Keep enabled</td>
+</tr>
+<tr>
+<td>Lip retargeting</td>
+<td>Improve mouth following</td>
+<td>Try when the mouth is puffy or does not open enough</td>
+</tr>
+<tr>
+<td>Crop driving face</td>
+<td>Crop input-video face</td>
+<td>Disable when uploaded-video aspect ratio looks wrong</td>
+</tr>
+</tbody>
+</table>
 <h2 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h2>
-<h3 id="camera-does-not-open">Camera Does Not Open<a class="headerlink" href="#camera-does-not-open" title="Permanent link">&para;</a></h3>
-<p>Open the page from <code>localhost</code> or <code>127.0.0.1</code>, allow camera permission, and make sure the camera is not occupied by another application.</p>
-<h3 id="video-clone-service-fails-to-connect">Video Clone Service Fails to Connect<a class="headerlink" href="#video-clone-service-fails-to-connect" title="Permanent link">&para;</a></h3>
-<p>Check <code>/video-clone/status</code>, confirm the FasterLivePortrait runtime is running, and verify the OpenTalking OmniRT endpoint points to the right service.</p>
-<h3 id="mouth-only-opens-vertically">Mouth Only Opens Vertically<a class="headerlink" href="#mouth-only-opens-vertically" title="Permanent link">&para;</a></h3>
-<p>Reduce lip retargeting strength, or switch back to a fuller animation region. Mouth-only is useful for lip checks, but full demos should usually use Full Expression.</p>
-<h3 id="head-is-zoomed-in">Head Is Zoomed In<a class="headerlink" href="#head-is-zoomed-in" title="Permanent link">&para;</a></h3>
-<p>Enable Pasteback. If the source image itself is face-heavy, use a half-body or wider-composition source image.</p>
+<h3 id="cannot-start-camera-or-video-clone-service">Cannot Start Camera or Video Clone Service<a class="headerlink" href="#cannot-start-camera-or-video-clone-service" title="Permanent link">&para;</a></h3>
+<p>Check browser permissions, page origin (<code>localhost</code> / <code>127.0.0.1</code> / HTTPS), and whether FasterLivePortrait is connected in <code>/models</code>.</p>
+<h3 id="uploaded-video-mouth-looks-puffy-or-too-closed">Uploaded Video Mouth Looks Puffy or Too Closed<a class="headerlink" href="#uploaded-video-mouth-looks-puffy-or-too-closed" title="Permanent link">&para;</a></h3>
+<p>This is usually related to driving-video crop, face position, scaling, or lip parameters. Disable <code>Crop driving face</code> first, then try <code>Lip retargeting + Relative motion off</code>.</p>
+<h3 id="lip-retargeting-turns-into-mostly-vertical-mouth-opening">Lip Retargeting Turns into Mostly Vertical Mouth Opening<a class="headerlink" href="#lip-retargeting-turns-into-mostly-vertical-mouth-opening" title="Permanent link">&para;</a></h3>
+<p>Lip retargeting strengthens mouth open/close. If relative motion stays enabled, mouth corners and cheek movement can become weak. Disable <code>Relative motion</code> and switch the driving region to <code>Expression</code> or <code>All</code>.</p>
+<h3 id="avatar-aspect-ratio-looks-wrong-after-selection">Avatar Aspect Ratio Looks Wrong After Selection<a class="headerlink" href="#avatar-aspect-ratio-looks-wrong-after-selection" title="Permanent link">&para;</a></h3>
+<p>Enable <code>Pasteback</code> and choose a source with the desired original composition. Video Clone should use the source image for output composition; the driving video only provides motion.</p>
 
 
 
@@ -6039,7 +5885,7 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>

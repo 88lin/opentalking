@@ -5734,6 +5734,26 @@
 <td>Avatar bundle 根目录。</td>
 </tr>
 <tr>
+<td><code>OPENTALKING_AVATAR_MATTING_PROVIDER</code></td>
+<td><code>rembg</code></td>
+<td>自定义形象上传时的可选抠图 provider；仅在上传弹窗勾选后调用。</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_DEVICE</code></td>
+<td><code>cpu</code></td>
+<td>预留给抠图 provider 的设备配置。</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_MODEL_PATH</code></td>
+<td>空</td>
+<td><code>rembg</code> provider 的本地 <code>u2net.onnx</code> 模型文件路径。</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_TIMEOUT_SEC</code></td>
+<td><code>60</code></td>
+<td>预留给抠图 provider 的超时配置。</td>
+</tr>
+<tr>
 <td><code>OPENTALKING_VOICES_DIR</code></td>
 <td><code>./var/voices</code></td>
 <td>声音复刻存储目录。</td>
@@ -5750,6 +5770,7 @@
 </tr>
 </tbody>
 </table>
+<p>自定义形象上传默认不会抠除背景；PNG 自带透明通道时会自动识别为可透明合成。若要启用本地 <code>rembg</code> provider，先安装可选依赖：<code>uv pip install --python .venv/bin/python '.[avatar-matting]'</code>。<code>rembg</code> 不会在运行时自动下载模型，请预先下载 <code>u2net.onnx</code>，并将 <code>OPENTALKING_AVATAR_MATTING_MODEL_PATH</code> 指向该文件。</p>
 <h2 id="4">4. 进阶调优<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
 <p>本节变量针对特定后端的细粒度控制。完整列表参见 <code>.env.example</code>。下列为代表性条目。</p>
 <h3 id="dashscope-qwen-tts">DashScope Qwen 实时 TTS<a class="headerlink" href="#dashscope-qwen-tts" title="Permanent link">&para;</a></h3>

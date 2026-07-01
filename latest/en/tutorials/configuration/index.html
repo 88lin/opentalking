@@ -5744,6 +5744,26 @@ mode. The single-process unified mode (<code>opentalking-unified</code>) ignores
 <td>Avatar bundle root directory.</td>
 </tr>
 <tr>
+<td><code>OPENTALKING_AVATAR_MATTING_PROVIDER</code></td>
+<td><code>rembg</code></td>
+<td>Optional matting provider for custom avatar uploads; called only when the upload dialog option is enabled.</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_DEVICE</code></td>
+<td><code>cpu</code></td>
+<td>Reserved device setting for matting providers.</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_MODEL_PATH</code></td>
+<td>empty</td>
+<td>Local <code>u2net.onnx</code> model file path for the <code>rembg</code> provider.</td>
+</tr>
+<tr>
+<td><code>OPENTALKING_AVATAR_MATTING_TIMEOUT_SEC</code></td>
+<td><code>60</code></td>
+<td>Reserved timeout setting for matting providers.</td>
+</tr>
+<tr>
 <td><code>OPENTALKING_VOICES_DIR</code></td>
 <td><code>./var/voices</code></td>
 <td>Storage for cloned voices.</td>
@@ -5760,6 +5780,7 @@ mode. The single-process unified mode (<code>opentalking-unified</code>) ignores
 </tr>
 </tbody>
 </table>
+<p>Custom avatar uploads do not remove the background by default. PNG uploads with an existing alpha channel are detected automatically as transparent-ready. To enable the local <code>rembg</code> provider, install the optional dependency first: <code>uv pip install --python .venv/bin/python '.[avatar-matting]'</code>. The <code>rembg</code> provider does not download models at runtime; download <code>u2net.onnx</code> ahead of time and point <code>OPENTALKING_AVATAR_MATTING_MODEL_PATH</code> at that file.</p>
 <h2 id="4-advanced-tuning">4. Advanced tuning<a class="headerlink" href="#4-advanced-tuning" title="Permanent link">&para;</a></h2>
 <p>The variables in this section are intended for fine-grained control over specific
 backends. Consult <code>.env.example</code> for the complete list. Representative entries are

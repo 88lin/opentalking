@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#deploying-opentalking-omnirt-quicktalk-on-windows" class="md-skip">
+        <a href="#windows-wsl2-deployment-for-opentalking-quicktalk" class="md-skip">
           Skip to content
         </a>
       
@@ -747,37 +747,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#0-final-deployment-structure" class="md-nav__link">
+  <a href="#1-route-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      0. Final Deployment Structure
+      1. Route Selection
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-windows-side-prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Windows-Side Prerequisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Windows-Side Prerequisites">
+    <nav class="md-nav" aria-label="1. Route Selection">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#11-nvidia-driver" class="md-nav__link">
+  <a href="#11-recommended-route-quicktalk-local-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.1 NVIDIA Driver
+      1.1 Recommended Route: QuickTalk Local Mode
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#12-install-and-verify-wsl2" class="md-nav__link">
+  <a href="#12-advanced-route-quicktalk-omnirt-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.2 Install and Verify WSL2
+      1.2 Advanced Route: QuickTalk OmniRT Mode
     </span>
   </a>
   
@@ -789,28 +780,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-wsl2-base-dependencies" class="md-nav__link">
+  <a href="#2-recommended-directory-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      2. WSL2 Base Dependencies
+      2. Recommended Directory Structure
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-clone-from-github" class="md-nav__link">
+  <a href="#3-port-convention" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Clone from GitHub
+      3. Port Convention
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Clone from GitHub">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-windows-side-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Windows-Side Prerequisites
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Windows-Side Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#path-notes" class="md-nav__link">
+  <a href="#41-nvidia-driver" class="md-nav__link">
     <span class="md-ellipsis">
-      Path Notes
+      4.1 NVIDIA Driver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-install-and-verify-wsl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Install and Verify WSL2
     </span>
   </a>
   
@@ -822,126 +831,72 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-install-uv-and-configure-mirrors" class="md-nav__link">
+  <a href="#5-wsl2-network-and-browser-microphone" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Install uv and Configure Mirrors
+      5. WSL2 Network and Browser Microphone
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-configure-opentalking-environment" class="md-nav__link">
+  <a href="#6-wsl2-base-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Configure OpenTalking Environment
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Configure OpenTalking Environment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-prepare-quicktalk-weights" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. Prepare QuickTalk Weights
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Prepare QuickTalk Weights">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#path-notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Path Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-configure-omnirt-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      7. Configure OmniRT Environment
+      6. WSL2 Base Dependencies
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-configure-opentalking-env" class="md-nav__link">
+  <a href="#7-prepare-the-workspace" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Configure OpenTalking .env
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Configure OpenTalking .env">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-start-omnirt-quicktalk-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      9. Start OmniRT QuickTalk Backend
+      7. Prepare the Workspace
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#10-start-opentalking" class="md-nav__link">
+  <a href="#8-install-uv-and-configure-mirrors" class="md-nav__link">
     <span class="md-ellipsis">
-      10. Start OpenTalking
+      8. Install uv and Configure Mirrors
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#11-common-path-issues" class="md-nav__link">
+  <a href="#9-prepare-quicktalk-weights" class="md-nav__link">
     <span class="md-ellipsis">
-      11. Common Path Issues
+      9. Prepare QuickTalk Weights
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#12-final-checklist" class="md-nav__link">
+  <a href="#10-recommended-route-start-quicktalk-local" class="md-nav__link">
     <span class="md-ellipsis">
-      12. Final Checklist
+      10. Recommended Route: Start QuickTalk Local
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-advanced-route-start-quicktalk-omnirt" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Advanced Route: Start QuickTalk OmniRT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-common-path-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. Common Path Issues
     </span>
   </a>
   
@@ -957,9 +912,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#14-summary" class="md-nav__link">
+  <a href="#14-final-checklist" class="md-nav__link">
     <span class="md-ellipsis">
-      14. Summary
+      14. Final Checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      15. Summary
     </span>
   </a>
   
@@ -3606,37 +3570,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#0-final-deployment-structure" class="md-nav__link">
+  <a href="#1-route-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      0. Final Deployment Structure
+      1. Route Selection
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-windows-side-prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Windows-Side Prerequisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Windows-Side Prerequisites">
+    <nav class="md-nav" aria-label="1. Route Selection">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#11-nvidia-driver" class="md-nav__link">
+  <a href="#11-recommended-route-quicktalk-local-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.1 NVIDIA Driver
+      1.1 Recommended Route: QuickTalk Local Mode
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#12-install-and-verify-wsl2" class="md-nav__link">
+  <a href="#12-advanced-route-quicktalk-omnirt-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.2 Install and Verify WSL2
+      1.2 Advanced Route: QuickTalk OmniRT Mode
     </span>
   </a>
   
@@ -3648,28 +3603,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-wsl2-base-dependencies" class="md-nav__link">
+  <a href="#2-recommended-directory-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      2. WSL2 Base Dependencies
+      2. Recommended Directory Structure
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-clone-from-github" class="md-nav__link">
+  <a href="#3-port-convention" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Clone from GitHub
+      3. Port Convention
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Clone from GitHub">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-windows-side-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Windows-Side Prerequisites
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Windows-Side Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#path-notes" class="md-nav__link">
+  <a href="#41-nvidia-driver" class="md-nav__link">
     <span class="md-ellipsis">
-      Path Notes
+      4.1 NVIDIA Driver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-install-and-verify-wsl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Install and Verify WSL2
     </span>
   </a>
   
@@ -3681,126 +3654,72 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-install-uv-and-configure-mirrors" class="md-nav__link">
+  <a href="#5-wsl2-network-and-browser-microphone" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Install uv and Configure Mirrors
+      5. WSL2 Network and Browser Microphone
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-configure-opentalking-environment" class="md-nav__link">
+  <a href="#6-wsl2-base-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Configure OpenTalking Environment
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Configure OpenTalking Environment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-prepare-quicktalk-weights" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. Prepare QuickTalk Weights
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Prepare QuickTalk Weights">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#path-notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Path Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-configure-omnirt-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      7. Configure OmniRT Environment
+      6. WSL2 Base Dependencies
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-configure-opentalking-env" class="md-nav__link">
+  <a href="#7-prepare-the-workspace" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Configure OpenTalking .env
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Configure OpenTalking .env">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-start-omnirt-quicktalk-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      9. Start OmniRT QuickTalk Backend
+      7. Prepare the Workspace
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#10-start-opentalking" class="md-nav__link">
+  <a href="#8-install-uv-and-configure-mirrors" class="md-nav__link">
     <span class="md-ellipsis">
-      10. Start OpenTalking
+      8. Install uv and Configure Mirrors
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#11-common-path-issues" class="md-nav__link">
+  <a href="#9-prepare-quicktalk-weights" class="md-nav__link">
     <span class="md-ellipsis">
-      11. Common Path Issues
+      9. Prepare QuickTalk Weights
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#12-final-checklist" class="md-nav__link">
+  <a href="#10-recommended-route-start-quicktalk-local" class="md-nav__link">
     <span class="md-ellipsis">
-      12. Final Checklist
+      10. Recommended Route: Start QuickTalk Local
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-advanced-route-start-quicktalk-omnirt" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Advanced Route: Start QuickTalk OmniRT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-common-path-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. Common Path Issues
     </span>
   </a>
   
@@ -3816,9 +3735,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#14-summary" class="md-nav__link">
+  <a href="#14-final-checklist" class="md-nav__link">
     <span class="md-ellipsis">
-      14. Summary
+      14. Final Checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      15. Summary
     </span>
   </a>
   
@@ -6291,37 +6219,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#0-final-deployment-structure" class="md-nav__link">
+  <a href="#1-route-selection" class="md-nav__link">
     <span class="md-ellipsis">
-      0. Final Deployment Structure
+      1. Route Selection
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-windows-side-prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Windows-Side Prerequisites
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="1. Windows-Side Prerequisites">
+    <nav class="md-nav" aria-label="1. Route Selection">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#11-nvidia-driver" class="md-nav__link">
+  <a href="#11-recommended-route-quicktalk-local-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.1 NVIDIA Driver
+      1.1 Recommended Route: QuickTalk Local Mode
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#12-install-and-verify-wsl2" class="md-nav__link">
+  <a href="#12-advanced-route-quicktalk-omnirt-mode" class="md-nav__link">
     <span class="md-ellipsis">
-      1.2 Install and Verify WSL2
+      1.2 Advanced Route: QuickTalk OmniRT Mode
     </span>
   </a>
   
@@ -6333,28 +6252,46 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-wsl2-base-dependencies" class="md-nav__link">
+  <a href="#2-recommended-directory-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      2. WSL2 Base Dependencies
+      2. Recommended Directory Structure
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-clone-from-github" class="md-nav__link">
+  <a href="#3-port-convention" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Clone from GitHub
+      3. Port Convention
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Clone from GitHub">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-windows-side-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Windows-Side Prerequisites
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Windows-Side Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#path-notes" class="md-nav__link">
+  <a href="#41-nvidia-driver" class="md-nav__link">
     <span class="md-ellipsis">
-      Path Notes
+      4.1 NVIDIA Driver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-install-and-verify-wsl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Install and Verify WSL2
     </span>
   </a>
   
@@ -6366,126 +6303,72 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-install-uv-and-configure-mirrors" class="md-nav__link">
+  <a href="#5-wsl2-network-and-browser-microphone" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Install uv and Configure Mirrors
+      5. WSL2 Network and Browser Microphone
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-configure-opentalking-environment" class="md-nav__link">
+  <a href="#6-wsl2-base-dependencies" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Configure OpenTalking Environment
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5. Configure OpenTalking Environment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-prepare-quicktalk-weights" class="md-nav__link">
-    <span class="md-ellipsis">
-      6. Prepare QuickTalk Weights
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Prepare QuickTalk Weights">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#path-notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Path Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-configure-omnirt-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      7. Configure OmniRT Environment
+      6. WSL2 Base Dependencies
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-configure-opentalking-env" class="md-nav__link">
+  <a href="#7-prepare-the-workspace" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Configure OpenTalking .env
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Configure OpenTalking .env">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#notes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Notes
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#9-start-omnirt-quicktalk-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      9. Start OmniRT QuickTalk Backend
+      7. Prepare the Workspace
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#10-start-opentalking" class="md-nav__link">
+  <a href="#8-install-uv-and-configure-mirrors" class="md-nav__link">
     <span class="md-ellipsis">
-      10. Start OpenTalking
+      8. Install uv and Configure Mirrors
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#11-common-path-issues" class="md-nav__link">
+  <a href="#9-prepare-quicktalk-weights" class="md-nav__link">
     <span class="md-ellipsis">
-      11. Common Path Issues
+      9. Prepare QuickTalk Weights
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#12-final-checklist" class="md-nav__link">
+  <a href="#10-recommended-route-start-quicktalk-local" class="md-nav__link">
     <span class="md-ellipsis">
-      12. Final Checklist
+      10. Recommended Route: Start QuickTalk Local
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-advanced-route-start-quicktalk-omnirt" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Advanced Route: Start QuickTalk OmniRT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-common-path-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. Common Path Issues
     </span>
   </a>
   
@@ -6501,9 +6384,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#14-summary" class="md-nav__link">
+  <a href="#14-final-checklist" class="md-nav__link">
     <span class="md-ellipsis">
-      14. Summary
+      14. Final Checklist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      15. Summary
     </span>
   </a>
   
@@ -6532,350 +6424,345 @@
   
 
 
-<h1 id="deploying-opentalking-omnirt-quicktalk-on-windows">Deploying OpenTalking + OmniRT + QuickTalk on Windows<a class="headerlink" href="#deploying-opentalking-omnirt-quicktalk-on-windows" title="Permanent link">&para;</a></h1>
-<blockquote>
-<p>This guide targets Windows laptop deployment scenarios. The goal is to go from <code>git clone</code> to running OpenTalking + OmniRT + QuickTalk in WSL2 Ubuntu, and completing an E2E Benchmark.</p>
-</blockquote>
-<hr />
-<h2 id="0-final-deployment-structure">0. Final Deployment Structure<a class="headerlink" href="#0-final-deployment-structure" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Windows Host
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  └── WSL2 Ubuntu
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        ├── OpenTalking: Web / API / Session orchestration
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        ├── OmniRT: QuickTalk inference backend
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        └── CUDA: RTX 3050 Laptop GPU
+<h1 id="windows-wsl2-deployment-for-opentalking-quicktalk">Windows WSL2 Deployment for OpenTalking + QuickTalk<a class="headerlink" href="#windows-wsl2-deployment-for-opentalking-quicktalk" title="Permanent link">&para;</a></h1>
+<p>This guide targets a single-machine Windows + WSL2 Ubuntu deployment. Start with the recommended QuickTalk local mode. Use QuickTalk OmniRT mode only when you need to serviceize the avatar runtime or split OpenTalking from the inference backend.</p>
+<h2 id="1-route-selection">1. Route Selection<a class="headerlink" href="#1-route-selection" title="Permanent link">&para;</a></h2>
+<h3 id="11-recommended-route-quicktalk-local-mode">1.1 Recommended Route: QuickTalk Local Mode<a class="headerlink" href="#11-recommended-route-quicktalk-local-mode" title="Permanent link">&para;</a></h3>
+<p>Use this route for single-machine WSL2, one GPU, and quick validation of the realtime digital-human pipeline. OpenTalking loads the QuickTalk adapter in process, so OmniRT does not need to run separately.</p>
+<h3 id="12-advanced-route-quicktalk-omnirt-mode">1.2 Advanced Route: QuickTalk OmniRT Mode<a class="headerlink" href="#12-advanced-route-quicktalk-omnirt-mode" title="Permanent link">&para;</a></h3>
+<p>Use this route for serviceized deployments, split avatar runtime, or later multi-service expansion. It requires an additional OmniRT QuickTalk backend.</p>
+<h2 id="2-recommended-directory-structure">2. Recommended Directory Structure<a class="headerlink" href="#2-recommended-directory-structure" title="Permanent link">&para;</a></h2>
+<p>Keep code, runtime checkouts, and model weights separated. A recommended WSL2 layout is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$DIGITAL_HUMAN_HOME/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── opentalking/
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── .venv/
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── apps/
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── docs/
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   └── scripts/
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── model-repos/
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   └── omnirt/
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│       └── .venv/
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├── models/
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   └── quicktalk/
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│       └── checkpoints/
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│           ├── quicktalk.pth
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│           ├── repair.npy
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│           ├── chinese-hubert-large/
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│           └── auxiliary/models/buffalo_l/
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>├── logs/
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>└── run/
 </span></code></pre></div>
-<p>Recommended directory structure:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$DIGITAL_HUMAN_HOME/
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── opentalking/
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│   ├── .venv/
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   ├── apps/
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│   ├── configs/
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│   └── scripts/
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>├── omnirt/
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│   ├── .venv/
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│   └── models/quicktalk/
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>└── models/
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    └── quicktalk/checkpoints/
-</span></code></pre></div>
-<p>Place code in WSL2's own Linux filesystem (e.g., <code>$WSL_HOME/test</code> or <code>/home/&lt;user&gt;/test</code>), not directly under <code>/mnt/d/...</code>.</p>
-<hr />
-<h2 id="1-windows-side-prerequisites">1. Windows-Side Prerequisites<a class="headerlink" href="#1-windows-side-prerequisites" title="Permanent link">&para;</a></h2>
-<h3 id="11-nvidia-driver">1.1 NVIDIA Driver<a class="headerlink" href="#11-nvidia-driver" title="Permanent link">&para;</a></h3>
-<p>Confirm the GPU and driver work on Windows:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">nvidia-smi</span>
-</span></code></pre></div>
-<p>Expected output:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>NVIDIA GeForce RTX 3050 Laptop GPU
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>CUDA Version: 13.0
-</span></code></pre></div>
-<p>Note: The <code>CUDA Version</code> here indicates the highest CUDA version supported by the driver, not that CUDA Toolkit must be installed. PyTorch can be installed with CUDA wheels directly.</p>
-<hr />
-<h3 id="12-install-and-verify-wsl2">1.2 Install and Verify WSL2<a class="headerlink" href="#12-install-and-verify-wsl2" title="Permanent link">&para;</a></h3>
-<p>In an administrator PowerShell:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-version</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-status</span>
-</span></code></pre></div>
-<p>Expected:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Default version: 2
-</span></code></pre></div>
-<p>If Ubuntu is not installed yet:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-install</span> <span class="n">-d</span> <span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span>
-</span></code></pre></div>
-<p>For a manually imported Ubuntu:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-import</span> <span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span> <span class="n">D</span><span class="p">:\</span><span class="n">wsl</span><span class="p">\</span><span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span> <span class="n">D</span><span class="p">:\</span><span class="n">wsl</span><span class="p">\</span><span class="n">downloads</span><span class="p">\</span><span class="n">ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04-wsl</span><span class="p">.</span><span class="n">rootfs</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> <span class="p">-</span><span class="n">-version</span> <span class="n">2</span>
-</span></code></pre></div>
-<p>Enter WSL2:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">wsl</span> <span class="n">-d</span> <span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span>
-</span></code></pre></div>
-<p>Verify GPU in WSL2:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>nvidia-smi
-</span></code></pre></div>
-<p>If WSL2 can see the RTX 3050, the CUDA inference prerequisites are met.</p>
-<hr />
-<h2 id="2-wsl2-base-dependencies">2. WSL2 Base Dependencies<a class="headerlink" href="#2-wsl2-base-dependencies" title="Permanent link">&para;</a></h2>
-<p>The following commands run inside WSL2 Ubuntu. If running as root, <code>sudo</code> is not needed; otherwise prepend <code>sudo</code> to <code>apt</code> commands.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>apt<span class="w"> </span>update
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>python3-pip<span class="w"> </span>python3-venv<span class="w"> </span>python3-dev<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span>build-essential<span class="w"> </span>pkg-config<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span>curl<span class="w"> </span>wget<span class="w"> </span>git<span class="w"> </span>git-lfs<span class="w"> </span>rsync<span class="w"> </span>unzip<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span>ffmpeg<span class="w"> </span>nodejs<span class="w"> </span>npm<span class="w"> </span>jq<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span>iproute2<span class="w"> </span>procps<span class="w"> </span>psmisc<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span>libgl1<span class="w"> </span>libglib2.0-0
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>git<span class="w"> </span>lfs<span class="w"> </span>install
-</span></code></pre></div>
-<p>Check basic tools:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>--version
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>ffmpeg<span class="w"> </span>-version
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>node<span class="w"> </span>--version
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>npm<span class="w"> </span>--version
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>nvidia-smi
-</span></code></pre></div>
-<hr />
-<h2 id="3-clone-from-github">3. Clone from GitHub<a class="headerlink" href="#3-clone-from-github" title="Permanent link">&para;</a></h2>
-<p>Enter the working directory:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$WSL_HOME</span>/test
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$WSL_HOME</span>/test
-</span></code></pre></div>
-<p>Clone both repositories:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datascale-ai/opentalking.git
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datascale-ai/omnirt.git
-</span></code></pre></div>
-<p>The final structure should be:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>$DIGITAL_HUMAN_HOME/opentalking
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>$DIGITAL_HUMAN_HOME/omnirt
-</span></code></pre></div>
-<p>Verify:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>ls<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>ls<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt
-</span></code></pre></div>
-<h3 id="path-notes">Path Notes<a class="headerlink" href="#path-notes" title="Permanent link">&para;</a></h3>
-<p>If the code already exists on Windows, copy it to WSL2:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>rsync<span class="w"> </span>-a<span class="w"> </span>--info<span class="o">=</span>progress2<span class="w"> </span>/mnt/d/test_opentalking/opentalking/<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking/
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>rsync<span class="w"> </span>-a<span class="w"> </span>--info<span class="o">=</span>progress2<span class="w"> </span>/mnt/d/test_opentalking/omnirt/<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt/
-</span></code></pre></div>
-<p>If the code is already downloaded on a server, sync it to WSL2:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>rsync<span class="w"> </span>-avP<span class="w"> </span>&lt;user&gt;@&lt;server-host&gt;:<span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking/<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking/
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>rsync<span class="w"> </span>-avP<span class="w"> </span>&lt;user&gt;@&lt;server-host&gt;:<span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt/<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt/
-</span></code></pre></div>
-<hr />
-<h2 id="4-install-uv-and-configure-mirrors">4. Install uv and Configure Mirrors<a class="headerlink" href="#4-install-uv-and-configure-mirrors" title="Permanent link">&para;</a></h2>
-<p>Install uv in WSL2:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>uv
-</span></code></pre></div>
-<p>If <code>uv</code> is not in PATH:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/usr/local/bin:</span><span class="nv">$HOME</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;/usr/local/bin:$HOME/.local/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
-</span></code></pre></div>
-<p>Verify:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>uv<span class="w"> </span>--version
-</span></code></pre></div>
-<p>Write commonly used mirror environment variables:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="s">export PIP_INDEX_URL=https://pypi.org/simple</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="s">export UV_DEFAULT_INDEX=https://pypi.org/simple</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="s">export UV_INDEX_URL=https://pypi.org/simple</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="s">export HF_ENDPOINT=https://huggingface.co</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="s">export npm_config_registry=https://registry.npmjs.org</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="s">export CUDA_VISIBLE_DEVICES=0</span>
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="s">export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb=128</span>
-</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="s">EOF</span>
-</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>
-</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
-</span></code></pre></div>
-<hr />
-<h2 id="5-configure-opentalking-environment">5. Configure OpenTalking Environment<a class="headerlink" href="#5-configure-opentalking-environment" title="Permanent link">&para;</a></h2>
-<p>Enter OpenTalking:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span></code></pre></div>
-<p>Create an isolated virtual environment:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span>python3<span class="w"> </span>.venv
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span></code></pre></div>
-<p>Confirm Python path:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>which<span class="w"> </span>python
-</span></code></pre></div>
-<p>Expected:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>$DIGITAL_HUMAN_HOME/opentalking/.venv/bin/python
-</span></code></pre></div>
-<p>Install base packages:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
-</span></code></pre></div>
-<p>Install OpenTalking dependencies:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev,models]&quot;</span>
-</span></code></pre></div>
-<p>Install CUDA PyTorch:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">  </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.9.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.24.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">  </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.9.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">  </span>--find-links<span class="w"> </span>https://download.pytorch.org/whl/cu128/
-</span></code></pre></div>
-<p>Verify CUDA:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torch; print(&#39;torch=&#39;, torch.__version__); print(&#39;torch cuda=&#39;, torch.version.cuda); print(&#39;cuda=&#39;, torch.cuda.is_available()); print(&#39;gpu=&#39;, torch.cuda.get_device_name(0) if torch.cuda.is_available() else &#39;NO CUDA&#39;)&quot;</span>
-</span></code></pre></div>
-<p>Expected output:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>torch= 2.9.1+cu128
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>torch cuda= 12.8
-</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>cuda= True
-</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>gpu= NVIDIA GeForce RTX 3050 Laptop GPU
-</span></code></pre></div>
-<h3 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h3>
-<p>Installing CUDA PyTorch on Linux/WSL2 will pull <code>nvidia-cudnn-cu12</code>, <code>nvidia-cublas-cu12</code>, <code>triton</code>, and other dependencies — these are large, which is normal. The key is that <code>cuda=True</code> must be confirmed.</p>
-<hr />
-<h2 id="6-prepare-quicktalk-weights">6. Prepare QuickTalk Weights<a class="headerlink" href="#6-prepare-quicktalk-weights" title="Permanent link">&para;</a></h2>
-<p>QuickTalk weights should be placed at:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>$DIGITAL_HUMAN_HOME/models/quicktalk/checkpoints/
-</span></code></pre></div>
-<p>The complete structure should look like:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>checkpoints/
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>├── quicktalk.pth
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>├── repair.npy
-</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>├── chinese-hubert-large/
-</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>│   ├── config.json
-</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>│   ├── preprocessor_config.json
-</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>│   └── pytorch_model.bin
-</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>└── auxiliary/models/buffalo_l/
-</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>    ├── det_10g.onnx
-</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a>    ├── w600k_r50.onnx
-</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a>    ├── 2d106det.onnx
-</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a>    └── ...
-</span></code></pre></div>
-<p>Check key files:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>
-</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>
-</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/quicktalk.pth
-</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/repair.npy
-</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/chinese-hubert-large/pytorch_model.bin
-</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/auxiliary/models/buffalo_l/det_10g.onnx
-</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/auxiliary/models/buffalo_l/w600k_r50.onnx
-</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/auxiliary/models/buffalo_l/2d106det.onnx
-</span></code></pre></div>
-<h3 id="path-notes_1">Path Notes<a class="headerlink" href="#path-notes_1" title="Permanent link">&para;</a></h3>
-<p>When starting QuickTalk in OmniRT, point directly to the <code>checkpoints</code> directory:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="o">=</span><span class="nv">$DIGITAL_HUMAN_HOME</span>/models/quicktalk/checkpoints
-</span></code></pre></div>
-<hr />
-<h2 id="7-configure-omnirt-environment">7. Configure OmniRT Environment<a class="headerlink" href="#7-configure-omnirt-environment" title="Permanent link">&para;</a></h2>
-<p>Enter OmniRT:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt
-</span></code></pre></div>
-<p>Create an isolated virtual environment:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span>python3<span class="w"> </span>.venv
-</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span></code></pre></div>
-<p>Confirm Python path:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>which<span class="w"> </span>python
-</span></code></pre></div>
-<p>Expected:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>$DIGITAL_HUMAN_HOME/omnirt/.venv/bin/python
-</span></code></pre></div>
-<p>Install dependencies:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
-</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>
-</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev,server,quicktalk-cuda]&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="w">  </span>--find-links<span class="w"> </span>https://download.pytorch.org/whl/cu128/
-</span></code></pre></div>
-<p>If needed, reinstall CUDA torch:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="w">  </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.9.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a><span class="w">  </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.24.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="w">  </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.9.1+cu128<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a><span class="w">  </span>--find-links<span class="w"> </span>https://download.pytorch.org/whl/cu128/
-</span></code></pre></div>
-<p>Check:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())&quot;</span>
-</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>which<span class="w"> </span>omnirt
-</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>omnirt<span class="w"> </span>--help
-</span></code></pre></div>
-<p>Expected:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>$DIGITAL_HUMAN_HOME/omnirt/.venv/bin/omnirt
-</span></code></pre></div>
-<p>Sync models to OmniRT:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt/models/quicktalk
-</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>rsync<span class="w"> </span>-a<span class="w"> </span>--info<span class="o">=</span>progress2<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a><span class="w">  </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/models/quicktalk/<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="w">  </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt/models/quicktalk/
-</span></code></pre></div>
-<hr />
-<h2 id="8-configure-opentalking-env">8. Configure OpenTalking .env<a class="headerlink" href="#8-configure-opentalking-env" title="Permanent link">&para;</a></h2>
-<p>Enter OpenTalking:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>cp<span class="w"> </span>-n<span class="w"> </span>.env.example<span class="w"> </span>.env
-</span></code></pre></div>
-<p>Recommended key configurations:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span>.env<span class="w"> </span><span class="s">&lt;&lt;&#39;EOF&#39;</span>
-</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="s">OPENTALKING_TTS_DEFAULT_PROVIDER=edge</span>
-</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="s">OPENTALKING_REDIS_MODE=memory</span>
-</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="s">OMNIRT_ENDPOINT=http://127.0.0.1:9000</span>
-</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="s">EOF</span>
-</span></code></pre></div>
-<p>If LLM / STT is needed, configure the corresponding keys separately:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="nv">OPENTALKING_LLM_API_KEY</span><span class="o">=</span>your_LLM_API_KEY
-</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="nv">OPENTALKING_STT_DASHSCOPE_API_KEY</span><span class="o">=</span>your_STT_API_KEY
-</span></code></pre></div>
-<h3 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h3>
-<p>LLM, TTS, and STT are independent providers. Edge TTS does not require a key and is best for initially verifying the pipeline. An expired or invalid DashScope key will affect LLM / STT but does not mean QuickTalk inference is unavailable.</p>
-<hr />
-<h2 id="9-start-omnirt-quicktalk-backend">9. Start OmniRT QuickTalk Backend<a class="headerlink" href="#9-start-omnirt-quicktalk-backend" title="Permanent link">&para;</a></h2>
-<p>Open a new WSL2 terminal and enter OmniRT:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt
-</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span></code></pre></div>
-<p>Set environment variables:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>
-</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTORCH_CUDA_ALLOC_CONF</span><span class="o">=</span>expandable_segments:True,max_split_size_mb<span class="o">=</span><span class="m">128</span>
-</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>
-</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_RUNTIME</span><span class="o">=</span><span class="m">1</span>
-</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="o">=</span><span class="nv">$DIGITAL_HUMAN_HOME</span>/models/quicktalk/checkpoints
-</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_DEVICE</span><span class="o">=</span>cuda:0
-</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_HUBERT_DEVICE</span><span class="o">=</span>cuda:0
-</span></code></pre></div>
-<p>Start:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>.venv/bin/python<span class="w"> </span>-m<span class="w"> </span>omnirt.cli.main<span class="w"> </span>serve-avatar-ws<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">9000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a><span class="w">  </span>--compat<span class="w"> </span>flashtalk<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="w">  </span>--backend<span class="w"> </span>cuda<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a><span class="w">  </span>--avatar-runtime<span class="w"> </span>fake
-</span></code></pre></div>
-<p>Key parameters:</p>
+<p>Place the workspace in the WSL2 Linux filesystem, such as <code>$HOME/opentalking-workspace</code>, not under <code>/mnt/c</code> or <code>/mnt/d</code>.</p>
+<h2 id="3-port-convention">3. Port Convention<a class="headerlink" href="#3-port-convention" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
-<th>Purpose</th>
+<th>Service</th>
+<th>Port</th>
+<th>Used by</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>OMNIRT_QUICKTALK_RUNTIME=1</code></td>
-<td>Enable QuickTalk runtime</td>
+<td>OpenTalking API</td>
+<td><code>8210</code></td>
+<td>Local and OmniRT routes</td>
 </tr>
 <tr>
-<td><code>OMNIRT_QUICKTALK_MODEL_ROOT=.../checkpoints</code></td>
-<td>Point to QuickTalk weights directory</td>
+<td>OpenTalking Web UI</td>
+<td><code>5173</code></td>
+<td>Local and OmniRT routes</td>
 </tr>
 <tr>
-<td><code>--compat flashtalk</code></td>
-<td>Compatible with OpenTalking WebSocket protocol</td>
-</tr>
-<tr>
-<td><code>--avatar-runtime fake</code></td>
-<td>Let QuickTalk runtime take effect, avoiding the FlashTalk resident path</td>
+<td>OmniRT</td>
+<td><code>9000</code></td>
+<td>OmniRT route only</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="10-start-opentalking">10. Start OpenTalking<a class="headerlink" href="#10-start-opentalking" title="Permanent link">&para;</a></h2>
-<p>Open another WSL2 terminal and enter OpenTalking:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<p>Inside WSL2, the OpenTalking / QuickTalk startup commands keep the same backend, model, weight-path, and OmniRT endpoint conventions as the Linux deployment docs. Windows browser access needs an explicit <code>--host 0.0.0.0</code>, and the Web UI port is standardized on the current frontend default, <code>5173</code>.</p>
+<h2 id="4-windows-side-prerequisites">4. Windows-Side Prerequisites<a class="headerlink" href="#4-windows-side-prerequisites" title="Permanent link">&para;</a></h2>
+<h3 id="41-nvidia-driver">4.1 NVIDIA Driver<a class="headerlink" href="#41-nvidia-driver" title="Permanent link">&para;</a></h3>
+<p>Confirm the GPU and driver in Windows PowerShell:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">nvidia-smi</span>
 </span></code></pre></div>
-<p>Start:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a><span class="w">  </span>--backend<span class="w"> </span>omnirt<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a><span class="w">  </span>--model<span class="w"> </span>quicktalk<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a><span class="w">  </span>--omnirt<span class="w"> </span>http://127.0.0.1:9000<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+<p>Seeing the NVIDIA GPU and driver-supported CUDA version is enough. The CUDA Version shown here is the driver capability, not a requirement to install CUDA Toolkit on Windows.</p>
+<h3 id="42-install-and-verify-wsl2">4.2 Install and Verify WSL2<a class="headerlink" href="#42-install-and-verify-wsl2" title="Permanent link">&para;</a></h3>
+<p>In an administrator PowerShell:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-version</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-status</span>
 </span></code></pre></div>
-<p>Frontend URL:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>http://127.0.0.1:5173
+<p>If Ubuntu is not installed yet:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-install</span> <span class="n">-d</span> <span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span>
 </span></code></pre></div>
-<p>Verify QuickTalk connection status:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://127.0.0.1:8000/models<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys,json; [print(s) for s in json.load(sys.stdin)[&#39;statuses&#39;] if s[&#39;id&#39;]==&#39;quicktalk&#39;]&quot;</span>
+<p>Enter WSL2:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">wsl</span> <span class="n">-d</span> <span class="n">Ubuntu</span><span class="p">-</span><span class="n">22</span><span class="p">.</span><span class="n">04</span>
 </span></code></pre></div>
-<p>Expected:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>connected=true
-</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>reason=omnirt
+<p>Verify that the GPU is visible inside WSL2:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>nvidia-smi
 </span></code></pre></div>
-<p>Check GPU memory:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>nvidia-smi<span class="w"> </span>--query-gpu<span class="o">=</span>memory.used<span class="w"> </span>--format<span class="o">=</span>csv,noheader
+<h2 id="5-wsl2-network-and-browser-microphone">5. WSL2 Network and Browser Microphone<a class="headerlink" href="#5-wsl2-network-and-browser-microphone" title="Permanent link">&para;</a></h2>
+<p>Use WSL2 NAT mode by default, and open the Web UI from the Windows browser through the WSL2 IP.</p>
+<p>Get the WSL2 IP:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span>
 </span></code></pre></div>
-<hr />
-<h2 id="11-common-path-issues">11. Common Path Issues<a class="headerlink" href="#11-common-path-issues" title="Permanent link">&para;</a></h2>
+<p>Open from the Windows browser:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>http://&lt;WSL2-IP&gt;:5173
+</span></code></pre></div>
+<p>If WSL2 localhost forwarding works in your environment, this can also work:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>http://localhost:5173
+</span></code></pre></div>
+<p>In NAT mode, a non-localhost HTTP address is not a browser secure context, so microphone access can be blocked. Add the current Web UI address to the browser allowlist.</p>
+<p>Edge:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>edge://flags/#unsafely-treat-insecure-origin-as-secure
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>Enter http://&lt;WSL2-IP&gt;:5173
+</span></code></pre></div>
+<p>Chrome PowerShell example:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\Google\Chrome\Application\chrome.exe&quot;</span> <span class="p">`</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  <span class="p">-</span><span class="n">-unsafely-treat-insecure-origin</span><span class="o">-as</span><span class="n">-secure</span><span class="p">=</span><span class="s2">&quot;http://&lt;WSL2-IP&gt;:5173&quot;</span> <span class="p">`</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  <span class="p">-</span><span class="n">-user-data-dir</span><span class="p">=</span><span class="s2">&quot;%TEMP%\chrome-opentalking&quot;</span>
+</span></code></pre></div>
+<h2 id="6-wsl2-base-dependencies">6. WSL2 Base Dependencies<a class="headerlink" href="#6-wsl2-base-dependencies" title="Permanent link">&para;</a></h2>
+<p>Run these commands inside WSL2 Ubuntu. If you are root, <code>sudo</code> is not needed; otherwise prepend <code>sudo</code> to the <code>apt</code> commands.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>apt<span class="w"> </span>update
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>python3-pip<span class="w"> </span>python3-venv<span class="w"> </span>python3-dev<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>build-essential<span class="w"> </span>pkg-config<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span>curl<span class="w"> </span>wget<span class="w"> </span>git<span class="w"> </span>git-lfs<span class="w"> </span>rsync<span class="w"> </span>unzip<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span>ffmpeg<span class="w"> </span>nodejs<span class="w"> </span>jq<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span>iproute2<span class="w"> </span>procps<span class="w"> </span>psmisc<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span>libgl1<span class="w"> </span>libglib2.0-0
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>git<span class="w"> </span>lfs<span class="w"> </span>install
+</span></code></pre></div>
+<p>If <code>nodejs</code> comes from NodeSource, the <code>nodejs</code> package usually already includes <code>npm</code>. Do not install Ubuntu's separate <code>npm</code> package at the same time, or you may hit <code>nodejs : Conflicts: npm</code>. After installing the base dependencies, check:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>node<span class="w"> </span>--version
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>npm<span class="w"> </span>--version
+</span></code></pre></div>
+<p>The OpenTalking Web UI uses Vite 5, which requires Node.js <code>18+</code>. Some Windows WSL Ubuntu installations still get Node.js <code>12.x</code> from the default system repository, which can break frontend dependency installation or startup. If <code>node --version</code> is lower than <code>v18</code>, upgrade Node.js first:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>node<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;const m=Number(process.versions.node.split(&#39;.&#39;)[0]); if (m &lt; 18) process.exit(1)&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="o">||</span><span class="w"> </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://deb.nodesource.com/setup_20.x<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash<span class="w"> </span>-
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>nodejs
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>node<span class="w"> </span>--version
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>npm<span class="w"> </span>--version
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>node<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;const m=Number(process.versions.node.split(&#39;.&#39;)[0]); if (m &lt; 18) throw new Error(&#39;Node.js 18+ required&#39;)&quot;</span>
+</span></code></pre></div>
+<p>Only install <code>npm</code> separately when <code>npm --version</code> is missing and you are using Ubuntu's official <code>nodejs</code> package:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>npm
+</span></code></pre></div>
+<p>Check the base tools:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>python3<span class="w"> </span>--version
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>ffmpeg<span class="w"> </span>-version
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>node<span class="w"> </span>--version
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>npm<span class="w"> </span>--version
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>nvidia-smi
+</span></code></pre></div>
+<h2 id="7-prepare-the-workspace">7. Prepare the Workspace<a class="headerlink" href="#7-prepare-the-workspace" title="Permanent link">&para;</a></h2>
+<p>Prefer a WSL2 Linux filesystem path such as <code>$HOME/opentalking-workspace</code> for the runtime workspace. Do not run the project directly from a Windows-mounted path. If you must copy code from a Windows disk, treat <code>/mnt/&lt;drive&gt;/...</code> only as an example source path, then sync it into the WSL2 Linux filesystem.</p>
+<p>Define every path variable before using it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/opentalking-workspace</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_HOME</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/opentalking</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/models</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/model-repos</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="p">/quicktalk</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_REPO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_REPO</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_REPO_ROOT</span><span class="p">/omnirt</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="p">/checkpoints</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_MODEL_REPO_ROOT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints&quot;</span>
+</span></code></pre></div>
+<p>Clone OpenTalking:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datascale-ai/opentalking.git<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>If the repository is already cloned, enter the existing directory:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h2 id="8-install-uv-and-configure-mirrors">8. Install uv and Configure Mirrors<a class="headerlink" href="#8-install-uv-and-configure-mirrors" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>uv
+</span></code></pre></div>
+<p>If <code>uv</code> is not in <code>PATH</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/usr/local/bin:</span><span class="nv">$HOME</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;/usr/local/bin:$HOME/.local/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+</span></code></pre></div>
+<p>Check:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>uv<span class="w"> </span>--version
+</span></code></pre></div>
+<p>When network access is slow, set mirrors as needed:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_ENDPOINT</span><span class="k">:-</span><span class="nv">https</span><span class="p">://hf-mirror.com</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_DEFAULT_INDEX</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_DEFAULT_INDEX</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_INDEX_URL</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">UV_INDEX_URL</span><span class="k">:-</span><span class="nv">https</span><span class="p">://pypi.tuna.tsinghua.edu.cn/simple</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">npm_config_registry</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">npm_config_registry</span><span class="k">:-</span><span class="nv">https</span><span class="p">://registry.npmmirror.com</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<h2 id="9-prepare-quicktalk-weights">9. Prepare QuickTalk Weights<a class="headerlink" href="#9-prepare-quicktalk-weights" title="Permanent link">&para;</a></h2>
+<p>OpenTalking local asset root:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>$OPENTALKING_QUICKTALK_ASSET_ROOT
+</span></code></pre></div>
+<p>QuickTalk weight directory:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>$OPENTALKING_QUICKTALK_ASSET_ROOT/checkpoints
+</span></code></pre></div>
+<p>Download or place the weights:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/models</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="p">/quicktalk</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints&quot;</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_ENDPOINT</span><span class="k">:-</span><span class="nv">https</span><span class="p">://hf-mirror.com</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>uv<span class="w"> </span>tool<span class="w"> </span>run<span class="w"> </span>--from<span class="w"> </span><span class="s2">&quot;huggingface_hub[cli]&quot;</span><span class="w"> </span>hf<span class="w"> </span>download<span class="w"> </span>datascale-ai/quicktalk<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">  </span>--local-dir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints&quot;</span>
+</span></code></pre></div>
+<p>Check the required files:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/quicktalk.pth&quot;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/repair.npy&quot;</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/chinese-hubert-large&quot;</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/auxiliary/models/buffalo_l&quot;</span>
+</span></code></pre></div>
+<p>QuickTalk local also needs a template video for real sessions. Prefer avatars that have <code>source_video</code> / <code>template_video</code> metadata, or prepared <code>quicktalk/template_*.mp4</code> files under the avatar directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>find<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">/examples/avatars&quot;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;*/quicktalk/template_*.mp4&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;*/source/*.mp4&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
+</span></code></pre></div>
+<p>Do not set <code>OPENTALKING_QUICKTALK_TEMPLATE_VIDEO</code> in the service startup environment. It is a global template override and forces every QuickTalk realtime session to use the same video template. If the user selects another avatar, the picture can switch back to the avatar from that global template as soon as lip generation starts. Only pass a template explicitly for one-off offline debugging commands.</p>
+<p>Path relationship:</p>
+<ul>
+<li>OpenTalking local asset root: <code>$OPENTALKING_QUICKTALK_ASSET_ROOT</code></li>
+<li>Weight file directory: <code>$OPENTALKING_QUICKTALK_ASSET_ROOT/checkpoints</code></li>
+<li>OmniRT QuickTalk model root: <code>$OMNIRT_QUICKTALK_MODEL_ROOT</code></li>
+</ul>
+<p>This guide points the OmniRT QuickTalk model root to the same weight directory:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="p">/checkpoints</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>If <code>OMNIRT_QUICKTALK_MODEL_ROOT</code> is unset, the current helper script defaults to <code>$OMNIRT_MODEL_ROOT/quicktalk</code>. This Windows guide sets it explicitly to <code>$OPENTALKING_QUICKTALK_ASSET_ROOT/checkpoints</code> so users do not have to guess the difference between <code>models/quicktalk</code> and <code>models/quicktalk/checkpoints</code>.</p>
+<p>The current helper script checks that <code>$OMNIRT_QUICKTALK_MODEL_ROOT</code> contains <code>quicktalk.pth</code>, <code>repair.npy</code>, <code>chinese-hubert-large/</code>, and <code>auxiliary/models/buffalo_l/</code>.</p>
+<h2 id="10-recommended-route-start-quicktalk-local">10. Recommended Route: Start QuickTalk Local<a class="headerlink" href="#10-recommended-route-start-quicktalk-local" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/opentalking-workspace</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_HOME</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/opentalking</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/models</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="p">/quicktalk</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev<span class="w"> </span>--extra<span class="w"> </span>models<span class="w"> </span>--extra<span class="w"> </span>quicktalk-cuda<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_TORCH_DEVICE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_TORCH_DEVICE</span><span class="k">:-</span><span class="nv">cuda</span><span class="p">:</span><span class="nv">0</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/models</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="p">/quicktalk</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_WORKER_CACHE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_WORKER_CACHE</span><span class="k">:-</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="w">  </span>--backend<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="w">  </span>--model<span class="w"> </span>quicktalk<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="w">  </span>--api-port<span class="w"> </span><span class="m">8210</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="w">  </span>--web-port<span class="w"> </span><span class="m">5173</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span></code></pre></div>
+<p>Confirm the <code>quicktalk</code> status reports <code>backend=local</code>, and that <code>connected</code> / <code>healthy</code> style fields indicate it is available. Actual fields depend on the current <code>/models</code> response.</p>
+<p><code>/health</code> and <code>/models</code> confirm that the service process, model weights, and QuickTalk backend are available. Full conversations, live STT, and end-to-end benchmarks also depend on LLM / STT / TTS configuration. If the required API keys are not configured, local QuickTalk can still show as available in <code>/models</code>, while sessions or benchmarks may fail during speech or text generation.</p>
+<p>Open from the Windows browser:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>http://&lt;WSL2-IP&gt;:5173
+</span></code></pre></div>
+<p>If localhost forwarding works:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>http://localhost:5173
+</span></code></pre></div>
+<h2 id="11-advanced-route-start-quicktalk-omnirt">11. Advanced Route: Start QuickTalk OmniRT<a class="headerlink" href="#11-advanced-route-start-quicktalk-omnirt" title="Permanent link">&para;</a></h2>
+<p>The OmniRT route requires an OmniRT checkout and virtual environment. <code>scripts/quickstart/start_omnirt_quicktalk.sh</code> starts the OmniRT QuickTalk backend from <code>$OMNIRT_REPO</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/opentalking-workspace</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/model-repos</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_REPO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_REPO</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_REPO_ROOT</span><span class="p">/omnirt</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_MODEL_REPO_ROOT</span><span class="s2">&quot;</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datascale-ai/omnirt.git<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_REPO</span><span class="s2">&quot;</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_REPO</span><span class="s2">&quot;</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>server<span class="w"> </span>--extra<span class="w"> </span>quicktalk-cuda<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span></code></pre></div>
+<p>Install <code>quicktalk-cuda</code> here so the first OmniRT QuickTalk startup does not have to download and build CUDA dependencies. If you only run <code>uv sync --extra server --python 3.11</code>, the startup script will still install <code>quicktalk-cuda</code> in the background, and a fresh environment may exceed the script's 180-second readiness wait.</p>
+<p>If OmniRT is already cloned, enter the directory and confirm the virtual environment exists. If the QuickTalk CUDA dependencies have not been installed yet, run the sync once:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_REPO</span><span class="s2">&quot;</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span>.venv/bin/activate
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>server<span class="w"> </span>--extra<span class="w"> </span>quicktalk-cuda<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span></code></pre></div>
+<p>Start the OmniRT QuickTalk backend:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DIGITAL_HUMAN_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/opentalking-workspace</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_HOME</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/opentalking</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/models</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_MODEL_REPO_ROOT</span><span class="k">:-</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="p">/model-repos</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="p">/quicktalk</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_AVATARS_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_AVATARS_DIR</span><span class="k">:-</span><span class="nv">$OPENTALKING_HOME</span><span class="p">/examples/avatars</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_REPO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_REPO</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_REPO_ROOT</span><span class="p">/omnirt</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_MODEL_ROOT</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_QUICKTALK_MODEL_ROOT</span><span class="k">:-</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="p">/checkpoints</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_ALLOWED_FRAME_ROOTS</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OMNIRT_ALLOWED_FRAME_ROOTS</span><span class="k">:-</span><span class="nv">$OPENTALKING_AVATARS_DIR</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>bash<span class="w"> </span>scripts/quickstart/start_omnirt_quicktalk.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="w">  </span>--device<span class="w"> </span>cuda:0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">9000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-35-17"><a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+</span></code></pre></div>
+<p>If the first startup reports:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>OmniRT QuickTalk did not become ready in 180s
+</span></code></pre></div>
+<p>it usually means the first <code>quicktalk-cuda</code> dependency installation has not finished yet. For example, the script may still be running <code>uv sync --extra server --extra quicktalk-cuda --python 3.11</code> to download or build CUDA packages. Handle it by completing the dependency sync first, then starting OmniRT again:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OMNIRT_REPO</span><span class="s2">&quot;</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>server<span class="w"> </span>--extra<span class="w"> </span>quicktalk-cuda<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a>bash<span class="w"> </span>scripts/quickstart/start_omnirt_quicktalk.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">  </span>--device<span class="w"> </span>cuda:0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">9000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+</span></code></pre></div>
+<p>If the previous startup script timed out but the log still shows dependency installation continuing, wait until that install finishes and then rerun <code>start_omnirt_quicktalk.sh</code>. After the dependencies are installed, the next startup should become ready much faster.</p>
+<p>Then start OpenTalking connected to OmniRT:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>bash<span class="w"> </span>scripts/start_unified.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="w">  </span>--backend<span class="w"> </span>omnirt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w">  </span>--model<span class="w"> </span>quicktalk<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">  </span>--omnirt<span class="w"> </span>http://127.0.0.1:9000<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w">  </span>--api-port<span class="w"> </span><span class="m">8210</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="w">  </span>--web-port<span class="w"> </span><span class="m">5173</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+</span></code></pre></div>
+<p>Verify:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:9000/v1/audio2video/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span></code></pre></div>
+<p>Confirm the <code>quicktalk</code> status reports <code>backend=omnirt</code>, and that <code>connected</code> / <code>healthy</code> style fields indicate it is available. Actual fields depend on the current <code>/models</code> response.</p>
+<p>If session startup reports:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>RuntimeError: audio2video init failed: template_video requires configured allowed frame roots.
+</span></code></pre></div>
+<p>OmniRT was not configured with a readable avatar template-video directory, or <code>OMNIRT_ALLOWED_FRAME_ROOTS</code> does not include the <code>template_video</code> path sent by OpenTalking. Stop OmniRT, export the allowed frame root, and start it again:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>bash<span class="w"> </span>scripts/quickstart/stop_all.sh
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OPENTALKING_AVATARS_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_AVATARS_DIR</span><span class="k">:-</span><span class="nv">$OPENTALKING_HOME</span><span class="p">/examples/avatars</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_ALLOWED_FRAME_ROOTS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_AVATARS_DIR</span><span class="s2">&quot;</span>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a>
+</span><span id="__span-41-7"><a id="__codelineno-41-7" name="__codelineno-41-7" href="#__codelineno-41-7"></a>bash<span class="w"> </span>scripts/quickstart/start_omnirt_quicktalk.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-41-8"><a id="__codelineno-41-8" name="__codelineno-41-8" href="#__codelineno-41-8"></a><span class="w">  </span>--device<span class="w"> </span>cuda:0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-41-9"><a id="__codelineno-41-9" name="__codelineno-41-9" href="#__codelineno-41-9"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">9000</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-41-10"><a id="__codelineno-41-10" name="__codelineno-41-10" href="#__codelineno-41-10"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0
+</span></code></pre></div>
+<p>If your avatars or template videos live elsewhere, include those directories in <code>OMNIRT_ALLOWED_FRAME_ROOTS</code> too. Use a colon to separate multiple directories:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMNIRT_ALLOWED_FRAME_ROOTS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_AVATARS_DIR</span><span class="s2">:/path/to/extra/avatar-root&quot;</span>
+</span></code></pre></div>
+<h2 id="12-common-path-issues">12. Common Path Issues<a class="headerlink" href="#12-common-path-issues" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -6886,102 +6773,121 @@
 <tbody>
 <tr>
 <td>Code directory</td>
-<td>Place in <code>$DIGITAL_HUMAN_HOME/opentalking</code> and <code>$DIGITAL_HUMAN_HOME/omnirt</code></td>
+<td>Keep OpenTalking at <code>$OPENTALKING_HOME</code>, normally <code>$DIGITAL_HUMAN_HOME/opentalking</code>.</td>
 </tr>
 <tr>
-<td>OpenTalking venv</td>
-<td><code>$DIGITAL_HUMAN_HOME/opentalking/.venv</code></td>
+<td>OmniRT checkout</td>
+<td>Keep OmniRT at <code>$OMNIRT_REPO</code>, normally <code>$DIGITAL_HUMAN_HOME/model-repos/omnirt</code>.</td>
 </tr>
 <tr>
-<td>OmniRT venv</td>
-<td><code>$DIGITAL_HUMAN_HOME/omnirt/.venv</code></td>
+<td>OpenTalking virtualenv</td>
+<td>Use <code>$OPENTALKING_HOME/.venv</code>; do not reuse the OmniRT virtualenv.</td>
 </tr>
 <tr>
-<td>QuickTalk weights</td>
-<td><code>$DIGITAL_HUMAN_HOME/models/quicktalk/checkpoints</code></td>
+<td>OmniRT virtualenv</td>
+<td>Use <code>$OMNIRT_REPO/.venv</code>; install OmniRT server dependencies there.</td>
+</tr>
+<tr>
+<td>Model root</td>
+<td>Keep large model files under <code>$OPENTALKING_MODEL_ROOT</code>, normally <code>$DIGITAL_HUMAN_HOME/models</code>.</td>
+</tr>
+<tr>
+<td>QuickTalk asset root</td>
+<td>Use <code>$OPENTALKING_QUICKTALK_ASSET_ROOT</code>, normally <code>$OPENTALKING_MODEL_ROOT/quicktalk</code>.</td>
+</tr>
+<tr>
+<td>QuickTalk checkpoint directory</td>
+<td>Put <code>quicktalk.pth</code>, <code>repair.npy</code>, <code>chinese-hubert-large/</code>, and <code>auxiliary/models/buffalo_l/</code> under <code>$OPENTALKING_QUICKTALK_ASSET_ROOT/checkpoints</code>.</td>
 </tr>
 <tr>
 <td>OmniRT QuickTalk root</td>
-<td>Point to <code>.../checkpoints</code></td>
+<td>Set <code>$OMNIRT_QUICKTALK_MODEL_ROOT</code> to the same checkpoint directory when using the OmniRT route.</td>
 </tr>
 <tr>
-<td>Benchmark compatibility path</td>
-<td>Use <code>$DIGITAL_HUMAN_HOME/models/quicktalk</code> directly</td>
+<td>OmniRT template-video allowlist</td>
+<td>When using the OmniRT route, <code>$OMNIRT_ALLOWED_FRAME_ROOTS</code> must include the active avatar root, usually <code>$OPENTALKING_HOME/examples/avatars</code> or <code>$OPENTALKING_AVATARS_DIR</code>; otherwise OmniRT can report <code>template_video requires configured allowed frame roots</code>.</td>
 </tr>
 <tr>
-<td>Low-VRAM config</td>
-<td><code>resolution=160/128</code>, <code>batch=1</code>, <code>HuBERT=cpu</code></td>
+<td>Windows-mounted paths</td>
+<td>Avoid running from <code>/mnt/c</code> or <code>/mnt/d</code>; copy or sync into the WSL2 Linux filesystem first.</td>
+</tr>
+<tr>
+<td>Web UI access</td>
+<td>Use <code>http://&lt;WSL2-IP&gt;:5173</code> first; use <code>http://localhost:5173</code> only when localhost forwarding works.</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="12-final-checklist">12. Final Checklist<a class="headerlink" href="#12-final-checklist" title="Permanent link">&para;</a></h2>
-<p>Before running the benchmark, verify each item:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="c1"># WSL2 GPU</span>
-</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>nvidia-smi
-</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>
-</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="c1"># OpenTalking environment</span>
-</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span><span id="__span-56-7"><a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())&quot;</span>
-</span><span id="__span-56-8"><a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a>
-</span><span id="__span-56-9"><a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="c1"># QuickTalk weights</span>
-</span><span id="__span-56-10"><a id="__codelineno-56-10" name="__codelineno-56-10" href="#__codelineno-56-10"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/quicktalk.pth
-</span><span id="__span-56-11"><a id="__codelineno-56-11" name="__codelineno-56-11" href="#__codelineno-56-11"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/chinese-hubert-large/pytorch_model.bin
-</span><span id="__span-56-12"><a id="__codelineno-56-12" name="__codelineno-56-12" href="#__codelineno-56-12"></a>ls<span class="w"> </span>-lh<span class="w"> </span>models/quicktalk/checkpoints/auxiliary/models/buffalo_l/det_10g.onnx
-</span><span id="__span-56-13"><a id="__codelineno-56-13" name="__codelineno-56-13" href="#__codelineno-56-13"></a>
-</span><span id="__span-56-14"><a id="__codelineno-56-14" name="__codelineno-56-14" href="#__codelineno-56-14"></a><span class="c1"># OmniRT environment</span>
-</span><span id="__span-56-15"><a id="__codelineno-56-15" name="__codelineno-56-15" href="#__codelineno-56-15"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/omnirt
-</span><span id="__span-56-16"><a id="__codelineno-56-16" name="__codelineno-56-16" href="#__codelineno-56-16"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span><span id="__span-56-17"><a id="__codelineno-56-17" name="__codelineno-56-17" href="#__codelineno-56-17"></a>which<span class="w"> </span>omnirt
-</span><span id="__span-56-18"><a id="__codelineno-56-18" name="__codelineno-56-18" href="#__codelineno-56-18"></a>omnirt<span class="w"> </span>--help
-</span><span id="__span-56-19"><a id="__codelineno-56-19" name="__codelineno-56-19" href="#__codelineno-56-19"></a>
-</span><span id="__span-56-20"><a id="__codelineno-56-20" name="__codelineno-56-20" href="#__codelineno-56-20"></a><span class="c1"># Frontend / basic tools</span>
-</span><span id="__span-56-21"><a id="__codelineno-56-21" name="__codelineno-56-21" href="#__codelineno-56-21"></a>ffmpeg<span class="w"> </span>-version
-</span><span id="__span-56-22"><a id="__codelineno-56-22" name="__codelineno-56-22" href="#__codelineno-56-22"></a>node<span class="w"> </span>--version
-</span><span id="__span-56-23"><a id="__codelineno-56-23" name="__codelineno-56-23" href="#__codelineno-56-23"></a>npm<span class="w"> </span>--version
-</span></code></pre></div>
-<p>If all checks pass, run:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a>bash<span class="w"> </span>scripts/run_opentalking_e2e_benchmark.sh<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="w">  </span>--tester<span class="w"> </span>xxx<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-5"><a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="w">  </span>--model<span class="w"> </span>quicktalk<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-6"><a id="__codelineno-57-6" name="__codelineno-57-6" href="#__codelineno-57-6"></a><span class="w">  </span>--backend<span class="w"> </span>omnirt<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-7"><a id="__codelineno-57-7" name="__codelineno-57-7" href="#__codelineno-57-7"></a><span class="w">  </span>--gpu-index<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-57-8"><a id="__codelineno-57-8" name="__codelineno-57-8" href="#__codelineno-57-8"></a><span class="w">  </span>--timeout<span class="w"> </span><span class="m">300</span>
-</span></code></pre></div>
-<hr />
+<p>If a command reports a missing <code>repair.npy</code>, <code>quicktalk.pth</code>, HuBERT, or <code>buffalo_l</code> path, first check whether the command expects the asset root (<code>models/quicktalk</code>) or the checkpoint directory (<code>models/quicktalk/checkpoints</code>).</p>
+<p>If frontend dependency installation or startup reports that Node is too old, run the NodeSource upgrade commands in section 6 and confirm <code>node --version</code> is <code>v18</code> or newer.</p>
 <h2 id="13-stop-services">13. Stop Services<a class="headerlink" href="#13-stop-services" title="Permanent link">&para;</a></h2>
-<p>Stop the OpenTalking API, WebUI, and OmniRT processes started by quickstart scripts
-or <code>scripts/start_unified.sh</code>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="nb">cd</span><span class="w"> </span><span class="nv">$DIGITAL_HUMAN_HOME</span>/opentalking
-</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>bash<span class="w"> </span>scripts/quickstart/stop_all.sh
+<p>Stop the OpenTalking API, Web UI, and OmniRT processes started by quickstart scripts or <code>scripts/start_unified.sh</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>bash<span class="w"> </span>scripts/quickstart/stop_all.sh
 </span></code></pre></div>
-<p>If <code>omnirt serve-avatar-ws ...</code> was started manually in the foreground, press
-<code>Ctrl+C</code> in that WSL2 terminal. To fully restart WSL2, run this from Windows
-PowerShell:</p>
-<div class="language-powershell highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-shutdown</span>
+<p>To fully restart WSL2, run this from Windows PowerShell:</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="n">wsl</span> <span class="p">-</span><span class="n">-shutdown</span>
 </span></code></pre></div>
-<hr />
-<h2 id="14-summary">14. Summary<a class="headerlink" href="#14-summary" title="Permanent link">&para;</a></h2>
-<p>Deploying OpenTalking + OmniRT + QuickTalk on Windows is best done in WSL2:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a>Windows Host
-</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a>  └── WSL2 Ubuntu
-</span><span id="__span-60-3"><a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a>        ├── OpenTalking .venv
-</span><span id="__span-60-4"><a id="__codelineno-60-4" name="__codelineno-60-4" href="#__codelineno-60-4"></a>        ├── OmniRT .venv
-</span><span id="__span-60-5"><a id="__codelineno-60-5" name="__codelineno-60-5" href="#__codelineno-60-5"></a>        ├── QuickTalk checkpoints
-</span><span id="__span-60-6"><a id="__codelineno-60-6" name="__codelineno-60-6" href="#__codelineno-60-6"></a>        ├── OmniRT QuickTalk runtime
-</span><span id="__span-60-7"><a id="__codelineno-60-7" name="__codelineno-60-7" href="#__codelineno-60-7"></a>        └── E2E Benchmark
+<h2 id="14-final-checklist">14. Final Checklist<a class="headerlink" href="#14-final-checklist" title="Permanent link">&para;</a></h2>
+<p>After the service health checks pass, first run the QuickTalk offline generation check. This check depends only on the QuickTalk weights, template video, CUDA, HuBERT, and ffmpeg. It does not require LLM / STT / TTS API keys:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">/run/quicktalk-bench&quot;</span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a><span class="nv">QUICKTALK_BENCH_TEMPLATE_VIDEO</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">QUICKTALK_BENCH_TEMPLATE_VIDEO</span><span class="k">:-$(</span>find<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">/examples/avatars&quot;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;*/quicktalk/template_*.mp4&#39;</span><span class="w"> </span>-o<span class="w"> </span>-path<span class="w"> </span><span class="s1">&#39;*/source/*.mp4&#39;</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="k">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$QUICKTALK_BENCH_TEMPLATE_VIDEO</span><span class="s2">&quot;</span>
+</span><span id="__span-45-6"><a id="__codelineno-45-6" name="__codelineno-45-6" href="#__codelineno-45-6"></a>
+</span><span id="__span-45-7"><a id="__codelineno-45-7" name="__codelineno-45-7" href="#__codelineno-45-7"></a>ffmpeg<span class="w"> </span>-y<span class="w"> </span>-hide_banner<span class="w"> </span>-loglevel<span class="w"> </span>error<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-8"><a id="__codelineno-45-8" name="__codelineno-45-8" href="#__codelineno-45-8"></a><span class="w">  </span>-i<span class="w"> </span>configs/benchmark/input/ttsmaker-file.mp3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-9"><a id="__codelineno-45-9" name="__codelineno-45-9" href="#__codelineno-45-9"></a><span class="w">  </span>-ac<span class="w"> </span><span class="m">1</span><span class="w"> </span>-ar<span class="w"> </span><span class="m">16000</span><span class="w"> </span>-sample_fmt<span class="w"> </span>s16<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-10"><a id="__codelineno-45-10" name="__codelineno-45-10" href="#__codelineno-45-10"></a><span class="w">  </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">/run/quicktalk-bench/input.wav&quot;</span>
+</span><span id="__span-45-11"><a id="__codelineno-45-11" name="__codelineno-45-11" href="#__codelineno-45-11"></a>
+</span><span id="__span-45-12"><a id="__codelineno-45-12" name="__codelineno-45-12" href="#__codelineno-45-12"></a><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">/.venv/bin/python&quot;</span><span class="w"> </span>-m<span class="w"> </span>apps.cli.quicktalk_bench<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-13"><a id="__codelineno-45-13" name="__codelineno-45-13" href="#__codelineno-45-13"></a><span class="w">  </span>--asset-root<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-14"><a id="__codelineno-45-14" name="__codelineno-45-14" href="#__codelineno-45-14"></a><span class="w">  </span>--template-video<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$QUICKTALK_BENCH_TEMPLATE_VIDEO</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-15"><a id="__codelineno-45-15" name="__codelineno-45-15" href="#__codelineno-45-15"></a><span class="w">  </span>--audio<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">/run/quicktalk-bench/input.wav&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-16"><a id="__codelineno-45-16" name="__codelineno-45-16" href="#__codelineno-45-16"></a><span class="w">  </span>--output<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">/run/quicktalk-bench/output.mp4&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-45-17"><a id="__codelineno-45-17" name="__codelineno-45-17" href="#__codelineno-45-17"></a><span class="w">  </span>--device<span class="w"> </span>cuda:0
 </span></code></pre></div>
-<p>Advantages of this approach:</p>
-<ul>
-<li>More compatible with official bash scripts;</li>
-<li>Convenient use of Linux toolchains;</li>
-<li>CUDA can access the RTX 3050 normally through WSL2;</li>
-<li>OpenTalking and OmniRT environments are isolated, making troubleshooting clearer;</li>
-<li>The path from environment setup to full E2E benchmark is fully reproducible.</li>
-</ul>
+<p>The output file should exist:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DIGITAL_HUMAN_HOME</span><span class="s2">/run/quicktalk-bench/output.mp4&quot;</span>
+</span></code></pre></div>
+<p>If LLM / STT / TTS credentials are configured, then run the end-to-end benchmark to verify the real OpenTalking + QuickTalk path, not only process startup. The current script requires <code>--tester</code>, and the API URL argument is <code>--api-base-url</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>bash<span class="w"> </span>scripts/run_opentalking_e2e_benchmark.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a><span class="w">  </span>--tester<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a><span class="w">  </span>--model<span class="w"> </span>quicktalk<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a><span class="w">  </span>--backend<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-47-6"><a id="__codelineno-47-6" name="__codelineno-47-6" href="#__codelineno-47-6"></a><span class="w">  </span>--api-base-url<span class="w"> </span>http://127.0.0.1:8210
+</span></code></pre></div>
+<p>If you started the OmniRT route, change <code>--backend local</code> to <code>--backend omnirt</code>. If the benchmark config file has a <code>models.quicktalk.backend</code> value that conflicts with the command line, the model-level backend in the config file takes precedence, so keep it consistent with the command line.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="c1"># WSL2 GPU</span>
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>nvidia-smi
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="c1"># OpenTalking repository</span>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_HOME</span><span class="s2">&quot;</span>
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a>uv<span class="w"> </span>--version
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a>
+</span><span id="__span-48-8"><a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a><span class="c1"># QuickTalk weights</span>
+</span><span id="__span-48-9"><a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/quicktalk.pth&quot;</span>
+</span><span id="__span-48-10"><a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/repair.npy&quot;</span>
+</span><span id="__span-48-11"><a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/chinese-hubert-large&quot;</span>
+</span><span id="__span-48-12"><a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$OPENTALKING_QUICKTALK_ASSET_ROOT</span><span class="s2">/checkpoints/auxiliary/models/buffalo_l&quot;</span>
+</span><span id="__span-48-13"><a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a><span class="nb">test</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENTALKING_QUICKTALK_TEMPLATE_VIDEO</span><span class="k">:-</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-48-14"><a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a>
+</span><span id="__span-48-15"><a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a><span class="c1"># After starting either the local or OmniRT route</span>
+</span><span id="__span-48-16"><a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/health<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span><span id="__span-48-17"><a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:8210/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span><span id="__span-48-18"><a id="__codelineno-48-18" name="__codelineno-48-18" href="#__codelineno-48-18"></a>
+</span><span id="__span-48-19"><a id="__codelineno-48-19" name="__codelineno-48-19" href="#__codelineno-48-19"></a><span class="c1"># After starting the OmniRT route</span>
+</span><span id="__span-48-20"><a id="__codelineno-48-20" name="__codelineno-48-20" href="#__codelineno-48-20"></a>curl<span class="w"> </span>-fsS<span class="w"> </span>http://127.0.0.1:9000/v1/audio2video/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</span></code></pre></div>
+<p>Final Windows Web UI URL:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>http://&lt;WSL2-IP&gt;:5173
+</span></code></pre></div>
+<p>When localhost forwarding works:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>http://localhost:5173
+</span></code></pre></div>
+<h2 id="15-summary">15. Summary<a class="headerlink" href="#15-summary" title="Permanent link">&para;</a></h2>
+<p>For a first Windows + WSL2 deployment, use the QuickTalk local route: it keeps OpenTalking, QuickTalk, and the Web UI in one startup flow and is easier to debug. Use the OmniRT route when you need a separate inference service, service isolation, or later multi-service expansion. Keep code, virtual environments, and model weights in separate directories, and always verify both <code>/models</code> and the Web UI before running the benchmark.</p>
 
 
 

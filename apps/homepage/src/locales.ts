@@ -410,6 +410,37 @@ const enCaseStudies: CaseStudy[] = [
     outcomes: ["Reduce repetitive service questions", "Make procedures easier to understand", "Ready for portals and service kiosks"],
   },
   {
+    slug: "multilingual-product-demo",
+    title: "Multilingual Product Presenter",
+    eyebrow: "Cross-border commerce",
+    category: "livestream",
+    categoryLabel: "Live commerce",
+    description:
+      "Use an avatar presenter for cross-border commerce, global brand launches, and multilingual product storytelling.",
+    detailIntro:
+      "This multilingual product presenter connects product knowledge, reusable scripts, voice profiles, and multilingual TTS so one product story can be delivered across markets.",
+    route: "Multilingual TTS + FlashTalk",
+    features: ["Multilingual narration", "Product knowledge", "Global commerce"],
+    image: "/images/cases/multilingual-product-demo-preview.png",
+    accent: "amber",
+    videoUrl: "https://1441945933.vod-qcloud.com/0b66444dvodcq1441945933/8d86631a5001834811005535947/eWzWhyEB5u4A.mp4",
+    sections: [
+      {
+        title: "Scenario Challenge",
+        body: "Cross-border product videos need different languages, clear selling points, consistent brand tone, and stable visuals. Traditional shooting and dubbing are hard to scale across markets.",
+      },
+      {
+        title: "Extension Path",
+        body: "Connect product knowledge, multilingual scripts, voice profiles, and batch generation workflows to turn one product asset into reusable videos for different regions and platforms.",
+      },
+      {
+        title: "Recommended Model",
+        body: "Recommended: FlashTalk / OmniRT with multilingual TTS. This setup fits global commerce, brand localization, and multi-platform distribution where lip sync and voice consistency matter.",
+      },
+    ],
+    outcomes: ["Generate multilingual product videos faster", "Lower cross-border content cost", "Support batch product narration"],
+  },
+  {
     slug: "news-anchor",
     title: "News Anchor",
     eyebrow: "Stable narration",

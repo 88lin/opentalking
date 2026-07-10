@@ -351,6 +351,37 @@ export const caseStudies: CaseStudy[] = [
     outcomes: ["减少重复咨询压力", "办事指南表达更清晰", "适合政务终端和线上入口"],
   },
   {
+    slug: "multilingual-product-demo",
+    title: "多语种商品讲解",
+    eyebrow: "跨境讲解",
+    category: "livestream",
+    categoryLabel: "直播带货",
+    description:
+      "面向跨境电商、品牌出海和多语言商品展示，用数字人完成商品卖点、使用场景和购买引导讲解。",
+    detailIntro:
+      "多语种商品讲解适合把商品知识、脚本模板、音色配置和多语言 TTS 串联起来，让同一套商品内容快速生成不同语言版本。",
+    route: "多语言 TTS + FlashTalk",
+    features: ["多语种讲解", "商品知识库", "品牌出海"],
+    image: "/images/cases/multilingual-product-demo-preview.png",
+    accent: "amber",
+    videoUrl: "https://1441945933.vod-qcloud.com/0b66444dvodcq1441945933/8d86631a5001834811005535947/eWzWhyEB5u4A.mp4",
+    sections: [
+      {
+        title: "场景挑战",
+        body: "跨境商品讲解需要同时处理语言版本、商品卖点、品牌语气和画面一致性，传统拍摄或人工配音很难快速覆盖多个市场。",
+      },
+      {
+        title: "适合扩展",
+        body: "可以接入商品知识库、多语言脚本、音色配置和批量生成流程，把单个商品素材扩展成面向不同国家和平台的讲解模板。",
+      },
+      {
+        title: "推荐模型",
+        body: "推荐 FlashTalk / OmniRT + 多语言 TTS：适合品牌出海、跨境电商和多平台内容分发，对口型自然度和多语言声音一致性要求更高。",
+      },
+    ],
+    outcomes: ["快速生成多语言商品视频", "降低跨境内容制作成本", "适合批量商品讲解与投放"],
+  },
+  {
     slug: "news-anchor",
     title: "新闻主播",
     eyebrow: "稳定播报",

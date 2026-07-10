@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 from server.analytics_store import query_rows, query_value
 from server.config import BEIJING_TZ, GITHUB_TOKEN_ENV, TREND_DAYS
 from server.github_stats import build_github_trends, parse_event_datetime
-from server.traffic_copy import TRAFFIC_COPY
+from server.traffic_i18n import TRAFFIC_COPY
 
 
 def format_number(value):

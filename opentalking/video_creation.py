@@ -3,22 +3,29 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import shutil
 import tempfile
 import uuid
 import wave
 from pathlib import Path
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast, cast
 
 import cv2
 import numpy as np
 
 from opentalking.avatar.duo_dialog import duo_dialog_summary_from_metadata, normalize_duo_dialog_payload
+from opentalking.avatar.light2d import (
+    CANONICAL_DOGO_AVATAR_ID,
+    LIGHT2D_MODEL_TYPE,
+    Light2DRenderer,
+    load_canonical_dogo_renderer,
+)
 from opentalking.avatar.fasterliveportrait_config import normalize_fasterliveportrait_runtime_config
 from opentalking.avatar.loader import load_avatar_bundle
 from opentalking.core.model_config import get_model_config
 from opentalking.core.types.frames import VideoFrameData
-from opentalking.export_store import create_video_export
+from opentalking.export_store import create_video_export, create_video_export_from_file
 from opentalking.models.quicktalk.paths import resolve_quicktalk_asset_root
 from opentalking.models.registry import get_adapter
 from opentalking.providers.stt.dashscope.adapter import decode_audio_file_to_pcm_i16
@@ -40,7 +47,37 @@ SUPPORTED_VIDEO_CREATION_MODELS = {
     "musetalk",
     "quicktalk",
     "wav2lip",
+    LIGHT2D_MODEL_TYPE,
 }
+
+
+def preflight_light2d_video_creation(
+    settings: object,
+    *,
+    model: str,
+    avatar_id: str,
+    source: str,
+    text: str | None = None,
+    composition_config: Mapping[str, object] | None = None,
+) -> Light2DRenderer | None:
+    model_value = (model or "").strip().lower()
+    avatar_value = (avatar_id or "").strip()
+    is_light2d_request = model_value == LIGHT2D_MODEL_TYPE or avatar_value == CANONICAL_DOGO_AVATAR_ID
+    if not is_light2d_request:
+        return None
+    if model_value != LIGHT2D_MODEL_TYPE or avatar_value != CANONICAL_DOGO_AVATAR_ID:
+        raise ValueError("DOGO Light2D only supports model mock")
+    if source not in {"upload", "tts_text", "voice_clone"}:
+        raise ValueError("DOGO Light2D only supports upload, tts_text, or voice_clone")
+    if composition_config and str(composition_config.get("background_id") or "").strip():
+        raise ValueError("DOGO Light2D does not support background_id")
+    if source in {"tts_text", "voice_clone"}:
+        max_chars = _settings_int(settings, "video_creation_light2d_max_text_chars", 1000)
+        if len(text or "") > max(0, max_chars):
+            raise ValueError(f"Light2D text exceeds maximum length of {max_chars} characters")
+    avatar_path = _avatar_dir(settings, avatar_value)
+    context = load_canonical_dogo_renderer(avatar_path)
+    return Light2DRenderer(context)
 
 
 def _settings_path(settings: object, name: str, default: str) -> Path:
@@ -252,8 +289,22 @@ def _composite_avatar_layer(
     scale = max(0.01, fit_scale * float(avatar_scale))
     layer_w = max(1, int(round(bgr.shape[1] * scale)))
     layer_h = max(1, int(round(bgr.shape[0] * scale)))
-    bgr_resized = cv2.resize(bgr, (layer_w, layer_h), interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
-    alpha_resized = cv2.resize(alpha, (layer_w, layer_h), interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
+    interpolation = cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR
+    opaque = bool(np.all(alpha >= 1.0))
+    premultiplied_resized: np.ndarray
+    alpha_resized: np.ndarray
+    if opaque:
+        bgr_resized = cv2.resize(bgr, (layer_w, layer_h), interpolation=interpolation)
+        premultiplied_resized = bgr_resized.astype(np.float32)
+        alpha_resized = np.ones((layer_h, layer_w), dtype=np.float32)
+    else:
+        premultiplied = bgr.astype(np.float32) * alpha[:, :, None]
+        premultiplied_resized = cv2.resize(
+            premultiplied,
+            (layer_w, layer_h),
+            interpolation=interpolation,
+        )
+        alpha_resized = cv2.resize(alpha, (layer_w, layer_h), interpolation=interpolation)
     origin_x, origin_y = _avatar_anchor_origin(avatar_anchor, canvas_w, canvas_h, layer_w, layer_h)
     left = int(round(origin_x + avatar_offset_x))
     top = int(round(origin_y + avatar_offset_y))
@@ -268,10 +319,12 @@ def _composite_avatar_layer(
     src_right = src_left + (dst_right - dst_left)
     src_bottom = src_top + (dst_bottom - dst_top)
     out = background.copy()
-    fg = bgr_resized[src_top:src_bottom, src_left:src_right].astype(np.float32)
+    fg = premultiplied_resized[src_top:src_bottom, src_left:src_right].astype(np.float32)
     mask = alpha_resized[src_top:src_bottom, src_left:src_right].astype(np.float32)[:, :, None]
     bg = out[dst_top:dst_bottom, dst_left:dst_right].astype(np.float32)
-    out[dst_top:dst_bottom, dst_left:dst_right] = np.clip((fg * mask) + (bg * (1.0 - mask)), 0, 255).astype(np.uint8)
+    out[dst_top:dst_bottom, dst_left:dst_right] = np.rint(
+        np.clip(fg + (bg * (1.0 - mask)), 0, 255)
+    ).astype(np.uint8)
     return out
 
 
@@ -845,6 +898,78 @@ def _write_video_only(path: Path, frames: list[np.ndarray], fps: float) -> None:
         writer.release()
 
 
+def _light2d_composition_config(
+    renderer: Light2DRenderer,
+    config: Mapping[str, object] | None,
+) -> dict[str, object]:
+    canvas = renderer.context.config["canvas"]
+    raw = dict(config or {})
+    return {
+        "background_color": str(raw.get("background_color") or "#ffffff"),
+        "avatar_fit": str(raw.get("avatar_fit") or "contain"),
+        "avatar_anchor": str(raw.get("avatar_anchor") or "center"),
+        "avatar_scale": _coerce_composition_float(
+            raw, "avatar_scale", 1.0, min_value=0.1, max_value=4.0
+        ),
+        "avatar_offset_x": _coerce_composition_float(
+            raw, "avatar_offset_x", 0.0, min_value=-2000.0, max_value=2000.0
+        ),
+        "avatar_offset_y": _coerce_composition_float(
+            raw, "avatar_offset_y", 0.0, min_value=-2000.0, max_value=2000.0
+        ),
+        "output_width": _coerce_composition_int(
+            raw, "output_width", int(canvas["width"]), min_value=320, max_value=3840
+        ),
+        "output_height": _coerce_composition_int(
+            raw, "output_height", int(canvas["height"]), min_value=180, max_value=2160
+        ),
+    }
+
+
+def _write_light2d_video_only(
+    path: Path,
+    renderer: Light2DRenderer,
+    pcm: np.ndarray,
+    *,
+    config: Mapping[str, object] | None,
+) -> None:
+    normalized = _light2d_composition_config(renderer, config)
+    width = cast(int, normalized["output_width"])
+    height = cast(int, normalized["output_height"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    writer = cv2.VideoWriter(
+        str(path),
+        getattr(cv2, "VideoWriter_fourcc")(*"mp4v"),
+        max(1.0, float(renderer.fps)),
+        (width, height),
+    )
+    if not writer.isOpened():
+        raise RuntimeError(f"cannot open video writer: {path}")
+    wrote_frame = False
+    try:
+        for rendered in renderer.iter_frames(np.asarray(pcm, dtype=np.int16).reshape(-1)):
+            rgba = np.asarray(rendered.rgba, dtype=np.uint8)
+            if rgba.ndim != 3 or rgba.shape[2] != 4:
+                raise RuntimeError("Light2D renderer produced an invalid RGBA frame")
+            background = _solid_background(width, height, normalized["background_color"])
+            bgr_alpha = np.ascontiguousarray(rgba[:, :, [2, 1, 0, 3]])
+            composed = _composite_avatar_layer(
+                background,
+                bgr_alpha,
+                avatar_fit=str(normalized["avatar_fit"]),
+                avatar_anchor=str(normalized["avatar_anchor"]),
+                avatar_scale=cast(float, normalized["avatar_scale"]),
+                avatar_offset_x=cast(float, normalized["avatar_offset_x"]),
+                avatar_offset_y=cast(float, normalized["avatar_offset_y"]),
+            )
+            writer.write(np.ascontiguousarray(composed))
+            wrote_frame = True
+    finally:
+        writer.release()
+    if not wrote_frame:
+        raise RuntimeError("video creation produced zero frames")
+
+
 MultiFaceRealtimeV3Worker: Any | None = None
 
 
@@ -886,6 +1011,101 @@ async def _ffmpeg_mux(ffmpeg_bin: str, video_in: Path, audio_in: Path, out_mp4: 
         raise RuntimeError(f"ffmpeg mux failed ({proc.returncode}): {detail}")
 
 
+async def _probe_audio_duration_sec(settings: object, path: Path) -> float | None:
+    ffmpeg_bin = str(getattr(settings, "ffmpeg_bin", "ffmpeg") or "ffmpeg")
+    ffprobe_bin = str(getattr(settings, "ffprobe_bin", "") or "").strip()
+    if not ffprobe_bin:
+        ffprobe_bin = str(Path(ffmpeg_bin).with_name("ffprobe")) if "/" in ffmpeg_bin else "ffprobe"
+    proc = await asyncio.create_subprocess_exec(
+        ffprobe_bin,
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        str(path),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    if proc.returncode != 0:
+        detail = (stderr or b"").decode("utf-8", errors="replace")[-800:]
+        raise ValueError(f"audio duration probe failed: {detail}")
+    try:
+        duration = float((stdout or b"").decode("utf-8").strip())
+    except ValueError as exc:
+        raise ValueError("audio duration probe returned an invalid duration") from exc
+    return duration if np.isfinite(duration) and duration >= 0 else None
+
+
+async def _decode_audio_file_to_pcm_i16_limited(
+    settings: object,
+    path: Path,
+    *,
+    max_samples: int,
+) -> np.ndarray:
+    sample_limit = max(0, int(max_samples))
+    duration = await _probe_audio_duration_sec(settings, path)
+    if duration is not None and duration > float(sample_limit) / 16000.0:
+        raise ValueError("Light2D audio exceeds maximum duration")
+    proc = await asyncio.create_subprocess_exec(
+        str(getattr(settings, "ffmpeg_bin", "ffmpeg") or "ffmpeg"),
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-i",
+        str(path),
+        "-ac",
+        "1",
+        "-ar",
+        "16000",
+        "-f",
+        "s16le",
+        "pipe:1",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    if proc.stdout is None:
+        proc.kill()
+        await proc.wait()
+        raise RuntimeError("ffmpeg audio decoder did not expose stdout")
+    stderr_task = (
+        asyncio.create_task(proc.stderr.read())
+        if proc.stderr is not None
+        else None
+    )
+    chunks: list[bytes] = []
+    total_bytes = 0
+    byte_limit = sample_limit * 2
+    try:
+        while True:
+            chunk = await proc.stdout.read(min(64 * 1024, byte_limit - total_bytes + 2))
+            if not chunk:
+                break
+            total_bytes += len(chunk)
+            if total_bytes > byte_limit:
+                proc.kill()
+                await proc.wait()
+                raise ValueError("Light2D audio exceeds maximum duration")
+            chunks.append(chunk)
+        returncode = await proc.wait()
+        if returncode != 0:
+            stderr = await stderr_task if stderr_task is not None else b""
+            detail = stderr.decode("utf-8", errors="replace")[-800:]
+            raise RuntimeError(f"ffmpeg failed ({returncode}): {detail}")
+    finally:
+        if proc.returncode is None:
+            proc.kill()
+            await proc.wait()
+        if stderr_task is not None and not stderr_task.done():
+            stderr_task.cancel()
+    raw = b"".join(chunks)
+    if len(raw) % 2:
+        raw = raw[:-1]
+    return np.frombuffer(raw, dtype="<i2").copy()
+
+
 class VideoCreationService:
     def __init__(self, settings: object) -> None:
         self.settings = settings
@@ -900,8 +1120,28 @@ class VideoCreationService:
         mime_type: str | None = None,
         fasterliveportrait_config: Mapping[str, object] | None = None,
         composition_config: Mapping[str, object] | None = None,
+        light2d_renderer: Light2DRenderer | None = None,
     ) -> dict[str, Any]:
-        pcm = await decode_audio_file_to_pcm_i16(upload_path)
+        if light2d_renderer is None:
+            light2d_renderer = preflight_light2d_video_creation(
+                self.settings,
+                model=model,
+                avatar_id=avatar_id,
+                source="upload",
+                composition_config=composition_config,
+            )
+        if light2d_renderer is not None:
+            max_samples = 16000 * max(
+                0,
+                _settings_int(self.settings, "video_creation_light2d_max_duration_sec", 300),
+            )
+            pcm = await _decode_audio_file_to_pcm_i16_limited(
+                self.settings,
+                upload_path,
+                max_samples=max_samples,
+            )
+        else:
+            pcm = await decode_audio_file_to_pcm_i16(upload_path)
         if pcm.size == 0:
             raise ValueError("audio decoded to empty PCM")
         return await self._create_from_pcm(
@@ -912,6 +1152,7 @@ class VideoCreationService:
             source="upload",
             fasterliveportrait_config=fasterliveportrait_config,
             composition_config=composition_config,
+            light2d_renderer=light2d_renderer,
         )
 
     async def _synthesize_tts_pcm(
@@ -922,6 +1163,7 @@ class VideoCreationService:
         tts_provider: str | None,
         tts_model: str | None,
         indextts_config: Mapping[str, object] | None = None,
+        max_samples: int | None = None,
     ) -> np.ndarray:
         text_value = text.strip()
         if not text_value:
@@ -937,12 +1179,24 @@ class VideoCreationService:
             indextts_config=indextts_config,
         )
         chunks: list[np.ndarray] = []
+        stream_sample_rate: int | None = None
+        total_duration_sec = 0.0
+        max_duration_sec = None if max_samples is None else float(max_samples) / 16000.0
         try:
             async for chunk in tts.synthesize_stream(text_value, voice=voice):
                 arr = np.asarray(chunk.data, dtype=np.int16).reshape(-1)
                 if arr.size:
+                    chunk_sample_rate = int(chunk.sample_rate or sample_rate)
+                    if chunk_sample_rate <= 0:
+                        raise ValueError("TTS chunk sample rate must be positive")
+                    if stream_sample_rate is None:
+                        stream_sample_rate = chunk_sample_rate
+                    elif chunk_sample_rate != stream_sample_rate:
+                        raise ValueError("TTS returned mixed chunk sample rates")
+                    total_duration_sec += float(arr.size) / float(chunk_sample_rate)
+                    if max_duration_sec is not None and total_duration_sec > max_duration_sec:
+                        raise ValueError("Light2D audio exceeds maximum duration")
                     chunks.append(arr.copy())
-                sample_rate = int(chunk.sample_rate or sample_rate)
         finally:
             close = getattr(tts, "aclose", None)
             if close is not None:
@@ -950,6 +1204,7 @@ class VideoCreationService:
         if not chunks:
             raise RuntimeError("TTS returned no audio")
         pcm = np.concatenate(chunks).astype(np.int16, copy=False)
+        sample_rate = stream_sample_rate or sample_rate
         if sample_rate != 16000:
             pcm = await self._resample_pcm(pcm, sample_rate)
         return pcm
@@ -968,13 +1223,30 @@ class VideoCreationService:
         fasterliveportrait_config: Mapping[str, object] | None = None,
         indextts_config: Mapping[str, object] | None = None,
         composition_config: Mapping[str, object] | None = None,
+        light2d_renderer: Light2DRenderer | None = None,
     ) -> dict[str, Any]:
+        if light2d_renderer is None:
+            light2d_renderer = preflight_light2d_video_creation(
+                self.settings,
+                model=model,
+                avatar_id=avatar_id,
+                source=source,
+                text=text,
+                composition_config=composition_config,
+            )
+        max_samples = None
+        if light2d_renderer is not None:
+            max_samples = 16000 * max(
+                0,
+                _settings_int(self.settings, "video_creation_light2d_max_duration_sec", 300),
+            )
         pcm = await self._synthesize_tts_pcm(
             text=text,
             voice=voice,
             tts_provider=tts_provider,
             tts_model=tts_model,
             indextts_config=indextts_config,
+            max_samples=max_samples,
         )
         return await self._create_from_pcm(
             model=model,
@@ -984,6 +1256,7 @@ class VideoCreationService:
             source=source,
             fasterliveportrait_config=fasterliveportrait_config,
             composition_config=composition_config,
+            light2d_renderer=light2d_renderer,
         )
 
     async def create_from_duo_dialog(
@@ -1177,6 +1450,7 @@ class VideoCreationService:
         duration_sec: int | None,
         title: str,
         composition_config: Mapping[str, object] | None = None,
+        light2d_renderer: Light2DRenderer | None = None,
     ) -> dict[str, Any]:
         model_value = _normalize_model(model)
         if model_value != "flashtalk":
@@ -1195,6 +1469,7 @@ class VideoCreationService:
             title=title,
             source="reference_video",
             composition_config=composition_config,
+            light2d_renderer=light2d_renderer,
         )
 
     async def _resample_pcm(self, pcm: np.ndarray, sample_rate: int) -> np.ndarray:
@@ -1239,16 +1514,74 @@ class VideoCreationService:
         source: str,
         fasterliveportrait_config: Mapping[str, object] | None = None,
         composition_config: Mapping[str, object] | None = None,
+        light2d_renderer: Light2DRenderer | None = None,
     ) -> dict[str, Any]:
         model_value = _normalize_model(model)
+        if light2d_renderer is None:
+            light2d_renderer = preflight_light2d_video_creation(
+                self.settings,
+                model=model_value,
+                avatar_id=avatar_id,
+                source=source,
+                composition_config=composition_config,
+            )
         avatar_path = _avatar_dir(self.settings, avatar_id)
         normalized_composition_config = _normalize_video_composition_config(self.settings, avatar_path, composition_config)
+        pcm = np.asarray(pcm, dtype=np.int16).reshape(-1)
+        sample_rate = 16000
+        if light2d_renderer is not None:
+            max_samples = sample_rate * max(
+                0,
+                _settings_int(self.settings, "video_creation_light2d_max_duration_sec", 300),
+            )
+            if pcm.size > max_samples:
+                raise ValueError("Light2D audio exceeds maximum duration")
         job_id = uuid.uuid4().hex
         work_dir = _settings_path(self.settings, "exports_dir", "./data/exports") / "video_creation_jobs" / job_id
         work_dir.mkdir(parents=True, exist_ok=False)
-        pcm = np.asarray(pcm, dtype=np.int16).reshape(-1)
-        sample_rate = 16000
         audio_wav = work_dir / "audio.wav"
+
+        if light2d_renderer is not None:
+            try:
+                _write_wav(audio_wav, pcm, sample_rate)
+                video_only = work_dir / "video_only.mp4"
+                _write_light2d_video_only(
+                    video_only,
+                    light2d_renderer,
+                    pcm,
+                    config=normalized_composition_config,
+                )
+                output_mp4 = work_dir / "result.mp4"
+                await _ffmpeg_mux(
+                    str(getattr(self.settings, "ffmpeg_bin", "ffmpeg") or "ffmpeg"),
+                    video_only,
+                    audio_wav,
+                    output_mp4,
+                )
+                duration = float(pcm.size) / float(sample_rate)
+                item = create_video_export_from_file(
+                    _settings_path(self.settings, "exports_dir", "./data/exports"),
+                    source=output_mp4,
+                    mime_type="video/mp4",
+                    kind="video_creation",
+                    title=_safe_title(title, model=model_value, avatar_id=avatar_id),
+                    duration_sec=duration,
+                    session_id=None,
+                    avatar_id=avatar_id,
+                    model=model_value,
+                    max_bytes=_settings_int(
+                        self.settings, "export_max_bytes", 1024 * 1024 * 1024
+                    ),
+                )
+                return {
+                    "job_id": job_id,
+                    "status": "done",
+                    "source": source,
+                    "export_video": _export_with_download_url(item),
+                }
+            finally:
+                shutil.rmtree(work_dir, ignore_errors=True)
+
         _write_wav(audio_wav, pcm, sample_rate)
 
         backend = resolve_model_backend(model_value, self.settings)
@@ -1316,7 +1649,7 @@ class VideoCreationService:
         output_mp4 = work_dir / "result.mp4"
         await _ffmpeg_mux(str(getattr(self.settings, "ffmpeg_bin", "ffmpeg") or "ffmpeg"), video_only, audio_wav, output_mp4)
         content = output_mp4.read_bytes()
-        duration = float(pcm.size) / float(sample_rate) if sample_rate else None
+        duration = float(pcm.size) / float(sample_rate)
         item = create_video_export(
             _settings_path(self.settings, "exports_dir", "./data/exports"),
             content=content,

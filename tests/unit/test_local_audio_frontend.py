@@ -474,6 +474,7 @@ def test_video_creation_workspace_wires_offline_generation_flow():
     topbar = (WEB / "components" / "TopBar.tsx").read_text(encoding="utf-8")
     api = (WEB / "lib" / "api.ts").read_text(encoding="utf-8")
     workspace = (WEB / "components" / "VideoCreationWorkspace.tsx").read_text(encoding="utf-8")
+    model_labels = (WEB / "lib" / "modelLabels.ts").read_text(encoding="utf-8")
 
     assert '"videoCreation"' in topbar
     assert "视频创作" in topbar
@@ -486,10 +487,12 @@ def test_video_creation_workspace_wires_offline_generation_flow():
     assert 'apiPostForm<VideoCreationJobResponse>("/video-creation/jobs", form)' in api
     assert '"flashtalk"' in workspace
     assert '"flashhead"' in workspace
-    assert "FlashTalk" in workspace
-    assert "FlashHead" in workspace
+    assert 'from "../lib/modelLabels"' in workspace
+    assert "modelLabel(item)" in workspace
+    assert 'flashtalk: "FlashTalk"' in model_labels
+    assert 'flashhead: "FlashHead"' in model_labels
     assert '"musetalk"' in workspace
-    assert "MuseTalk" in workspace
+    assert 'musetalk: "MuseTalk"' in model_labels
     assert "音频来源" in workspace
     assert "上传音频" in workspace
     assert "口播合成" in workspace

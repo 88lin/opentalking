@@ -10,7 +10,8 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from opentalking.avatar.fasterliveportrait_config import normalize_fasterliveportrait_runtime_config
 from opentalking.providers.tts.indextts_config import normalize_indextts_config
 from opentalking.providers.tts.providers import normalize_tts_provider
-from opentalking.video_creation import VideoCreationService
+from opentalking.avatar.light2d import Light2DContractError
+from opentalking.video_creation import VideoCreationService, preflight_light2d_video_creation
 
 router = APIRouter(prefix="/video-creation", tags=["video-creation"])
 
@@ -131,6 +132,17 @@ async def create_video_creation_job(
     settings = request.app.state.settings
     flp_config = _parse_fasterliveportrait_config(model, fasterliveportrait_config)
     video_composition_config = _parse_video_composition_config(composition_config)
+    try:
+        light2d_renderer = preflight_light2d_video_creation(
+            settings,
+            model=model,
+            avatar_id=avatar_id,
+            source=source,
+            text=text,
+            composition_config=video_composition_config,
+        )
+    except (Light2DContractError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     emotion_audio_path = await _save_indextts_emotion_audio(indextts_emotion_audio_file)
     try:
         index_config = _parse_indextts_config(tts_provider, indextts_config, emotion_audio_path=emotion_audio_path)
@@ -162,6 +174,7 @@ async def create_video_creation_job(
                     mime_type=audio_file.content_type,
                     fasterliveportrait_config=flp_config,
                     composition_config=video_composition_config,
+                    light2d_renderer=light2d_renderer,
                 )
             finally:
                 upload_path.unlink(missing_ok=True)
@@ -174,6 +187,7 @@ async def create_video_creation_job(
                 duration_sec=duration_sec,
                 title=title,
                 composition_config=video_composition_config,
+                light2d_renderer=light2d_renderer,
             )
             return _with_download_url(result)
 
@@ -202,6 +216,7 @@ async def create_video_creation_job(
             fasterliveportrait_config=flp_config,
             indextts_config=index_config,
             composition_config=video_composition_config,
+            light2d_renderer=light2d_renderer,
         )
         return _with_download_url(result)
     except HTTPException:

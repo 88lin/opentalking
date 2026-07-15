@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { AgentConfig } from "./AvatarSelectionStage";
 import type { AvatarSummary, KnowledgeBaseSummary } from "../lib/api";
+import { modelLabel } from "../lib/modelLabels";
 import { modelConnectionBadge, type ModelStatus } from "../lib/modelStatus";
+import { isDogoLight2dAvatar } from "../light2d/avatarSelection";
 import type { TtsProviderExtended } from "../constants/ttsBailian";
 import type { MemoryLibrary } from "../types";
 
@@ -49,16 +51,6 @@ export const DEFAULT_FASTLIVEPORTRAIT_CONFIG: FasterLivePortraitConfig = {
 
 export const SETTINGS_DOCK_EXPANDED_KEY = "opentalking-settings-dock-expanded";
 const TTS_PREVIEW_TEXT_MAX_CHARS = 1000;
-
-const MODEL_LABELS: Record<string, string> = {
-  flashhead: "FlashHead",
-  fasterliveportrait: "FasterLivePortrait",
-  flashtalk: "FlashTalk",
-  mock: "无驱动模式",
-  musetalk: "MuseTalk",
-  quicktalk: "QuickTalk",
-  wav2lip: "Wav2Lip",
-};
 
 const TTS_PROVIDER_LABELS: Record<TtsProviderExtended, string> = {
   edge: "Edge",
@@ -474,13 +466,14 @@ export function SettingsPanel({
     });
   };
   const currentAvatar = avatars.find((a) => a.id === avatarId) ?? null;
+  const dogoLightModeLocked = isDogoLight2dAvatar(currentAvatar);
   const modelStatusById = new Map(modelStatuses.map((item) => [item.id, item]));
   const modelOptions = models.map((m) => {
     const badge = modelConnectionBadge(modelStatusById.get(m));
     return {
       id: m,
-      label: MODEL_LABELS[m] ?? m,
-      subtitle: m === "mock" ? "本地自测" : m,
+      label: modelLabel(m),
+      subtitle: m === "mock" ? "免 GPU / 浏览器动画" : m,
       connected: badge.connected,
       statusLabel: badge.label,
       statusTone: badge.tone,
@@ -754,8 +747,14 @@ export function SettingsPanel({
                 option={option}
                 selected={option.id === model}
                 onClick={() => onModelChange(option.id)}
+                disabled={dogoLightModeLocked && option.id !== "mock"}
               />
             ))}
+            {dogoLightModeLocked ? (
+              <p className="rounded-lg border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-medium text-cyan-700">
+                博士小狗仅支持轻量模式；如需使用其他驱动模型，请先更换形象。
+              </p>
+            ) : null}
             {!selectedModelBadge.connected ? (
               <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500">
                 当前模型未连接，启动对应模型服务后即可使用。

@@ -22,6 +22,7 @@ import {
   type SceneBackgroundAsset,
   type SceneComposition,
 } from "../lib/api";
+import { modelLabel } from "../lib/modelLabels";
 import { MemoryPanel } from "./MemoryPanel";
 import type { MemoryLibrary } from "../types";
 
@@ -99,7 +100,7 @@ function formatCreatedAt(value: string): string {
 
 function metadataLine(item: ExportVideoItem): string {
   return [
-    item.model ? `模型 ${item.model}` : null,
+    item.model ? `模型 ${modelLabel(item.model)}` : null,
     item.avatar_id ? `Avatar ${item.avatar_id}` : null,
     item.session_id ? `Session ${item.session_id}` : null,
   ].filter(Boolean).join(" · ") || "无关联会话信息";

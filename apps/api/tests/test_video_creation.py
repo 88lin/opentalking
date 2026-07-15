@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 import json
+import shutil
 import wave
 from pathlib import Path
 from types import SimpleNamespace
@@ -55,6 +57,13 @@ def _write_duo_avatar(root: Path, avatar_id: str = "duo-anchor") -> Path:
     }
     (avatar / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     return avatar
+
+
+def _write_dogo_avatar(root: Path) -> Path:
+    source = Path.cwd() / "examples" / "avatars" / "dogo-light2d"
+    target = root / "dogo-light2d"
+    shutil.copytree(source, target)
+    return target
 
 
 class FakeVideoCreator:
@@ -174,6 +183,128 @@ def _client(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(video_creation, "VideoCreationService", fake_creator)
     app.include_router(video_creation.router)
     return TestClient(app), creators
+
+
+@pytest.mark.parametrize(
+    ("model", "avatar_id", "audio_source"),
+    [
+        ("wav2lip", "dogo-light2d", "tts_text"),
+        ("mock", "anchor", "tts_text"),
+        ("mock", "dogo-light2d", "reference_video"),
+        ("mock", "dogo-light2d", "duo_dialog"),
+    ],
+)
+def test_light2d_route_rejects_invalid_combinations_before_creator(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    model: str,
+    avatar_id: str,
+    audio_source: str,
+) -> None:
+    client, creators = _client(tmp_path, monkeypatch)
+    _write_dogo_avatar(Path(client.app.state.settings.avatars_dir))
+
+    with client:
+        response = client.post(
+            "/video-creation/jobs",
+            data={
+                "model": model,
+                "avatar_id": avatar_id,
+                "audio_source": audio_source,
+                "text": "hello",
+                "duo_dialog": json.dumps({"lines": []}),
+            },
+        )
+
+    assert response.status_code == 400
+    assert creators == []
+
+
+def test_light2d_route_rejects_overlong_text_before_tts(tmp_path: Path, monkeypatch) -> None:
+    client, creators = _client(tmp_path, monkeypatch)
+    _write_dogo_avatar(Path(client.app.state.settings.avatars_dir))
+    client.app.state.settings.video_creation_light2d_max_text_chars = 4
+
+    with client:
+        response = client.post(
+            "/video-creation/jobs",
+            data={
+                "model": "mock",
+                "avatar_id": "dogo-light2d",
+                "audio_source": "tts_text",
+                "text": "12345",
+            },
+        )
+
+    assert response.status_code == 400
+    assert "text" in response.json()["detail"].lower()
+    assert creators == []
+
+
+@pytest.mark.parametrize("failure", ["config", "missing", "png"])
+def test_light2d_route_validates_bundle_before_tts_or_upload(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: str,
+) -> None:
+    client, creators = _client(tmp_path, monkeypatch)
+    avatar = _write_dogo_avatar(Path(client.app.state.settings.avatars_dir))
+    config_path = avatar / "light2d" / "avatar.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    base_path = avatar / "light2d" / config["layers"]["base"]["source"]
+    if failure == "config":
+        config["version"] = 99
+        config_path.write_text(json.dumps(config), encoding="utf-8")
+    elif failure == "missing":
+        base_path.unlink()
+    else:
+        base_path.write_bytes(b"not-a-png")
+
+    with client:
+        response = client.post(
+            "/video-creation/jobs",
+            data={
+                "model": "mock",
+                "avatar_id": "dogo-light2d",
+                "audio_source": "tts_text",
+                "text": "hello",
+            },
+        )
+
+    assert response.status_code == 400
+    assert "light2d" in response.json()["detail"].lower()
+    assert creators == []
+
+
+@pytest.mark.parametrize("audio_source", ["tts_text", "voice_clone", "upload"])
+def test_light2d_route_accepts_supported_sources(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    audio_source: str,
+) -> None:
+    client, creators = _client(tmp_path, monkeypatch)
+    _write_dogo_avatar(Path(client.app.state.settings.avatars_dir))
+    data = {
+        "model": "mock",
+        "avatar_id": "dogo-light2d",
+        "audio_source": audio_source,
+        "text": "hello",
+    }
+    files = (
+        {"audio_file": ("speech.wav", b"RIFFaudio", "audio/wav")}
+        if audio_source == "upload"
+        else None
+    )
+
+    with client:
+        response = client.post("/video-creation/jobs", data=data, files=files)
+
+    assert response.status_code == 200, response.text
+    call_type, kwargs = creators[0].calls[0]
+    assert call_type == ("audio" if audio_source == "upload" else "tts")
+    assert kwargs["model"] == "mock"
+    assert kwargs["avatar_id"] == "dogo-light2d"
+    assert kwargs["light2d_renderer"] is not None
 
 
 def test_video_creation_audio_upload_returns_export_video(tmp_path: Path, monkeypatch) -> None:
@@ -2291,3 +2422,411 @@ async def test_create_reference_video_falls_back_when_default_driver_audio_missi
     assert int(np.max(np.abs(pcm))) <= 240
     assert int(np.count_nonzero(pcm)) > 1000
     assert result["source"] == "reference_video"
+
+
+@pytest.mark.asyncio
+async def test_light2d_tts_sample_limit_closes_adapter_immediately(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    closed = False
+
+    class FakeTTS:
+        async def synthesize_stream(self, _text: str, *, voice: str | None = None):
+            del voice
+            yield AudioChunk(data=np.ones(4, dtype=np.int16), sample_rate=16000, duration_ms=0.25)
+            yield AudioChunk(data=np.ones(4, dtype=np.int16), sample_rate=16000, duration_ms=0.25)
+            raise AssertionError("stream must stop at the sample limit")
+
+        async def aclose(self) -> None:
+            nonlocal closed
+            closed = True
+
+    monkeypatch.setattr(video_creation_module, "build_tts_adapter", lambda **_kwargs: FakeTTS())
+    service = VideoCreationService(SimpleNamespace(tts_sample_rate=16000))
+
+    with pytest.raises(ValueError, match="duration"):
+        await service._synthesize_tts_pcm(
+            text="hello",
+            voice=None,
+            tts_provider="edge",
+            tts_model=None,
+            max_samples=6,
+        )
+
+    assert closed is True
+
+
+def test_light2d_video_writer_streams_rgba_as_bgr(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+    from opentalking.avatar.light2d import Light2DFrameState, Light2DRenderedFrame
+
+    captured: list[np.ndarray] = []
+
+    class FakeWriter:
+        def isOpened(self) -> bool:
+            return True
+
+        def write(self, frame: np.ndarray) -> None:
+            captured.append(np.asarray(frame).copy())
+
+        def release(self) -> None:
+            return None
+
+    class FakeRenderer:
+        fps = 25
+        context = SimpleNamespace(config={"canvas": {"width": 320, "height": 180}})
+
+        def iter_frames(self, _pcm: np.ndarray):
+            rgba = np.zeros((180, 320, 4), dtype=np.uint8)
+            rgba[:, :] = [250, 20, 10, 255]
+            yield Light2DRenderedFrame(rgba=rgba, state=Light2DFrameState.for_test())
+
+    monkeypatch.setattr(video_creation_module.cv2, "VideoWriter_fourcc", lambda *_args: 0)
+    monkeypatch.setattr(
+        video_creation_module.cv2,
+        "VideoWriter",
+        lambda *_args, **_kwargs: FakeWriter(),
+    )
+
+    video_creation_module._write_light2d_video_only(
+        tmp_path / "video.mp4",
+        FakeRenderer(),
+        np.ones(1, dtype=np.int16),
+        config=None,
+    )
+
+    assert len(captured) == 1
+    assert captured[0][0, 0].tolist() == [10, 20, 250]
+
+
+def test_composite_avatar_layer_premultiplies_transparent_white_edge() -> None:
+    from opentalking import video_creation as video_creation_module
+
+    background = np.zeros((2, 4, 3), dtype=np.uint8)
+    frame = np.array([[[0, 0, 0, 0], [255, 255, 255, 255]]], dtype=np.uint8)
+
+    result = video_creation_module._composite_avatar_layer(
+        background,
+        frame,
+        avatar_fit="contain",
+        avatar_anchor="center",
+        avatar_scale=1.0,
+        avatar_offset_x=0.0,
+        avatar_offset_y=0.0,
+    )
+
+    assert result[0, 1].tolist() == [64, 64, 64]
+    assert result[0, 2].tolist() == [191, 191, 191]
+
+
+@pytest.mark.asyncio
+async def test_light2d_upload_probe_rejects_before_decoder_start(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    async def fake_probe(_settings: object, _path: Path) -> float:
+        return 2.0
+
+    async def forbidden_subprocess(*_args: object, **_kwargs: object):
+        raise AssertionError("decoder must not start after duration probe rejection")
+
+    monkeypatch.setattr(video_creation_module, "_probe_audio_duration_sec", fake_probe)
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", forbidden_subprocess)
+    upload = tmp_path / "long.wav"
+    upload.write_bytes(b"audio")
+
+    with pytest.raises(ValueError, match="duration"):
+        await video_creation_module._decode_audio_file_to_pcm_i16_limited(
+            SimpleNamespace(ffmpeg_bin="ffmpeg"),
+            upload,
+            max_samples=16000,
+        )
+
+
+@pytest.mark.asyncio
+async def test_light2d_streaming_decoder_kills_process_at_sample_limit(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    async def fake_probe(_settings: object, _path: Path) -> float:
+        return 0.0001
+
+    class FakeStream:
+        def __init__(self, chunks: list[bytes]) -> None:
+            self.chunks = chunks
+
+        async def read(self, _size: int = -1) -> bytes:
+            return self.chunks.pop(0) if self.chunks else b""
+
+    class FakeProcess:
+        def __init__(self) -> None:
+            self.stdout = FakeStream([b"\x00\x00" * 5])
+            self.stderr = FakeStream([])
+            self.returncode: int | None = None
+            self.killed = False
+
+        def kill(self) -> None:
+            self.killed = True
+            self.returncode = -9
+
+        async def wait(self) -> int:
+            if self.returncode is None:
+                self.returncode = 0
+            return self.returncode
+
+    process = FakeProcess()
+    async def fake_subprocess(*_args: object, **_kwargs: object) -> FakeProcess:
+        return process
+
+    monkeypatch.setattr(video_creation_module, "_probe_audio_duration_sec", fake_probe)
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", fake_subprocess)
+
+    with pytest.raises(ValueError, match="duration"):
+        await video_creation_module._decode_audio_file_to_pcm_i16_limited(
+            SimpleNamespace(ffmpeg_bin="ffmpeg"),
+            tmp_path / "compressed.mp3",
+            max_samples=4,
+        )
+
+    assert process.killed is True
+
+
+@pytest.mark.asyncio
+async def test_light2d_create_from_pcm_avoids_backend_and_exports_file(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    avatars = tmp_path / "avatars"
+    exports = tmp_path / "exports"
+    _write_dogo_avatar(avatars)
+    service = VideoCreationService(
+        SimpleNamespace(
+            avatars_dir=str(avatars),
+            exports_dir=str(exports),
+            export_max_bytes=1024,
+            video_creation_light2d_max_duration_sec=300,
+            ffmpeg_bin="ffmpeg",
+        )
+    )
+    renderer = video_creation_module.preflight_light2d_video_creation(
+        service.settings,
+        model="mock",
+        avatar_id="dogo-light2d",
+        source="tts_text",
+        text="hello",
+    )
+    assert renderer is not None
+
+    def forbidden_backend(*_args: object, **_kwargs: object):
+        raise AssertionError("Light2D must not resolve a GPU/backend")
+
+    async def fake_mux(_bin: str, _video: Path, _audio: Path, output: Path) -> None:
+        output.write_bytes(b"mp4")
+
+    def fake_writer(path: Path, _renderer: object, _pcm: np.ndarray, *, config: object) -> None:
+        del config
+        path.write_bytes(b"video")
+
+    captured: dict[str, object] = {}
+
+    def fake_export(_root: Path, **kwargs: object) -> dict[str, object]:
+        captured.update(kwargs)
+        return {
+            "id": "export-dogo",
+            "path": str(exports / "dogo.mp4"),
+            "model": kwargs["model"],
+        }
+
+    monkeypatch.setattr(video_creation_module, "resolve_model_backend", forbidden_backend)
+    monkeypatch.setattr(video_creation_module, "_write_light2d_video_only", fake_writer)
+    monkeypatch.setattr(video_creation_module, "_ffmpeg_mux", fake_mux)
+    monkeypatch.setattr(video_creation_module, "create_video_export_from_file", fake_export)
+
+    result = await service._create_from_pcm(
+        model="mock",
+        avatar_id="dogo-light2d",
+        pcm=np.ones(1600, dtype=np.int16),
+        title="DOGO",
+        source="tts_text",
+        light2d_renderer=renderer,
+    )
+
+    assert result["export_video"]["model"] == "mock"
+    assert captured["model"] == "mock"
+    assert captured["source"].name == "result.mp4"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("failure_stage", [None, "audio", "writer", "mux", "export"])
+async def test_light2d_job_directory_is_removed_after_completion_or_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure_stage: str | None,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    avatars = tmp_path / "avatars"
+    exports = tmp_path / "exports"
+    _write_dogo_avatar(avatars)
+    service = VideoCreationService(
+        SimpleNamespace(
+            avatars_dir=str(avatars),
+            exports_dir=str(exports),
+            export_max_bytes=1024,
+            video_creation_light2d_max_duration_sec=300,
+            ffmpeg_bin="ffmpeg",
+        )
+    )
+    renderer = video_creation_module.preflight_light2d_video_creation(
+        service.settings,
+        model="mock",
+        avatar_id="dogo-light2d",
+        source="tts_text",
+        text="hello",
+    )
+    assert renderer is not None
+    persistent = exports / "videos" / "persistent.mp4"
+    original_write_wav = video_creation_module._write_wav
+
+    def fake_write_wav(path: Path, pcm: np.ndarray, sample_rate: int = 16000) -> None:
+        if failure_stage == "audio":
+            raise RuntimeError("audio failed")
+        original_write_wav(path, pcm, sample_rate)
+
+    def fake_writer(path: Path, _renderer: object, _pcm: np.ndarray, *, config: object) -> None:
+        del config
+        if failure_stage == "writer":
+            raise RuntimeError("writer failed")
+        path.write_bytes(b"video")
+
+    async def fake_mux(_bin: str, _video: Path, _audio: Path, output: Path) -> None:
+        if failure_stage == "mux":
+            raise RuntimeError("mux failed")
+        output.write_bytes(b"mp4")
+
+    def fake_export(_root: Path, **kwargs: object) -> dict[str, object]:
+        if failure_stage == "export":
+            raise RuntimeError("export failed")
+        persistent.parent.mkdir(parents=True, exist_ok=True)
+        persistent.write_bytes(Path(kwargs["source"]).read_bytes())
+        return {"id": "export", "path": str(persistent), "model": "mock"}
+
+    monkeypatch.setattr(video_creation_module, "_write_wav", fake_write_wav)
+    monkeypatch.setattr(video_creation_module, "_write_light2d_video_only", fake_writer)
+    monkeypatch.setattr(video_creation_module, "_ffmpeg_mux", fake_mux)
+    monkeypatch.setattr(video_creation_module, "create_video_export_from_file", fake_export)
+
+    kwargs = {
+        "model": "mock",
+        "avatar_id": "dogo-light2d",
+        "pcm": np.ones(160, dtype=np.int16),
+        "title": "DOGO",
+        "source": "tts_text",
+        "light2d_renderer": renderer,
+    }
+    if failure_stage is None:
+        await service._create_from_pcm(**kwargs)
+        assert persistent.read_bytes() == b"mp4"
+    else:
+        with pytest.raises(RuntimeError, match=failure_stage):
+            await service._create_from_pcm(**kwargs)
+
+    jobs_root = exports / "video_creation_jobs"
+    assert not jobs_root.exists() or not list(jobs_root.iterdir())
+
+
+@pytest.mark.asyncio
+async def test_light2d_tts_duration_limit_uses_chunk_sample_rate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    class FakeTTS:
+        async def synthesize_stream(self, _text: str, *, voice: str | None = None):
+            del voice
+            yield AudioChunk(
+                data=np.ones(24000, dtype=np.int16),
+                sample_rate=24000,
+                duration_ms=1000.0,
+            )
+
+        async def aclose(self) -> None:
+            return None
+
+    monkeypatch.setattr(video_creation_module, "build_tts_adapter", lambda **_kwargs: FakeTTS())
+    monkeypatch.setattr(
+        VideoCreationService,
+        "_resample_pcm",
+        lambda _self, _pcm, _rate: asyncio.sleep(0, result=np.ones(16000, dtype=np.int16)),
+    )
+    pcm = await VideoCreationService(SimpleNamespace(tts_sample_rate=16000))._synthesize_tts_pcm(
+        text="hello",
+        voice=None,
+        tts_provider="edge",
+        tts_model=None,
+        max_samples=16000,
+    )
+
+    assert pcm.size == 16000
+
+
+@pytest.mark.asyncio
+async def test_light2d_tts_low_rate_chunk_cannot_exceed_duration(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    class FakeTTS:
+        async def synthesize_stream(self, _text: str, *, voice: str | None = None):
+            del voice
+            yield AudioChunk(data=np.ones(9000, dtype=np.int16), sample_rate=8000, duration_ms=1125.0)
+
+        async def aclose(self) -> None:
+            return None
+
+    monkeypatch.setattr(video_creation_module, "build_tts_adapter", lambda **_kwargs: FakeTTS())
+    with pytest.raises(ValueError, match="duration"):
+        await VideoCreationService(SimpleNamespace(tts_sample_rate=16000))._synthesize_tts_pcm(
+            text="hello",
+            voice=None,
+            tts_provider="edge",
+            tts_model=None,
+            max_samples=16000,
+        )
+
+
+@pytest.mark.asyncio
+async def test_light2d_tts_rejects_mixed_chunk_sample_rates(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from opentalking import video_creation as video_creation_module
+
+    class FakeTTS:
+        async def synthesize_stream(self, _text: str, *, voice: str | None = None):
+            del voice
+            yield AudioChunk(data=np.ones(100, dtype=np.int16), sample_rate=16000, duration_ms=6.25)
+            yield AudioChunk(data=np.ones(100, dtype=np.int16), sample_rate=24000, duration_ms=4.17)
+
+        async def aclose(self) -> None:
+            return None
+
+    monkeypatch.setattr(video_creation_module, "build_tts_adapter", lambda **_kwargs: FakeTTS())
+    with pytest.raises(ValueError, match="sample rate"):
+        await VideoCreationService(SimpleNamespace(tts_sample_rate=16000))._synthesize_tts_pcm(
+            text="hello",
+            voice=None,
+            tts_provider="edge",
+            tts_model=None,
+            max_samples=16000,
+        )

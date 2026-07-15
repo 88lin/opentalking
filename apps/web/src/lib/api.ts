@@ -548,6 +548,13 @@ export type PersonasResponse = {
   personas: PersonaSummary[];
 };
 
+export type ClientRendererDescriptor = {
+  type: "light2d";
+  config_url: string;
+  asset_base_url: string;
+  recommended_for: string[];
+};
+
 export type AvatarSummary = {
   id: string;
   name: string | null;
@@ -559,6 +566,7 @@ export type AvatarSummary = {
   has_preview_video: boolean;
   matting_status: "unknown" | "opaque" | "transparent_ready";
   duo_dialog: DuoDialogCapability | null;
+  client_renderer: ClientRendererDescriptor | null;
 };
 
 export type CreateSessionResponse = { session_id: string; status: string };

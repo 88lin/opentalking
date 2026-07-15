@@ -16,6 +16,13 @@ class AvatarPersonModeUpdate(BaseModel):
     person_mode: PersonMode
 
 
+class ClientRendererCapability(BaseModel):
+    type: Literal["light2d"]
+    config_url: str
+    asset_base_url: str
+    recommended_for: list[str] = Field(default_factory=list)
+
+
 class AvatarSummary(BaseModel):
     id: str
     name: Optional[str] = None
@@ -28,3 +35,4 @@ class AvatarSummary(BaseModel):
     has_preview_video: bool = False
     matting_status: str = "unknown"
     duo_dialog: Optional[DuoDialogCapability] = None
+    client_renderer: Optional[ClientRendererCapability] = None

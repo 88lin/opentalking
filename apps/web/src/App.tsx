@@ -53,6 +53,7 @@ import {
   type VoiceCatalogItem,
 } from "./lib/api";
 import { modelConnectionBadge, type ModelStatus } from "./lib/modelStatus";
+import { modelLabel } from "./lib/modelLabels";
 import { connectSse } from "./lib/sse";
 import {
   DEFAULT_TTS_PREVIEW_TEXT,
@@ -90,6 +91,12 @@ import {
   TTS_PROVIDER_STORAGE_KEY,
 } from "./constants/ttsQwen";
 import type { ConnectionStatus, MemoryLibrary, Message, QueueInfo } from "./types";
+import {
+  canChangeModelForAvatar,
+  normalizeAvatarModelSelection,
+  pickInitialAvatarForModel,
+  recommendAvatarForModel,
+} from "./light2d/avatarSelection";
 
 const MEMORY_PROFILE_ID = "default";
 
@@ -703,9 +710,14 @@ function pickInitialAvatar(
   avatars: AvatarSummary[],
   registeredModels: string[],
   storedSelection?: StoredAvatarSelection | null,
+  defaultModel?: string | null,
 ): AvatarSummary | null {
   if (!avatars.length) return null;
   const available = new Set(registeredModels);
+  if (defaultModel) {
+    const recommended = pickInitialAvatarForModel(avatars, defaultModel, storedSelection ?? null);
+    if (recommended?.client_renderer?.recommended_for.includes(defaultModel)) return recommended;
+  }
   const customAvatar = pickInitialCustomAvatar(avatars, available);
   const storedAvatar = storedSelection?.id
     ? avatars.find((avatar) => avatar.id === storedSelection.id)
@@ -772,16 +784,6 @@ function usesCompactSquareStage(model: string): boolean {
   return model === "flashhead";
 }
 
-const MODEL_LABELS_FOR_STAGE: Record<string, string> = {
-  flashhead: "FlashHead",
-  fasterliveportrait: "FasterLivePortrait",
-  flashtalk: "FlashTalk",
-  mock: "无驱动模式",
-  musetalk: "MuseTalk",
-  quicktalk: "QuickTalk",
-  wav2lip: "Wav2Lip",
-};
-
 const PREWARMABLE_MODELS = new Set(["quicktalk", "wav2lip"]);
 
 function wait(ms: number): Promise<void> {
@@ -808,8 +810,7 @@ function selectMediaRecorderMimeType(candidates: string[]): string | undefined {
 }
 
 function realtimeExportTitle(model: string): string {
-  const label = MODEL_LABELS_FOR_STAGE[model] ?? model;
-  return `实时对话录制 · ${label}`;
+  return `实时对话录制 · ${modelLabel(model)}`;
 }
 
 async function requestUserAudioWithTimeout(microphonePermissionTimeoutMs = 8000): Promise<MediaStream> {
@@ -1940,7 +1941,7 @@ export default function App() {
         }));
         if (ready && seq === prewarmSeqRef.current) {
           const cacheStatus = response.cache?.status;
-          const label = MODEL_LABELS_FOR_STAGE[targetModel] ?? targetModel;
+          const label = modelLabel(targetModel);
           if (response.runtime_status === "failed") {
             const detail = response.runtime?.message;
             notify(detail ? `${label} 资产已准备，运行时预热失败：${detail}` : `${label} 资产已准备，运行时预热失败。`, "info");
@@ -1954,7 +1955,7 @@ export default function App() {
         setPrewarmByKey((prev) => ({ ...prev, [key]: "failed" }));
         if (seq === prewarmSeqRef.current) {
           const detail = error instanceof ApiError ? error.detail : null;
-          const label = MODEL_LABELS_FOR_STAGE[targetModel] ?? targetModel;
+          const label = modelLabel(targetModel);
           notify(detail ? `${label} 准备失败：${detail}` : `${label} 准备失败，首次生成会走冷启动。`, "error");
         }
         return false;
@@ -2003,7 +2004,7 @@ export default function App() {
         const statuses = mo.statuses ?? mo.models.map((id) => ({ id, connected: true }));
         setModelStatuses(statuses);
         const storedAvatarSelection = readStoredAvatarSelection();
-        const initialAvatar = pickInitialAvatar(av, mo.models, storedAvatarSelection);
+        const initialAvatar = pickInitialAvatar(av, mo.models, storedAvatarSelection, mo.default_model);
         if (initialAvatar) {
           setAvatarId(initialAvatar.id);
           if (initialAvatar.is_custom || storedAvatarSelection?.source === "explicit") {
@@ -2012,7 +2013,20 @@ export default function App() {
               storedAvatarSelection?.source === "explicit" ? "explicit" : "auto",
             );
           }
-          setModel((prev) => pickInitialModel(prev, mo.models, statuses, initialAvatar, mo.default_model));
+          setModel((prev) => {
+            const requestedModel = pickInitialModel(
+              prev,
+              mo.models,
+              statuses,
+              initialAvatar,
+              mo.default_model,
+            );
+            return normalizeAvatarModelSelection(
+              av,
+              initialAvatar.id,
+              requestedModel,
+            ).model;
+          });
         }
       } catch {
         setConnection("error");
@@ -2659,8 +2673,14 @@ export default function App() {
       } catch {
         /* ignore */
       }
-      setAvatarId(newId);
-      writeStoredAvatarId(newId);
+      const normalized = normalizeAvatarModelSelection(avatars, newId, model);
+      setAvatarId(normalized.avatarId);
+      writeStoredAvatarId(normalized.avatarId);
+      const requestedModel = normalized.model;
+      if (requestedModel !== model) {
+        setModel(requestedModel);
+        notify("该形象使用免 GPU 浏览器动画，已切换到轻量模式。", "info");
+      }
       void (async () => {
         const sid = sessionIdRef.current;
         if (sid) {
@@ -2670,7 +2690,7 @@ export default function App() {
         setConnection("idle");
       })();
     },
-    [clearSubtitleState, releaseSession, resetLiveState],
+    [avatars, clearSubtitleState, model, notify, releaseSession, resetLiveState],
   );
 
   const applyPersona = useCallback((persona: PersonaSummary | null) => {
@@ -2692,9 +2712,14 @@ export default function App() {
     } catch {
       /* ignore */
     }
-    setAvatarId(persona.avatar.id);
-    writeStoredAvatarId(persona.avatar.id);
-    setModel(persona.avatar.model);
+    const normalized = normalizeAvatarModelSelection(
+      avatars,
+      persona.avatar.id,
+      persona.avatar.model,
+    );
+    setAvatarId(normalized.avatarId);
+    writeStoredAvatarId(normalized.avatarId);
+    setModel(normalized.model);
     const nextTtsProvider = normalizeTtsProvider(persona.runtime.tts_provider ?? persona.voice.provider, ttsProvider);
     setTtsProvider(nextTtsProvider);
     if (persona.voice.model) {
@@ -2727,6 +2752,7 @@ export default function App() {
     })();
   }, [
     clearSubtitleState,
+    avatars,
     releaseSession,
     resetLiveState,
     setAgentConfig,
@@ -2782,8 +2808,18 @@ export default function App() {
   );
 
   const handleModelChange = useCallback((newModel: string) => {
+    const currentAvatar = avatars.find((avatar) => avatar.id === avatarId) ?? null;
+    if (!canChangeModelForAvatar(currentAvatar, newModel)) {
+      notify("博士小狗仅支持轻量模式，请先更换形象。", "info");
+      return;
+    }
     clearSubtitleState();
     setModel(newModel);
+    const nextAvatarId = recommendAvatarForModel(avatars, newModel, avatarId);
+    if (nextAvatarId !== avatarId) {
+      setAvatarId(nextAvatarId);
+      writeStoredAvatarId(nextAvatarId, "auto");
+    }
     void (async () => {
       const sid = sessionIdRef.current;
       if (sid) {
@@ -2792,7 +2828,7 @@ export default function App() {
       resetLiveState();
       setConnection("idle");
     })();
-  }, [clearSubtitleState, releaseSession, resetLiveState]);
+  }, [avatarId, avatars, clearSubtitleState, notify, releaseSession, resetLiveState]);
 
   useEffect(() => {
     const handlePageHide = () => {
@@ -2831,7 +2867,7 @@ export default function App() {
   const effectiveConversationViewMode = showStart ? "studio" : conversationViewMode;
   const immersiveActive = workflow === "realtime" && effectiveConversationViewMode === "immersive";
   const chatMaxVisible = readChatMaxVisible();
-  const selectedModelLabel = MODEL_LABELS_FOR_STAGE[model] ?? model;
+  const selectedModelLabel = modelLabel(model);
   const wav2lipPostprocessModeLocked = sessionId !== null && connection !== "idle" && connection !== "error";
   const fasterliveportraitDirty = JSON.stringify(fasterliveportraitConfig) !== JSON.stringify(fasterliveportraitAppliedConfig);
   const fasterliveportraitLive = model === "fasterliveportrait" && sessionId !== null && connection !== "idle" && connection !== "error";
@@ -3088,6 +3124,7 @@ export default function App() {
                 avatarMaskUrl={showStart ? null : selectedAvatarMaskUrl}
                 avatarAdjust={immersiveActive ? immersiveAvatarAdjust : undefined}
                 compactSquareStage={compactSquareStage}
+                clientRenderer={!showStart && model === "mock" ? currentAvatar?.client_renderer ?? null : null}
                 className="h-full w-full"
               >
                 {immersiveActive ? (
@@ -3177,7 +3214,7 @@ export default function App() {
                         WebRTC 舞台
                       </span>
                       <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
-                        {MODEL_LABELS_FOR_STAGE[model] ?? model}
+                        {modelLabel(model)}
                       </span>
                       <span className="inline-flex max-w-[14rem] items-center gap-1 truncate rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-600 shadow-sm">
                         {currentAvatar?.name ?? currentAvatar?.id ?? "未选形象"}
@@ -3318,7 +3355,7 @@ export default function App() {
                       ["连接状态", connection === "live" ? "已连接" : connection === "expiring" ? "即将到期" : connection === "queued" ? "排队中" : connection === "connecting" ? "连接中" : connection === "error" ? "连接错误" : "未连接"],
                       ["当前会话", sessionId ?? "未创建"],
                       ["数字人", currentAvatar?.name ?? currentAvatar?.id ?? "等待加载"],
-                      ["驱动模型", MODEL_LABELS_FOR_STAGE[model] ?? model],
+                      ["驱动模型", modelLabel(model)],
                       ["语音线路", ttsProvider],
                       ["排队信息", queueInfo ? `${queueInfo.position} · ${queueInfo.message}` : "无排队"],
                     ].map(([label, value]) => (

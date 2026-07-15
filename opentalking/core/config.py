@@ -363,6 +363,8 @@ class Settings(BaseSettings):
     export_max_bytes: int = 1024 * 1024 * 1024
     video_creation_audio_max_bytes: int = 50 * 1024 * 1024
     video_creation_fasterliveportrait_preroll_ms: int = 400
+    video_creation_light2d_max_duration_sec: int = 300
+    video_creation_light2d_max_text_chars: int = 1000
     avatar_matting_provider: str = "rembg"
     avatar_matting_device: str = "cpu"
     avatar_matting_model_path: str = ""

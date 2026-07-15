@@ -46,7 +46,7 @@ def test_app_clears_stale_subtitle_state_on_context_reset() -> None:
 
     avatar_idx = source.index("const handleAvatarChange = useCallback")
     avatar_clear_idx = source.index("clearSubtitleState();", avatar_idx)
-    avatar_set_idx = source.index("setAvatarId(newId)", avatar_idx)
+    avatar_set_idx = source.index("setAvatarId(normalized.avatarId)", avatar_idx)
     assert avatar_clear_idx < avatar_set_idx
 
     model_idx = source.index("const handleModelChange = useCallback")

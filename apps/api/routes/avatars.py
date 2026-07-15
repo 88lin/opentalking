@@ -16,12 +16,19 @@ from urllib.parse import urlsplit, urlunsplit
 import httpx
 import numpy as np
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from PIL import Image
 
 from opentalking.avatar import mouth_metadata
 from opentalking.avatar.duo_dialog import duo_dialog_summary_from_metadata
 from opentalking.avatar.loader import load_avatar_bundle
+from opentalking.avatar.light2d import (
+    Light2DContractError,
+    Light2DRendererContext,
+    load_light2d_renderer,
+    open_referenced_asset,
+    safe_relative_path,
+)
 from opentalking.avatar.matting import MattingError, image_has_transparency, remove_avatar_background
 from opentalking.avatar.validator import list_avatar_dirs
 from opentalking.models.quicktalk.paths import resolve_quicktalk_asset_root
@@ -29,7 +36,13 @@ from opentalking.core.model_paths import quicktalk_asset_root
 from opentalking.models.registry import get_adapter
 from opentalking.providers.synthesis.backends import resolve_model_backend
 from opentalking.providers.synthesis.omnirt import auth_headers
-from apps.api.schemas.avatar import AvatarPersonModeUpdate, AvatarSummary, DuoDialogCapability, PersonMode
+from apps.api.schemas.avatar import (
+    AvatarPersonModeUpdate,
+    AvatarSummary,
+    ClientRendererCapability,
+    DuoDialogCapability,
+    PersonMode,
+)
 from apps.cli.prepare_cache import (
     PreparedAssetResult,
     _prepare_quicktalk_asset,
@@ -70,6 +83,27 @@ def _avatar_matting_status(manifest_path: Path) -> str:
         return "unknown"
     value = str((raw.get("metadata") or {}).get("matting_status") or "").strip()
     return value if value in {"unknown", "opaque", "transparent_ready"} else "unknown"
+
+
+def _renderer_context(avatar_dir: Path) -> Light2DRendererContext | None:
+    try:
+        return load_light2d_renderer(avatar_dir)
+    except Light2DContractError:
+        return None
+
+
+def _client_renderer_capability(path: Path) -> ClientRendererCapability | None:
+    context = _renderer_context(path)
+    if context is None:
+        return None
+    recommended_for = context.recommended_for
+    avatar_id = path.name
+    return ClientRendererCapability(
+        type="light2d",
+        config_url=f"/avatars/{avatar_id}/client-renderer",
+        asset_base_url=f"/avatars/{avatar_id}/client-assets/",
+        recommended_for=list(recommended_for),
+    )
 
 
 def _normalize_person_mode(raw: object) -> PersonMode | None:
@@ -172,6 +206,7 @@ def _summary_from_dir(path: Path) -> AvatarSummary:
         has_preview_video=_avatar_preview_video_path(path) is not None,
         matting_status=_avatar_matting_status(path / 'manifest.json'),
         duo_dialog=duo_capability,
+        client_renderer=_client_renderer_capability(path),
     )
 
 
@@ -997,6 +1032,47 @@ async def list_avatars(request: Request) -> list[AvatarSummary]:
         except Exception:  # noqa: BLE001
             continue
     return _sort_avatar_summaries(out)
+
+
+@router.get("/{avatar_id}/client-renderer")
+async def get_client_renderer(avatar_id: str, request: Request) -> dict[str, Any]:
+    root = _avatars_root(request)
+    avatar_dir = (root / avatar_id).resolve()
+    try:
+        avatar_dir.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="invalid avatar_id") from exc
+    context = _renderer_context(avatar_dir)
+    if context is None:
+        raise HTTPException(status_code=404, detail="client renderer not found")
+    return context.config
+
+
+@router.get("/{avatar_id}/client-assets/{asset_path:path}")
+async def get_client_asset(avatar_id: str, asset_path: str, request: Request) -> Response:
+    raw_path = request.scope.get("raw_path", b"")
+    if re.search(br"%2f|%5c|%00", raw_path, flags=re.IGNORECASE):
+        raise HTTPException(status_code=400, detail="invalid asset path")
+    relative = safe_relative_path(asset_path, suffix=".png")
+    if relative is None:
+        raise HTTPException(status_code=400, detail="invalid asset path")
+    root = _avatars_root(request)
+    avatar_dir = (root / avatar_id).resolve()
+    try:
+        avatar_dir.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="invalid avatar_id") from exc
+    context = _renderer_context(avatar_dir)
+    if context is None:
+        raise HTTPException(status_code=404, detail="client renderer not found")
+    if relative.as_posix() not in context.referenced_assets:
+        raise HTTPException(status_code=404, detail="asset not referenced")
+    try:
+        with open_referenced_asset(context, relative.as_posix()) as asset:
+            content = asset.read()
+    except Light2DContractError as exc:
+        raise HTTPException(status_code=404, detail="asset not found") from exc
+    return Response(content=content, media_type="image/png")
 
 
 @router.post("/custom", response_model=AvatarSummary)

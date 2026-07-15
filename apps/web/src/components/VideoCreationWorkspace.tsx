@@ -20,6 +20,11 @@ import {
   type VoiceCatalogItem,
 } from "../lib/api";
 import type { VoiceCloneApplication } from "../lib/voiceCloneApply";
+import { modelLabel } from "../lib/modelLabels";
+import {
+  videoCreationCompositionForAvatar,
+  videoCreationStateForAvatar,
+} from "../light2d/avatarSelection";
 import { EDGE_ZH_VOICES } from "../constants/edgeZhVoices";
 import {
   COSYVOICE_MODEL_OPTIONS,
@@ -95,14 +100,6 @@ const REFERENCE_DURATION_OPTIONS = [
 ] as const;
 
 const VIDEO_CREATION_MODELS = ["flashtalk", "flashhead", "fasterliveportrait", "musetalk", "quicktalk", "wav2lip"];
-const VIDEO_CREATION_MODEL_LABELS: Record<string, string> = {
-  flashtalk: "FlashTalk",
-  flashhead: "FlashHead",
-  fasterliveportrait: "FasterLivePortrait",
-  musetalk: "MuseTalk",
-  quicktalk: "QuickTalk",
-  wav2lip: "Wav2Lip",
-};
 const VIDEO_CREATION_OUTPUT_SIZES = {
   "16:9": { label: "16:9", previewClassName: "aspect-video w-full" },
   "9:16": { label: "9:16", previewClassName: "aspect-[9/16] w-[min(100%,22rem)]" },
@@ -490,15 +487,22 @@ export function VideoCreationWorkspace({
   const ttsPreviewUrlRef = useRef<string | null>(null);
 
   const availableVideoModels = useMemo(() => VIDEO_CREATION_MODELS.filter((item) => models.includes(item)), [models]);
-  const effectiveModel = availableVideoModels.includes(model) ? model : availableVideoModels[0] ?? model;
+  const regularEffectiveModel = availableVideoModels.includes(model)
+    ? model
+    : availableVideoModels[0] ?? model;
+  const videoCreationState = videoCreationStateForAvatar(selectedAvatar, regularEffectiveModel);
+  const effectiveModel = videoCreationState.model;
+  const videoCreationModelOptions = videoCreationState.modelLocked
+    ? ["mock"]
+    : VIDEO_CREATION_MODELS;
   const selectedVoiceLabel = ttsProvider === "edge"
     ? EDGE_ZH_VOICES.find((voice) => voice.id === edgeVoice)?.label ?? edgeVoice
     : ttsProvider === "openai_compatible"
       ? "后端默认音色"
       : qwenVoiceOptions.find((voice) => voice.id === qwenVoice)?.label ?? qwenVoice;
   const cloneVoiceCount = voiceCatalog.filter((item) => item.source === "clone").length;
-  const isReferenceVideoMode = creationMode === "reference_video";
-  const duoDialogAvailable = !isReferenceVideoMode && effectiveModel === "quicktalk" && selectedAvatar?.person_mode === "double" && Boolean(selectedAvatar?.duo_dialog);
+  const isReferenceVideoMode = !videoCreationState.referenceDisabled && creationMode === "reference_video";
+  const duoDialogAvailable = !videoCreationState.duoDisabled && !isReferenceVideoMode && effectiveModel === "quicktalk" && selectedAvatar?.person_mode === "double" && Boolean(selectedAvatar?.duo_dialog);
   const duoDialogSelected = duoDialogAvailable && audioSource === "duo_dialog";
   const canPreviewTts = !isReferenceVideoMode && audioSource !== "upload" && !duoDialogSelected;
   const showIndexTTSControls = !isReferenceVideoMode && audioSource !== "upload" && audioSource !== "duo_dialog" && INDEXTTS_PROVIDER_SET.has(ttsProvider);
@@ -515,8 +519,10 @@ export function VideoCreationWorkspace({
     return avatarScenes.find((scene) => scene.id === selectedSceneId) ?? avatarScenes[0] ?? null;
   }, [sceneCompositions, selectedAvatar, selectedSceneIdsByAvatar]);
   const selectedVideoBackground = useMemo(
-    () => videoBackgroundId ? sceneBackgrounds.find((background) => background.id === videoBackgroundId) ?? null : null,
-    [sceneBackgrounds, videoBackgroundId],
+    () => videoCreationState.backgroundDisabled || !videoBackgroundId
+      ? null
+      : sceneBackgrounds.find((background) => background.id === videoBackgroundId) ?? null,
+    [sceneBackgrounds, videoBackgroundId, videoCreationState.backgroundDisabled],
   );
   const videoAvatarAnchor = selectedScene?.avatar_anchor ?? "center";
   const videoAvatarFit = selectedScene?.avatar_fit ?? "contain";
@@ -561,18 +567,21 @@ export function VideoCreationWorkspace({
       heightPct: (layerH / canvasH) * 100,
     };
   }, [selectedAvatar?.height, selectedAvatar?.width, selectedVideoOutputSize.height, selectedVideoOutputSize.width, videoAvatarAdjust.x, videoAvatarAdjust.y, videoAvatarAnchor, videoAvatarDisplayScale, videoAvatarFit]);
-  const compositionConfig = useMemo<VideoCreationCompositionConfig>(() => ({
-    scene_composition_id: selectedScene?.id ?? null,
-    background_id: videoBackgroundId,
-    background_color: selectedScene?.background_color ?? "#ffffff",
-    avatar_fit: videoAvatarFit,
-    avatar_anchor: videoAvatarAnchor,
-    avatar_scale: videoAvatarDisplayScale,
-    avatar_offset_x: videoAvatarAdjust.x,
-    avatar_offset_y: videoAvatarAdjust.y,
-    output_width: selectedVideoOutputSize.width,
-    output_height: selectedVideoOutputSize.height,
-  }), [selectedScene?.background_color, selectedScene?.id, selectedVideoOutputSize.height, selectedVideoOutputSize.width, videoAvatarAdjust.scale, videoAvatarAdjust.x, videoAvatarAdjust.y, videoAvatarAnchor, videoAvatarDisplayScale, videoAvatarFit, videoBackgroundId]);
+  const compositionConfig = useMemo<VideoCreationCompositionConfig>(
+    () => videoCreationCompositionForAvatar(selectedAvatar, {
+      scene_composition_id: selectedScene?.id ?? null,
+      background_id: videoBackgroundId,
+      background_color: selectedScene?.background_color ?? "#ffffff",
+      avatar_fit: videoAvatarFit,
+      avatar_anchor: videoAvatarAnchor,
+      avatar_scale: videoAvatarDisplayScale,
+      avatar_offset_x: videoAvatarAdjust.x,
+      avatar_offset_y: videoAvatarAdjust.y,
+      output_width: selectedVideoOutputSize.width,
+      output_height: selectedVideoOutputSize.height,
+    }),
+    [selectedAvatar, selectedScene?.background_color, selectedScene?.id, selectedVideoOutputSize.height, selectedVideoOutputSize.width, videoAvatarAdjust.scale, videoAvatarAdjust.x, videoAvatarAdjust.y, videoAvatarAnchor, videoAvatarDisplayScale, videoAvatarFit, videoBackgroundId],
+  );
 
   const updateFasterLivePortraitNumber = useCallback((
     key: Exclude<keyof FasterLivePortraitConfig, "animation_region" | "flag_stitching" | "flag_pasteback" | "flag_relative_motion" | "flag_normalize_lip" | "flag_lip_retargeting">,
@@ -623,16 +632,30 @@ export function VideoCreationWorkspace({
   }, []);
 
   useEffect(() => {
-    setVideoBackgroundId(selectedScene?.background_id ?? null);
+    setVideoBackgroundId(
+      videoCreationState.backgroundDisabled ? null : selectedScene?.background_id ?? null,
+    );
     setVideoAvatarAdjust({ x: 0, y: 0, scale: 1 });
-  }, [selectedAvatar?.id, selectedScene?.id, selectedScene?.background_id]);
+  }, [selectedAvatar?.id, selectedScene?.id, selectedScene?.background_id, videoCreationState.backgroundDisabled]);
 
   useEffect(() => {
-    if (selectedAvatar?.person_mode === "double" && models.includes("quicktalk")) {
+    if (!videoCreationState.modelLocked) return;
+    setCreationMode("spoken_video");
+    setModel("mock");
+    setVideoBackgroundId(null);
+    setAudioSource((current) => current === "duo_dialog" ? "tts_text" : current);
+  }, [videoCreationState.modelLocked]);
+
+  useEffect(() => {
+    if (
+      !videoCreationState.modelLocked
+      && selectedAvatar?.person_mode === "double"
+      && models.includes("quicktalk")
+    ) {
       setModel("quicktalk");
     }
     setDuoDialogSpeakers(duoDialogDefaultSpeakers(selectedAvatar, voiceCatalog));
-  }, [models, selectedAvatar, voiceCatalog]);
+  }, [models, selectedAvatar, videoCreationState.modelLocked, voiceCatalog]);
 
   useEffect(() => {
     if (duoDialogAvailable && audioSource !== "duo_dialog") {
@@ -1028,9 +1051,11 @@ export function VideoCreationWorkspace({
               <button
                 type="button"
                 onClick={() => {
+                  if (videoCreationState.referenceDisabled) return;
                   setCreationMode("reference_video");
                   setModel("flashtalk");
                 }}
+                disabled={videoCreationState.referenceDisabled}
                 className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${creationMode === "reference_video" ? "border-cyan-300 bg-cyan-50 text-cyan-700" : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"}`}
               >
                 图片生成参考视频
@@ -1041,9 +1066,9 @@ export function VideoCreationWorkspace({
             <div className="grid gap-4 lg:grid-cols-2">
               <label className="block text-sm font-medium text-slate-700">
                 生成模型
-                <select value={isReferenceVideoMode ? "flashtalk" : effectiveModel} onChange={(event) => setModel(event.target.value)} disabled={isReferenceVideoMode} className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm disabled:bg-slate-100">
-                  {VIDEO_CREATION_MODELS.map((item) => (
-                    <option key={item} value={item} disabled={!models.includes(item)}>{VIDEO_CREATION_MODEL_LABELS[item] ?? item}{models.includes(item) ? "" : "（不可用）"}</option>
+                <select value={isReferenceVideoMode ? "flashtalk" : effectiveModel} onChange={(event) => setModel(event.target.value)} disabled={isReferenceVideoMode || videoCreationState.modelLocked} className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm disabled:bg-slate-100">
+                  {videoCreationModelOptions.map((item) => (
+                    <option key={item} value={item} disabled={!videoCreationState.modelLocked && !models.includes(item)}>{modelLabel(item)}{videoCreationState.modelLocked || models.includes(item) ? "" : "（不可用）"}</option>
                   ))}
                 </select>
               </label>
@@ -1647,7 +1672,8 @@ export function VideoCreationWorkspace({
               <select
                 value={videoBackgroundId ?? ""}
                 onChange={(event) => setVideoBackgroundId(event.target.value || null)}
-                className="mt-1 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-700"
+                disabled={videoCreationState.backgroundDisabled}
+                className="mt-1 w-full rounded-md border border-slate-200 bg-white px-2 py-1.5 text-xs font-medium text-slate-700 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
               >
                 <option value="">不使用背景</option>
                 {sceneBackgrounds.map((background) => (

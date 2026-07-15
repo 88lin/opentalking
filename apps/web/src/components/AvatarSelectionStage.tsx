@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { AvatarSummary, PersonaSummary } from "../lib/api";
 import { buildApiUrl } from "../lib/api";
+import { modelLabel } from "../lib/modelLabels";
 import type { ModelConnectionBadge } from "../lib/modelStatus";
 
 const CUSTOM_REFERENCE_NAME_KEY = "opentalking-custom-reference-name";
@@ -263,7 +264,11 @@ export function AvatarSelectionStage({
                       </div>
                       <div className="px-3 py-2">
                         <span className="block truncate text-xs font-medium text-slate-500">
-                          {avatar.is_custom ? "自定义形象" : "数字人形象"}
+                          {avatar.client_renderer?.type === "light2d"
+                            ? "免 GPU / 浏览器动画"
+                            : avatar.is_custom
+                              ? "自定义形象"
+                              : "数字人形象"}
                         </span>
                       </div>
                     </button>
@@ -336,7 +341,7 @@ export function AvatarSelectionStage({
                         {selectedPersona.locale}
                       </span>
                       <span className="truncate rounded-md bg-white px-2 py-1">
-                        {selectedPersona.avatar.model}
+                        {modelLabel(selectedPersona.avatar.model)}
                       </span>
                     </div>
                   ) : null}
